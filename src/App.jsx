@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import * as XLSX from "xlsx";
 import { db } from "./firebase";
 import {
@@ -618,25 +617,6 @@ export default function App() {
     payment: "Tiền mặt",
   });
 
-  const handleSubmit = async () => {
-    if (cart.length === 0) return;
-
-    const now = new Date();
-
-    await addDoc(collection(db, "orders"), {
-      code: "TAM-" + Date.now(),
-      items: cart,
-      total,
-      method: "Chưa thanh toán",
-      status: "Đơn tạm",
-      dateKey: dateInputValue(),
-      createdAt: serverTimestamp(),
-      timeText: now.toLocaleString("vi-VN"),
-    });
-
-    setCart([]);
-  };
-
   const isSameWeek = (dateStr, selectedDate) => {
     const d1 = new Date(dateStr);
     const d2 = new Date(selectedDate);
@@ -927,6 +907,35 @@ export default function App() {
     } catch (err) {
       console.error(err);
       setPaidMessage("Lỗi thanh toán!");
+    }
+  };
+
+  const createTempOrder = async () => {
+    try {
+      if (!cart.length) return;
+
+      const now = new Date();
+      const code = `TMP${Date.now().toString().slice(-6)}`;
+
+      const orderPayload = {
+        code,
+        items: cart,
+        total,
+        method: "Chưa thanh toán",
+        status: "Đơn tạm",
+        isTemp: true,
+        dateKey: dateInputValue(),
+        createdAt: serverTimestamp(),
+        timeText: now.toLocaleString("vi-VN"),
+      };
+
+      await addDoc(collection(db, "orders"), orderPayload);
+
+      setCart([]);
+      setPaidMessage("Đã lưu đơn tạm");
+    } catch (err) {
+      console.error("Lỗi tạo đơn tạm:", err);
+      alert("Không lưu được đơn tạm");
     }
   };
 
@@ -1387,7 +1396,7 @@ export default function App() {
 
             <button
               style={ghostBtn}
-              onClick={handleSubmit}
+              onClick={createTempOrder}
             >
               🧾 Đơn tạm
             </button>
@@ -2050,9 +2059,7 @@ export default function App() {
       <DeliveryModal
         open={showDeliveryModal}
         onClose={() => setShowDeliveryModal(false)}
-        onConfirm={() => {
-          alert("ok");
-        }}
+        onConfirm={createDeliveryOrder}
         form={deliveryForm}
         setForm={setDeliveryForm}
       />
