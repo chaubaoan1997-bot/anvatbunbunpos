@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import * as XLSX from "xlsx";
 import { db } from "./firebase";
 import {
@@ -617,25 +618,23 @@ export default function App() {
     payment: "Tiền mặt",
   });
 
-  const handleSubmit = () => {
-    if (cart.length === 0) {
-      alert("Chưa có món!");
-      return;
-    }
+  const handleSubmit = async () => {
+    if (cart.length === 0) return;
 
-    const newOrder = {
-      id: Date.now(),
-      items: [...cart],
-      total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      status: "pending",
-      time: new Date().toLocaleString(),
-      delivery: deliveryForm // 👈 nếu có giao hàng
-    };
+    const now = new Date();
 
-    setOrders(prev => [newOrder, ...prev]);
+    await addDoc(collection(db, "orders"), {
+      code: "TAM-" + Date.now(),
+      items: cart,
+      total,
+      method: "Chưa thanh toán",
+      status: "Đơn tạm",
+      dateKey: dateInputValue(),
+      createdAt: serverTimestamp(),
+      timeText: now.toLocaleString("vi-VN"),
+    });
+
     setCart([]);
-
-    alert("Đã tạo đơn!");
   };
 
   const isSameWeek = (dateStr, selectedDate) => {
