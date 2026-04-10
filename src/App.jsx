@@ -925,9 +925,9 @@ export default function App() {
       isDelivery: true,
 
       customer: {
-        name: deliveryForm.name,
-        phone: deliveryForm.phone,
-        address: deliveryForm.address,
+        name: deliveryForm?.name || "",
+        phone: deliveryForm.phone || "",
+        address: deliveryForm.address || "",
       },
 
       dateKey: dateInputValue(),
@@ -2038,41 +2038,57 @@ function DeliveryModal({ open, onClose, onConfirm, form, setForm }) {
   return (
     <div style={{
       position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: "rgba(0,0,0,0.5)",
+      top: 0, left: 0,
+      width: "100%", height: "100%",
+      background: "rgba(0,0,0,0.3)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       zIndex: 999
     }}>
-      <div style={{ background: "#fff", padding: 20, borderRadius: 10 }}>
-        <h2>Giao hàng</h2>
+      <div style={{
+        background: "#fff",
+        padding: 20,
+        borderRadius: 10,
+        width: 350
+      }}>
+        <h3>Giao hàng</h3>
 
         <input
           placeholder="Tên khách"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
+          style={{ width: "100%", marginBottom: 8 }}
         />
 
         <input
           placeholder="SĐT"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
+          style={{ width: "100%", marginBottom: 8 }}
         />
 
         <input
           placeholder="Địa chỉ"
           value={form.address}
           onChange={(e) => setForm({ ...form, address: e.target.value })}
+          style={{ width: "100%", marginBottom: 8 }}
         />
 
-        <br /><br />
+        <select
+          value={form.payment}
+          onChange={(e) => setForm({ ...form, payment: e.target.value })}
+          style={{ width: "100%", marginBottom: 12 }}
+        >
+          <option value="cash">Tiền mặt</option>
+          <option value="bank">Chuyển khoản</option>
+          <option value="debt">Đơn nợ</option>
+        </select>
 
-        <button onClick={onConfirm}>Xác nhận</button>
-        <button onClick={onClose}>Đóng</button>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={onConfirm}>Xác nhận</button>
+          <button onClick={onClose}>Đóng</button>
+        </div>
       </div>
     </div>
   );
