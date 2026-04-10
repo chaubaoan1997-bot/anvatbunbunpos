@@ -2023,7 +2023,9 @@ export default function App() {
       <DeliveryModal
         open={showDeliveryModal}
         onClose={() => setShowDeliveryModal(false)}
-        onConfirm={createDeliveryOrder}
+        onConfirm={() => {
+          alert("ok");
+        }}
         form={deliveryForm}
         setForm={setDeliveryForm}
       />
