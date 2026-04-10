@@ -2030,3 +2030,48 @@ export default function App() {
     </div>
   );
 }
+function DeliveryModal({ open, onClose, onConfirm, form, setForm }) {
+  if (!open) return null;
+
+  return (
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: "rgba(0,0,0,0.5)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 999
+    }}>
+      <div style={{ background: "#fff", padding: 20, borderRadius: 10 }}>
+        <h2>Giao hàng</h2>
+
+        <input
+          placeholder="Tên khách"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+
+        <input
+          placeholder="SĐT"
+          value={form.phone}
+          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+        />
+
+        <input
+          placeholder="Địa chỉ"
+          value={form.address}
+          onChange={(e) => setForm({ ...form, address: e.target.value })}
+        />
+
+        <br /><br />
+
+        <button onClick={onConfirm}>Xác nhận</button>
+        <button onClick={onClose}>Đóng</button>
+      </div>
+    </div>
+  );
+}
