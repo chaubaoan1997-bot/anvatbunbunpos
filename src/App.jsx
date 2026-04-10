@@ -602,10 +602,35 @@ export default function App() {
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [reportDate, setReportDate] = useState(dateInputValue());
+  const [reportType, setReportType] = useState("day"); // day | week | month
   const [expenseDate, setExpenseDate] = useState(dateInputValue());
   const [historyDate, setHistoryDate] = useState(dateInputValue());
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
+
+  const isSameWeek = (dateStr, selectedDate) => {
+    const d1 = new Date(dateStr);
+    const d2 = new Date(selectedDate);
+
+    const first = new Date(d2);
+    first.setHours(0, 0, 0, 0);
+    first.setDate(d2.getDate() - d2.getDay());
+
+    const last = new Date(first);
+    last.setDate(first.getDate() + 6);
+    last.setHours(23, 59, 59, 999);
+
+    return d1 >= first && d1 <= last;
+  };
+
+  const isSameMonth = (dateStr, selectedDate) => {
+    const d1 = new Date(dateStr);
+    const d2 = new Date(selectedDate);
+    return (
+      d1.getMonth() === d2.getMonth() &&
+      d1.getFullYear() === d2.getFullYear()
+    );
+  };
 
   useEffect(() => {
     const ensureSeed = async () => {
@@ -700,15 +725,23 @@ export default function App() {
     [expenses, expenseDate]
   );
 
-  const reportOrders = useMemo(
-    () => orders.filter((o) => o.dateKey === reportDate),
-    [orders, reportDate]
-  );
+  const reportOrders = useMemo(() => {
+    return orders.filter((o) => {
+      if (reportType === "day") return o.dateKey === reportDate;
+      if (reportType === "week") return isSameWeek(o.dateKey, reportDate);
+      if (reportType === "month") return isSameMonth(o.dateKey, reportDate);
+      return true;
+    });
+  }, [orders, reportDate, reportType]);
 
-  const reportExpenses = useMemo(
-    () => expenses.filter((e) => e.dateKey === reportDate),
-    [expenses, reportDate]
-  );
+  const reportExpenses = useMemo(() => {
+    return expenses.filter((e) => {
+      if (reportType === "day") return e.dateKey === reportDate;
+      if (reportType === "week") return isSameWeek(e.dateKey, reportDate);
+      if (reportType === "month") return isSameMonth(e.dateKey, reportDate);
+      return true;
+    });
+  }, [expenses, reportDate, reportType]);
 
   const lowStockProducts = useMemo(
     () => products.filter((p) => Number(p.stock || 0) <= 5),
@@ -1673,6 +1706,40 @@ export default function App() {
               onChange={(e) => setReportDate(e.target.value)}
               style={{ padding: "11px 40px 11px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}` }}
             />
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={() => setReportType("day")}
+              style={{
+                ...ghostBtn,
+                background: reportType === "day" ? COLORS.primary : COLORS.white,
+                color: reportType === "day" ? "#fff" : COLORS.text,
+              }}
+            >
+              Ngày
+            </button>
+
+            <button
+              onClick={() => setReportType("week")}
+              style={{
+                ...ghostBtn,
+                background: reportType === "week" ? COLORS.primary : COLORS.white,
+                color: reportType === "week" ? "#fff" : COLORS.text,
+              }}
+            >
+              Tuần
+            </button>
+
+            <button
+              onClick={() => setReportType("month")}
+              style={{
+                ...ghostBtn,
+                background: reportType === "month" ? COLORS.primary : COLORS.white,
+                color: reportType === "month" ? "#fff" : COLORS.text,
+              }}
+            >
+              Tháng
+            </button>
           </div>
           <button style={ghostBtn} onClick={exportReportExcel}>
             <Download size={18} /> Xuất Excel
