@@ -777,13 +777,15 @@ export default function App() {
 
   const total = cart.reduce((sum, item) => sum + getCartItemTotal(item), 0);
   const orderCount = reportOrders.length;
-  const revenue = reportOrders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+  const revenue = reportOrders
+    .filter(o => o.status === "Đã thanh toán")
+    .reduce((sum, o) => sum + Number(o.total || 0), 0);
   const cost = reportExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
   const cashRevenue = reportOrders
-    .filter((o) => o.method === "Tiền mặt")
+    .filter(o => o.method === "Tiền mặt" && o.status === "Đã thanh toán")
     .reduce((s, o) => s + Number(o.total || 0), 0);
   const bankRevenue = reportOrders
-    .filter((o) => o.method === "Chuyển khoản")
+    .filter(o => o.method === "Chuyển khoản" && o.status === "Đã thanh toán")
     .reduce((s, o) => s + Number(o.total || 0), 0);
   const profit = revenue - cost;
   const totalExpenseToday = expenseFiltered.reduce((s, e) => s + Number(e.amount || 0), 0);
@@ -1706,6 +1708,25 @@ export default function App() {
                 <button style={ghostBtn} onClick={() => printReceipt(selectedOrder)}>
                   <Printer size={18} /> In lại
                 </button>
+
+                {selectedOrder?.status === "Đơn tạm" && (
+                  <button
+                    style={primaryBtn}
+                    onClick={() => confirmTempOrder(selectedOrder)}
+                  >
+                    Xác nhận thanh toán
+                  </button>
+                )}
+
+                {selectedOrder?.status === "Chờ giao" && (
+                  <button
+                    style={primaryBtn}
+                    onClick={() => completeDelivery(selectedOrder)}
+                  >
+                    Đã giao xong
+                  </button>
+                )}
+
                 <button
                   style={{ ...ghostBtn, color: COLORS.danger, borderColor: "#fecaca" }}
                   onClick={() => deleteOrder(selectedOrder.id)}
