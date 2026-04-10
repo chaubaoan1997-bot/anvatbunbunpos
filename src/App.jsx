@@ -609,6 +609,14 @@ export default function App() {
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
 
+  const [showDeliveryModal, setShowDeliveryModal] = useState(false);
+  const [deliveryForm, setDeliveryForm] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    payment: "Tiền mặt",
+  });
+
   const isSameWeek = (dateStr, selectedDate) => {
     const d1 = new Date(dateStr);
     const d2 = new Date(selectedDate);
@@ -900,6 +908,39 @@ export default function App() {
       console.error(err);
       setPaidMessage("Lỗi thanh toán!");
     }
+  };
+
+  const createDeliveryOrder = async () => {
+    if (!cart.length) return;
+
+    const now = new Date();
+    const code = `GH${Date.now().toString().slice(-6)}`;
+
+    const orderPayload = {
+      code,
+      items: cart,
+      total,
+      method: deliveryForm.payment,
+      status: "Chờ giao",
+      isDelivery: true,
+
+      customer: {
+        name: deliveryForm.name,
+        phone: deliveryForm.phone,
+        address: deliveryForm.address,
+      },
+
+      dateKey: dateInputValue(),
+      createdAt: serverTimestamp(),
+      timeText: now.toLocaleString("vi-VN"),
+
+      isPaid: deliveryForm.payment !== "Nợ",
+    };
+
+    await addDoc(collection(db, "orders"), orderPayload);
+
+    setCart([]);
+    setShowDeliveryModal(false);
   };
 
   const saveProduct = async (payload) => {
@@ -1312,11 +1353,22 @@ export default function App() {
               Chuyển khoản
             </PaymentButton>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
             <button style={ghostBtn} onClick={() => printReceipt()}>
               <Printer size={18} /> In hóa đơn
             </button>
-            <button style={{ ...primaryBtn, opacity: total ? 1 : 0.55 }} onClick={checkout}>
+
+            <button
+              style={ghostBtn}
+              onClick={() => setShowDeliveryModal(true)}
+            >
+              🚚 Giao hàng
+            </button>
+
+            <button
+              style={{ ...primaryBtn, opacity: total ? 1 : 0.55 }}
+              onClick={checkout}
+            >
               Thanh toán {money(total)}
             </button>
           </div>
