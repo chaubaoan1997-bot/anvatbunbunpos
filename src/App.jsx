@@ -1513,6 +1513,40 @@ export default function App() {
                 }}
               />
             </div>
+            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+              <button
+                onClick={() => setHistoryType("day")}
+                style={{
+                  ...ghostBtn,
+                  background: historyType === "day" ? COLORS.primary : COLORS.white,
+                  color: historyType === "day" ? "#fff" : COLORS.text,
+                }}
+              >
+                Ngày
+              </button>
+
+              <button
+                onClick={() => setHistoryType("week")}
+                style={{
+                  ...ghostBtn,
+                  background: historyType === "week" ? COLORS.primary : COLORS.white,
+                  color: historyType === "week" ? "#fff" : COLORS.text,
+                }}
+              >
+                Tuần
+              </button>
+
+              <button
+                onClick={() => setHistoryType("month")}
+                style={{
+                  ...ghostBtn,
+                  background: historyType === "month" ? COLORS.primary : COLORS.white,
+                  color: historyType === "month" ? "#fff" : COLORS.text,
+                }}
+              >
+                Tháng
+              </button>
+            </div>
             <button style={ghostBtn} onClick={exportOrdersExcel}>
               <Download size={18} /> Xuất Excel lịch sử
             </button>
