@@ -2020,6 +2020,13 @@ export default function App() {
         categories={categories}
         product={editingProduct}
       />
+      <DeliveryModal
+        open={showDeliveryModal}
+        onClose={() => setShowDeliveryModal(false)}
+        onConfirm={createDeliveryOrder}
+        form={deliveryForm}
+        setForm={setDeliveryForm}
+      />
     </div>
   );
 }
