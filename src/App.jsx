@@ -605,6 +605,7 @@ export default function App() {
   const [reportType, setReportType] = useState("day"); // day | week | month
   const [expenseDate, setExpenseDate] = useState(dateInputValue());
   const [historyDate, setHistoryDate] = useState(dateInputValue());
+  const [historyType, setHistoryType] = useState("day"); // day | week | month
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
 
@@ -714,11 +715,23 @@ export default function App() {
 
   const historyFiltered = useMemo(() => {
     return orders.filter((o) => {
-      const codeOk = (o.code || "").toLowerCase().includes(historySearch.toLowerCase());
-      const dateOk = !historyDate || o.dateKey === historyDate;
+      const codeOk = (o.code || "")
+        .toLowerCase()
+        .includes(historySearch.toLowerCase());
+
+      let dateOk = true;
+
+      if (historyType === "day") {
+        dateOk = o.dateKey === historyDate;
+      } else if (historyType === "week") {
+        dateOk = isSameWeek(o.dateKey, historyDate);
+      } else if (historyType === "month") {
+        dateOk = isSameMonth(o.dateKey, historyDate);
+      }
+
       return codeOk && dateOk;
     });
-  }, [orders, historySearch, historyDate]);
+  }, [orders, historySearch, historyDate, historyType]);
 
   const expenseFiltered = useMemo(
     () => expenses.filter((e) => e.dateKey === expenseDate),
