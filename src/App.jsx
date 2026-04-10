@@ -617,6 +617,27 @@ export default function App() {
     payment: "Tiền mặt",
   });
 
+  const handleSubmit = () => {
+    if (cart.length === 0) {
+      alert("Chưa có món!");
+      return;
+    }
+
+    const newOrder = {
+      id: Date.now(),
+      items: [...cart],
+      total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      status: "pending",
+      time: new Date().toLocaleString(),
+      delivery: deliveryForm // 👈 nếu có giao hàng
+    };
+
+    setOrders(prev => [newOrder, ...prev]);
+    setCart([]);
+
+    alert("Đã tạo đơn!");
+  };
+
   const isSameWeek = (dateStr, selectedDate) => {
     const d1 = new Date(dateStr);
     const d2 = new Date(selectedDate);
@@ -1353,7 +1374,7 @@ export default function App() {
               Chuyển khoản
             </PaymentButton>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 14 }}>
             <button style={ghostBtn} onClick={() => printReceipt()}>
               <Printer size={18} /> In hóa đơn
             </button>
@@ -1363,6 +1384,13 @@ export default function App() {
               onClick={() => setShowDeliveryModal(true)}
             >
               🚚 Giao hàng
+            </button>
+
+            <button
+              style={ghostBtn}
+              onClick={handleSubmit}
+            >
+              🧾 Đơn tạm
             </button>
 
             <button
