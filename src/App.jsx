@@ -1986,6 +1986,32 @@ export default function App() {
     </div>
   );
 
+  const productStats = {};
+
+  orders
+    .filter(o => o.status === "Đã thanh toán")
+    .forEach(o => {
+      (o.items || []).forEach(item => {
+        if (!productStats[item.name]) {
+          productStats[item.name] = {
+            qty: 0,
+            total: 0
+          };
+        }
+
+        productStats[item.name].qty += item.qty;
+        productStats[item.name].total += item.qty * item.price;
+      });
+    });
+
+  const productList = Object.entries(productStats)
+    .map(([name, data]) => ({
+      name,
+      qty: data.qty,
+      total: data.total
+    }))
+    .sort((a, b) => b.qty - a.qty);
+
   const reportPage = (
     <div style={{ display: "grid", gap: 18 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
@@ -2058,18 +2084,33 @@ export default function App() {
 
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.35fr 1fr", gap: 18 }}>
         <SectionCard style={{ minHeight: 340, padding: 18 }}>
-          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>Doanh thu theo giờ</div>
-          <div style={{ height: 240, display: "flex", alignItems: "end", gap: 18, padding: "0 8px" }}>
-            {[0, 0, 0, revenue].map((v, idx) => {
-              const h = revenue ? Math.max(30, (v / revenue) * 180) : idx === 3 ? 80 : 20;
-              return (
-                <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: "100%", maxWidth: 90, height: h, borderRadius: 14, background: idx === 3 ? "#dbe7ff" : "#edf2f7" }} />
-                  <div style={{ color: COLORS.textSoft }}>{`${7 + idx}:00 - ${8 + idx}:00`}</div>
-                </div>
-              );
-            })}
+          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>
+            Sản phẩm đã bán
           </div>
+
+          {productList.length === 0 ? (
+            <div>Chưa có dữ liệu</div>
+          ) : (
+            productList.map((p, i) => (
+              <div key={i} style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "10px 0",
+                borderBottom: "1px solid #eee"
+              }}>
+                <div>
+                  {i === 0 ? "🔥 " : ""}{p.name}
+                </div>
+
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontWeight: 600 }}>{p.qty} món</div>
+                  <div style={{ fontSize: 12, color: "#64748b" }}>
+                    {money(p.total)}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </SectionCard>
 
         <SectionCard style={{ minHeight: 340, overflow: "hidden" }}>
