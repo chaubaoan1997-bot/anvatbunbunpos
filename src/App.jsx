@@ -1795,9 +1795,10 @@ export default function App() {
 
                     if (o.isDelivery) {
                       setDeliveryForm({
-                        name: o.customerName || "",
-                        phone: o.customerPhone || "",
-                        address: o.customerAddress || ""
+                        name: o.customer?.name || "",
+                        phone: o.customer?.phone || "",
+                        address: o.customer?.address || "",
+                        payment: o.method || "Tiền mặt"
                       });
 
                       setShowDeliveryModal(true);
