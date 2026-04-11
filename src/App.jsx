@@ -2012,37 +2012,7 @@ export default function App() {
     }))
     .sort((a, b) => b.qty - a.qty);
 
-  const drinkStats = {};
 
-  orders
-    .filter(o => o.status === "Đã thanh toán")
-    .filter(o => {
-      const d = new Date(o.createdAt);
-      return d.toISOString().slice(0, 10) === reportDate;
-    })
-    .forEach(o => {
-      (o.items || []).forEach(item => {
-
-        // 👉 CHỈ LỌC NƯỚC (sửa theo tên menu bạn)
-        if (
-          item.name.toLowerCase().includes("trà") ||
-          item.name.toLowerCase().includes("sữa") ||
-          item.name.toLowerCase().includes("nước")
-        ) {
-
-          if (!drinkStats[item.name]) {
-            drinkStats[item.name] = 0;
-          }
-
-          drinkStats[item.name] += item.qty;
-        }
-
-      });
-    });
-
-  const drinkList = Object.entries(drinkStats)
-    .map(([name, qty]) => ({ name, qty }))
-    .sort((a, b) => b.qty - a.qty);
 
   const reportPage = (
     <div style={{ display: "grid", gap: 18 }}>
@@ -2144,8 +2114,6 @@ export default function App() {
             ))
           )}
         </SectionCard>
-
-
 
         <SectionCard style={{ minHeight: 340, overflow: "hidden" }}>
           <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}`, fontSize: 18, fontWeight: 800 }}>
