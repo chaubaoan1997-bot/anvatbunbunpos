@@ -2226,6 +2226,13 @@ export default function App() {
           setShowPaymentModal(false);
         }}
       />
+      <DeliveryModal
+        open={showDeliveryModal}
+        onClose={() => setShowDeliveryModal(false)}
+        onConfirm={createDeliveryOrder}
+        form={deliveryForm}
+        setForm={setDeliveryForm}
+      />
     </div>
   );
 }
