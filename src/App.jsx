@@ -612,6 +612,8 @@ export default function App() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [tempOrder, setTempOrder] = useState(null);
 
+  const [filterType, setFilterType] = useState("all");
+
   const [showDeliveryModal, setShowDeliveryModal] = useState(false);
   const [deliveryForm, setDeliveryForm] = useState({
     name: "",
@@ -1642,6 +1644,11 @@ export default function App() {
       <SectionCard style={{ overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 0 }}>
         <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}` }}>
           <div style={pageTitle}>Lịch sử đơn hàng</div>
+          <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+            <button onClick={() => setFilterType("all")}>Tất cả</button>
+            <button onClick={() => setFilterType("temp")}>Đơn tạm</button>
+            <button onClick={() => setFilterType("delivery")}>Giao hàng</button>
+          </div>
           <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
             <div style={{ position: "relative" }}>
               <Calendar size={18} color="#111" style={{ position: "absolute", right: 16, top: 13 }} />
@@ -1721,32 +1728,38 @@ export default function App() {
               <EmptyState icon={Receipt} title="Không có đơn hàng nào" />
             </div>
           ) : (
-            historyFiltered.map((o) => (
-              <button
-                key={o.id}
-                onClick={() => setSelectedOrder(o)}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  border: "none",
-                  background: selectedOrder?.id === o.id ? "#eef4ff" : COLORS.white,
-                  padding: 16,
-                  borderBottom: `1px solid ${COLORS.border}`,
-                  cursor: "pointer",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                  <div style={{ fontWeight: 700, color: COLORS.text }}>{o.code}</div>
-                  <div style={{ color: COLORS.success, fontSize: 13, fontWeight: 700 }}>
-                    {o.status || "Đã thanh toán"}
+            historyFiltered
+              .filter(o => {
+                if (filterType === "all") return true;
+                if (filterType === "temp") return o.status === "Đơn tạm";
+                if (filterType === "delivery") return o.isDelivery;
+                return true;
+              }).map((o) => (
+                <button
+                  key={o.id}
+                  onClick={() => setSelectedOrder(o)}
+                  style={{
+                    width: "100%",
+                    textAlign: "left",
+                    border: "none",
+                    background: selectedOrder?.id === o.id ? "#eef4ff" : COLORS.white,
+                    padding: 16,
+                    borderBottom: `1px solid ${COLORS.border}`,
+                    cursor: "pointer",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                    <div style={{ fontWeight: 700, color: COLORS.text }}>{o.code}</div>
+                    <div style={{ color: COLORS.success, fontSize: 13, fontWeight: 700 }}>
+                      {o.status || "Đã thanh toán"}
+                    </div>
                   </div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, color: COLORS.textSoft }}>
-                  <span>{o.timeText}</span>
-                  <span style={{ color: COLORS.primary, fontWeight: 700 }}>{money(o.total)}</span>
-                </div>
-              </button>
-            ))
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, color: COLORS.textSoft }}>
+                    <span>{o.timeText}</span>
+                    <span style={{ color: COLORS.primary, fontWeight: 700 }}>{money(o.total)}</span>
+                  </div>
+                </button>
+              ))
           )}
         </div>
       </SectionCard>
