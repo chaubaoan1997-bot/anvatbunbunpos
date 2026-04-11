@@ -1020,6 +1020,24 @@ export default function App() {
     setShowDeliveryModal(false);
   };
 
+  const updateDeliveryOrder = async (orderId) => {
+    if (!orderId) return;
+
+    await updateDoc(doc(db, "orders", orderId), {
+      method: deliveryForm.payment,
+
+      customer: {
+        name: deliveryForm.name,
+        phone: deliveryForm.phone,
+        address: deliveryForm.address,
+      }
+    });
+
+    setShowDeliveryModal(false);
+  };
+
+  const [editingOrder, setEditingOrder] = useState(null);
+
   const completeDelivery = async (order) => {
     try {
       if (!order) return;
@@ -1808,6 +1826,7 @@ export default function App() {
                     setSelectedOrder(o);
 
                     if (o.isDelivery) {
+                      setEditingOrder(o);
                       setDeliveryForm({
                         name: o.customer?.name || "",
                         phone: o.customer?.phone || "",
