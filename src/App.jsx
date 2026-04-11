@@ -2188,21 +2188,21 @@ function DeliveryModal({ open, onClose, onConfirm, form, setForm }) {
           placeholder="Tên khách"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          style={{ width: "100%", marginBottom: 8 }}
+          style={{ width: "100%", marginBottom: 10 }}
         />
 
         <input
           placeholder="SĐT"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-          style={{ width: "100%", marginBottom: 8 }}
+          style={{ width: "100%", marginBottom: 10 }}
         />
 
         <input
           placeholder="Địa chỉ"
           value={form.address}
           onChange={(e) => setForm({ ...form, address: e.target.value })}
-          style={{ width: "100%", marginBottom: 8 }}
+          style={{ width: "100%", marginBottom: 10 }}
         />
 
         <select
@@ -2245,19 +2245,12 @@ function DeliveryModal({ open, onClose, onConfirm, form, setForm }) {
         }}>
           <h3>Chọn thanh toán</h3>
 
-          <div style={{ display: "flex", gap: 10, marginTop: 15 }}>
-            <button onClick={() => onConfirm("Tiền mặt")} style={{ flex: 1 }}>
-              Tiền mặt
-            </button>
-
-            <button onClick={() => onConfirm("Chuyển khoản")} style={{ flex: 1 }}>
-              Chuyển khoản
-            </button>
+          <div style={{ display: "flex", gap: 10 }}>
+            <button onClick={() => onConfirm("Tiền mặt")}>Tiền mặt</button>
+            <button onClick={() => onConfirm("Chuyển khoản")}>Chuyển khoản</button>
           </div>
 
-          <button onClick={onClose} style={{ marginTop: 10 }}>
-            Hủy
-          </button>
+          <button onClick={onClose}>Hủy</button>
         </div>
       </div>
     );
