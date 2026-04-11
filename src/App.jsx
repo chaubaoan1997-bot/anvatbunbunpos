@@ -2317,8 +2317,12 @@ export default function App() {
       />
       <DeliveryModal
         open={showDeliveryModal}
-        onClose={() => setShowDeliveryModal(false)}
+        onClose={() => {
+          setShowDeliveryModal(false);
+          setEditingOrder(null);
+        }}
         onConfirm={createDeliveryOrder}
+        editingOrder={editingOrder}   // 👈 THÊM
         form={deliveryForm}
         setForm={setDeliveryForm}
       />
