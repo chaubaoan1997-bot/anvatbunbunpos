@@ -1715,20 +1715,18 @@ export default function App() {
               <Download size={18} /> Xuất Excel lịch sử
             </button>
           </div>
-          <>
-            <div style={{
-              display: "flex",
-              gap: 8,
-              marginTop: 10,
-              background: "#f1f5f9",
-              padding: 6,
-              borderRadius: 12
-            }}>
-              <button onClick={() => setFilterType("all")}>Tất cả</button>
-              <button onClick={() => setFilterType("temp")}>Đơn tạm</button>
-              <button onClick={() => setFilterType("delivery")}>Giao hàng</button>
-            </div>
-          </>
+          <div style={{
+            display: "flex",
+            gap: 8,
+            marginTop: 10,
+            background: "#f1f5f9",
+            padding: 6,
+            borderRadius: 12
+          }}>
+            <button onClick={() => setFilterType("all")}>Tất cả</button>
+            <button onClick={() => setFilterType("temp")}>Đơn tạm</button>
+            <button onClick={() => setFilterType("delivery")}>Giao hàng</button>
+          </div>
         </div>
 
         <div style={{ flex: 1, overflow: "auto" }}>
