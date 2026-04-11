@@ -2231,7 +2231,7 @@ function PaymentModal({ open, onClose, onConfirm }) {
     <div style={{
       position: "fixed",
       inset: 0,
-      background: "rgba(0,0,0,0.3)",
+      background: "rgba(0,0,0,0.4)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -2239,19 +2239,71 @@ function PaymentModal({ open, onClose, onConfirm }) {
     }}>
       <div style={{
         background: "#fff",
-        padding: 20,
-        borderRadius: 10,
-        width: 300,
-        textAlign: "center"
+        padding: 24,
+        borderRadius: 16,
+        width: 320,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+        textAlign: "center",
+        animation: "fadeIn 0.2s ease"
       }}>
-        <h3>Chọn thanh toán</h3>
 
-        <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={() => onConfirm("Tiền mặt")}>Tiền mặt</button>
-          <button onClick={() => onConfirm("Chuyển khoản")}>Chuyển khoản</button>
+        <h3 style={{
+          margin: 0,
+          marginBottom: 20,
+          fontSize: 20,
+          fontWeight: 700
+        }}>
+          Chọn phương thức thanh toán
+        </h3>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+
+          <button
+            onClick={() => onConfirm("Tiền mặt")}
+            style={{
+              padding: "14px",
+              borderRadius: 12,
+              border: "none",
+              background: "#16a34a",
+              color: "#fff",
+              fontWeight: 700,
+              cursor: "pointer",
+              fontSize: 15
+            }}
+          >
+            💵 Tiền mặt
+          </button>
+
+          <button
+            onClick={() => onConfirm("Chuyển khoản")}
+            style={{
+              padding: "14px",
+              borderRadius: 12,
+              border: "none",
+              background: "#2f66e9",
+              color: "#fff",
+              fontWeight: 700,
+              cursor: "pointer",
+              fontSize: 15
+            }}
+          >
+            💳 Chuyển khoản
+          </button>
         </div>
 
-        <button onClick={onClose}>Hủy</button>
+        <button
+          onClick={onClose}
+          style={{
+            marginTop: 16,
+            background: "transparent",
+            border: "none",
+            color: "#64748b",
+            cursor: "pointer",
+            fontSize: 14
+          }}
+        >
+          Hủy
+        </button>
       </div>
     </div>
   );
