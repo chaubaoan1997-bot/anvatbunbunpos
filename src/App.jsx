@@ -941,6 +941,41 @@ export default function App() {
     }
   };
 
+  const confirmTempOrder = async (order) => {
+    try {
+      if (!order) return;
+
+      await updateDoc(doc(db, "orders", order.id), {
+        status: "Đã thanh toán",
+        method: paymentMethod,
+        isTemp: false,
+      });
+
+      // trừ kho
+      const batch = writeBatch(db);
+
+      for (const item of order.items || []) {
+        const ref = doc(db, "products", item.id);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) continue;
+
+        const currentStock = Number(snap.data().stock || 0);
+        const nextStock = Math.max(0, currentStock - Number(item.qty || 0));
+
+        batch.update(ref, {
+          stock: nextStock,
+          status: nextStock > 0 ? "Còn hàng" : "Hết hàng",
+        });
+      }
+
+      await batch.commit();
+
+      setPaidMessage("Đã thanh toán đơn tạm");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const createDeliveryOrder = async () => {
     if (!cart.length) return;
 
@@ -972,6 +1007,40 @@ export default function App() {
 
     setCart([]);
     setShowDeliveryModal(false);
+  };
+
+  const completeDelivery = async (order) => {
+    try {
+      if (!order) return;
+
+      await updateDoc(doc(db, "orders", order.id), {
+        status: "Đã thanh toán",
+        isDelivery: false,
+      });
+
+      // trừ kho
+      const batch = writeBatch(db);
+
+      for (const item of order.items || []) {
+        const ref = doc(db, "products", item.id);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) continue;
+
+        const currentStock = Number(snap.data().stock || 0);
+        const nextStock = Math.max(0, currentStock - Number(item.qty || 0));
+
+        batch.update(ref, {
+          stock: nextStock,
+          status: nextStock > 0 ? "Còn hàng" : "Hết hàng",
+        });
+      }
+
+      await batch.commit();
+
+      setPaidMessage("Đã giao hàng & thanh toán");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const saveProduct = async (payload) => {
@@ -1712,7 +1781,12 @@ export default function App() {
                 {selectedOrder?.status === "Đơn tạm" && (
                   <button
                     style={primaryBtn}
-                    onClick={() => confirmTempOrder(selectedOrder)}
+                    onClick={() => {
+                      const method = prompt("Nhập phương thức: Tiền mặt / Chuyển khoản", "Tiền mặt");
+                      if (!method) return;
+                      setPaymentMethod(method);
+                      confirmTempOrder(selectedOrder);
+                    }}
                   >
                     Xác nhận thanh toán
                   </button>
@@ -2135,9 +2209,9 @@ function DeliveryModal({ open, onClose, onConfirm, form, setForm }) {
           onChange={(e) => setForm({ ...form, payment: e.target.value })}
           style={{ width: "100%", marginBottom: 12 }}
         >
-          <option value="cash">Tiền mặt</option>
-          <option value="bank">Chuyển khoản</option>
-          <option value="debt">Đơn nợ</option>
+          <option value="Tiền mặt">Tiền mặt</option>
+          <option value="Chuyển khoản">Chuyển khoản</option>
+          <option value="Nợ">Đơn nợ</option>
         </select>
 
         <div style={{ display: "flex", gap: 10 }}>
