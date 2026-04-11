@@ -2329,7 +2329,7 @@ export default function App() {
     </div>
   );
 }
-function DeliveryModal({ open, onClose, onConfirm, form, setForm }) {
+function DeliveryModal({ open, onClose, onConfirm, editingOrder, form, setForm }) {
   if (!open) return null;
 
   return (
