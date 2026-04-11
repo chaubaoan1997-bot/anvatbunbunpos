@@ -1471,7 +1471,15 @@ export default function App() {
 
             <button
               style={ghostBtn}
-              onClick={() => setShowDeliveryModal(true)}
+              onClick={() => {
+                setDeliveryForm({
+                  name: "",
+                  phone: "",
+                  address: "",
+                  payment: "Tiền mặt",
+                });
+                setShowDeliveryModal(true);
+              }}
             >
               🚚 Giao hàng
             </button>
