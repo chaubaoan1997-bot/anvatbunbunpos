@@ -1644,11 +1644,6 @@ export default function App() {
       <SectionCard style={{ overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 0 }}>
         <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}` }}>
           <div style={pageTitle}>Lịch sử đơn hàng</div>
-          <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-            <button onClick={() => setFilterType("all")}>Tất cả</button>
-            <button onClick={() => setFilterType("temp")}>Đơn tạm</button>
-            <button onClick={() => setFilterType("delivery")}>Giao hàng</button>
-          </div>
           <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
             <div style={{ position: "relative" }}>
               <Calendar size={18} color="#111" style={{ position: "absolute", right: 16, top: 13 }} />
@@ -1719,6 +1714,68 @@ export default function App() {
             <button style={ghostBtn} onClick={exportOrdersExcel}>
               <Download size={18} /> Xuất Excel lịch sử
             </button>
+          </div>
+          <button style={secondaryBtn} onClick={exportOrdersExcel}>
+            Xuất Excel lịch sử
+          </button>
+
+          <div style={{
+            display: "flex",
+            gap: 8,
+            marginTop: 10,
+            background: "#f1f5f9",
+            padding: 6,
+            borderRadius: 12
+          }}>
+
+            <button
+              onClick={() => setFilterType("all")}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                background: filterType === "all" ? "#2f66e9" : "transparent",
+                color: filterType === "all" ? "#fff" : "#334155",
+                fontWeight: 600
+              }}
+            >
+              Tất cả
+            </button>
+
+            <button
+              onClick={() => setFilterType("temp")}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                background: filterType === "temp" ? "#2f66e9" : "transparent",
+                color: filterType === "temp" ? "#fff" : "#334155",
+                fontWeight: 600
+              }}
+            >
+              Đơn tạm
+            </button>
+
+            <button
+              onClick={() => setFilterType("delivery")}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                background: filterType === "delivery" ? "#2f66e9" : "transparent",
+                color: filterType === "delivery" ? "#fff" : "#334155",
+                fontWeight: 600
+              }}
+            >
+              Giao hàng
+            </button>
+
           </div>
         </div>
 
