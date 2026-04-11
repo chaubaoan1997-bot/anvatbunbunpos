@@ -2285,7 +2285,21 @@ export default function App() {
       <DeliveryModal
         open={showDeliveryModal}
         onClose={() => setShowDeliveryModal(false)}
-        onConfirm={createDeliveryOrder}
+        onConfirm={() => {
+          // xử lý lưu đơn
+          handleConfirmDelivery();
+
+          // 👇 RESET FORM
+          setDeliveryForm({
+            name: "",
+            phone: "",
+            address: "",
+            payment: "Tiền mặt"
+          });
+
+          // đóng modal
+          setShowDeliveryModal(false);
+        }}
         form={deliveryForm}
         setForm={setDeliveryForm}
       />
