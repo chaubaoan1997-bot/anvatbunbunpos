@@ -2145,32 +2145,7 @@ export default function App() {
           )}
         </SectionCard>
 
-        <SectionCard style={{ minHeight: 200, padding: 16 }}>
-          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>
-            Nước đã bán
-          </div>
 
-          {drinkList.length === 0 ? (
-            <div>Chưa có dữ liệu</div>
-          ) : (
-            drinkList.map((d, i) => (
-              <div key={i} style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "8px 0",
-                borderBottom: "1px solid #eee"
-              }}>
-                <div>
-                  {i === 0 ? "🔥 " : ""}{d.name}
-                </div>
-
-                <div style={{ fontWeight: 600 }}>
-                  {d.qty} ly
-                </div>
-              </div>
-            ))
-          )}
-        </SectionCard>
 
         <SectionCard style={{ minHeight: 340, overflow: "hidden" }}>
           <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}`, fontSize: 18, fontWeight: 800 }}>
