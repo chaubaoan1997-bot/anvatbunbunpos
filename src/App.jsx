@@ -2222,4 +2222,44 @@ function DeliveryModal({ open, onClose, onConfirm, form, setForm }) {
       </div>
     </div>
   );
+
+  function PaymentModal({ open, onClose, onConfirm }) {
+    if (!open) return null;
+
+    return (
+      <div style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.3)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 999
+      }}>
+        <div style={{
+          background: "#fff",
+          padding: 20,
+          borderRadius: 10,
+          width: 300,
+          textAlign: "center"
+        }}>
+          <h3>Chọn thanh toán</h3>
+
+          <div style={{ display: "flex", gap: 10, marginTop: 15 }}>
+            <button onClick={() => onConfirm("Tiền mặt")} style={{ flex: 1 }}>
+              Tiền mặt
+            </button>
+
+            <button onClick={() => onConfirm("Chuyển khoản")} style={{ flex: 1 }}>
+              Chuyển khoản
+            </button>
+          </div>
+
+          <button onClick={onClose} style={{ marginTop: 10 }}>
+            Hủy
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
