@@ -2012,6 +2012,38 @@ export default function App() {
     }))
     .sort((a, b) => b.qty - a.qty);
 
+  const drinkStats = {};
+
+  orders
+    .filter(o => o.status === "Đã thanh toán")
+    .filter(o => {
+      const d = new Date(o.createdAt);
+      return d.toISOString().slice(0, 10) === reportDate;
+    })
+    .forEach(o => {
+      (o.items || []).forEach(item => {
+
+        // 👉 CHỈ LỌC NƯỚC (sửa theo tên menu bạn)
+        if (
+          item.name.toLowerCase().includes("trà") ||
+          item.name.toLowerCase().includes("sữa") ||
+          item.name.toLowerCase().includes("nước")
+        ) {
+
+          if (!drinkStats[item.name]) {
+            drinkStats[item.name] = 0;
+          }
+
+          drinkStats[item.name] += item.qty;
+        }
+
+      });
+    });
+
+  const drinkList = Object.entries(drinkStats)
+    .map(([name, qty]) => ({ name, qty }))
+    .sort((a, b) => b.qty - a.qty);
+
   const reportPage = (
     <div style={{ display: "grid", gap: 18 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
@@ -2107,6 +2139,33 @@ export default function App() {
                   <div style={{ fontSize: 12, color: "#64748b" }}>
                     {money(p.total)}
                   </div>
+                </div>
+              </div>
+            ))
+          )}
+        </SectionCard>
+
+        <SectionCard style={{ minHeight: 200, padding: 16 }}>
+          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>
+            Nước đã bán
+          </div>
+
+          {drinkList.length === 0 ? (
+            <div>Chưa có dữ liệu</div>
+          ) : (
+            drinkList.map((d, i) => (
+              <div key={i} style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "8px 0",
+                borderBottom: "1px solid #eee"
+              }}>
+                <div>
+                  {i === 0 ? "🔥 " : ""}{d.name}
+                </div>
+
+                <div style={{ fontWeight: 600 }}>
+                  {d.qty} ly
                 </div>
               </div>
             ))
