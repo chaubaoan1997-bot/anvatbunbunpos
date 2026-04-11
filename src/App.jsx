@@ -1790,7 +1790,19 @@ export default function App() {
               }).map((o) => (
                 <button
                   key={o.id}
-                  onClick={() => setSelectedOrder(o)}
+                  onClick={() => {
+                    setSelectedOrder(o);
+
+                    if (o.isDelivery) {
+                      setDeliveryForm({
+                        name: o.customerName || "",
+                        phone: o.customerPhone || "",
+                        address: o.customerAddress || ""
+                      });
+
+                      setShowDeliveryModal(true);
+                    }
+                  }}
                   style={{
                     width: "100%",
                     textAlign: "left",
