@@ -996,7 +996,7 @@ export default function App() {
       isDelivery: true,
 
       customer: {
-        name: deliveryForm?.name || "",
+        name: deliveryForm.name || "",
         phone: deliveryForm.phone || "",
         address: deliveryForm.address || "",
       },
@@ -1011,6 +1011,12 @@ export default function App() {
     await addDoc(collection(db, "orders"), orderPayload);
 
     setCart([]);
+    setDeliveryForm({
+      name: "",
+      phone: "",
+      address: "",
+      payment: "Tiền mặt",
+    });
     setShowDeliveryModal(false);
   };
 
@@ -2285,21 +2291,7 @@ export default function App() {
       <DeliveryModal
         open={showDeliveryModal}
         onClose={() => setShowDeliveryModal(false)}
-        onConfirm={() => {
-          // xử lý lưu đơn
-          handleConfirmDelivery();
-
-          // 👇 RESET FORM
-          setDeliveryForm({
-            name: "",
-            phone: "",
-            address: "",
-            payment: "Tiền mặt"
-          });
-
-          // đóng modal
-          setShowDeliveryModal(false);
-        }}
+        onConfirm={createDeliveryOrder}
         form={deliveryForm}
         setForm={setDeliveryForm}
       />
