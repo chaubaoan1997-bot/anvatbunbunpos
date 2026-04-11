@@ -609,6 +609,9 @@ export default function App() {
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
 
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [tempOrder, setTempOrder] = useState(null);
+
   const [showDeliveryModal, setShowDeliveryModal] = useState(false);
   const [deliveryForm, setDeliveryForm] = useState({
     name: "",
@@ -941,7 +944,7 @@ export default function App() {
     }
   };
 
-  const confirmTempOrder = async (order) => {
+  const confirmTempOrder = async (order, method) => {
     try {
       if (!order) return;
 
@@ -1782,10 +1785,8 @@ export default function App() {
                   <button
                     style={primaryBtn}
                     onClick={() => {
-                      const method = prompt("Nhập phương thức: Tiền mặt / Chuyển khoản", "Tiền mặt");
-                      if (!method) return;
-                      setPaymentMethod(method);
-                      confirmTempOrder(selectedOrder);
+                      setTempOrder(selectedOrder);
+                      setShowPaymentModal(true);
                     }}
                   >
                     Xác nhận thanh toán
