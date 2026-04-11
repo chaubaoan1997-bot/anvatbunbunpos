@@ -941,13 +941,13 @@ export default function App() {
     }
   };
 
-  const confirmTempOrder = async (order, method) => {
+  const confirmTempOrder = async (order) => {
     try {
       if (!order) return;
 
       await updateDoc(doc(db, "orders", order.id), {
         status: "Đã thanh toán",
-        method: method,
+        method: paymentMethod,
         isTemp: false,
       });
 
