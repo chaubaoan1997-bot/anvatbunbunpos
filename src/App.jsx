@@ -2355,21 +2355,21 @@ function DeliveryModal({ open, onClose, onConfirm, editingOrder, form, setForm }
           placeholder="Tên khách"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          style={{ width: "100%", marginBottom: 10 }}
+          style={{ width: "100%", marginBottom: 12 }}
         />
 
         <input
           placeholder="SĐT"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-          style={{ width: "100%", marginBottom: 10 }}
+          style={{ width: "100%", marginBottom: 12 }}
         />
 
         <input
           placeholder="Địa chỉ"
           value={form.address}
           onChange={(e) => setForm({ ...form, address: e.target.value })}
-          style={{ width: "100%", marginBottom: 10 }}
+          style={{ width: "100%", marginBottom: 12 }}
         />
 
         <select
@@ -2382,7 +2382,7 @@ function DeliveryModal({ open, onClose, onConfirm, editingOrder, form, setForm }
           <option value="Nợ">Đơn nợ</option>
         </select>
 
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ display: "flex", gap: 12 }}>
           <button onClick={onConfirm}>Xác nhận</button>
           <button onClick={onClose}>Đóng</button>
         </div>
