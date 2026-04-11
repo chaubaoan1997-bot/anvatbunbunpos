@@ -2223,37 +2223,36 @@ function DeliveryModal({ open, onClose, onConfirm, form, setForm }) {
       </div>
     </div>
   );
+}
+function PaymentModal({ open, onClose, onConfirm }) {
+  if (!open) return null;
 
-  function PaymentModal({ open, onClose, onConfirm }) {
-    if (!open) return null;
-
-    return (
+  return (
+    <div style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.3)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 999
+    }}>
       <div style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.3)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 999
+        background: "#fff",
+        padding: 20,
+        borderRadius: 10,
+        width: 300,
+        textAlign: "center"
       }}>
-        <div style={{
-          background: "#fff",
-          padding: 20,
-          borderRadius: 10,
-          width: 300,
-          textAlign: "center"
-        }}>
-          <h3>Chọn thanh toán</h3>
+        <h3>Chọn thanh toán</h3>
 
-          <div style={{ display: "flex", gap: 10 }}>
-            <button onClick={() => onConfirm("Tiền mặt")}>Tiền mặt</button>
-            <button onClick={() => onConfirm("Chuyển khoản")}>Chuyển khoản</button>
-          </div>
-
-          <button onClick={onClose}>Hủy</button>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={() => onConfirm("Tiền mặt")}>Tiền mặt</button>
+          <button onClick={() => onConfirm("Chuyển khoản")}>Chuyển khoản</button>
         </div>
+
+        <button onClick={onClose}>Hủy</button>
       </div>
-    );
-  }
+    </div>
+  );
 }
