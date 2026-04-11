@@ -1723,9 +1723,55 @@ export default function App() {
             padding: 6,
             borderRadius: 12
           }}>
-            <button onClick={() => setFilterType("all")}>Tất cả</button>
-            <button onClick={() => setFilterType("temp")}>Đơn tạm</button>
-            <button onClick={() => setFilterType("delivery")}>Giao hàng</button>
+
+            <button
+              onClick={() => setFilterType("all")}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                background: filterType === "all" ? "#2f66e9" : "transparent",
+                color: filterType === "all" ? "#fff" : "#334155",
+                fontWeight: 600
+              }}
+            >
+              Tất cả
+            </button>
+
+            <button
+              onClick={() => setFilterType("temp")}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                background: filterType === "temp" ? "#2f66e9" : "transparent",
+                color: filterType === "temp" ? "#fff" : "#334155",
+                fontWeight: 600
+              }}
+            >
+              Đơn tạm
+            </button>
+
+            <button
+              onClick={() => setFilterType("delivery")}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                background: filterType === "delivery" ? "#2f66e9" : "transparent",
+                color: filterType === "delivery" ? "#fff" : "#334155",
+                fontWeight: 600
+              }}
+            >
+              Giao hàng
+            </button>
+
           </div>
         </div>
 
