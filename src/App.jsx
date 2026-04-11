@@ -944,7 +944,7 @@ export default function App() {
     }
   };
 
-  const confirmTempOrder = async (order, method) => {
+  const confirmTempOrder = async (order) => {
     try {
       if (!order) return;
 
