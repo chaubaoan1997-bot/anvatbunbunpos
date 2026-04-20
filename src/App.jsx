@@ -609,6 +609,8 @@ export default function App() {
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
 
+  const [reportProductSearch, setReportProductSearch] = useState("");
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [tempOrder, setTempOrder] = useState(null);
 
@@ -762,6 +764,38 @@ export default function App() {
       return true;
     });
   }, [orders, reportDate, reportType]);
+
+  const reportProductStats = useMemo(() => {
+    const map = {};
+
+    reportOrders
+      .filter(o => o.status === "Đã thanh toán")
+      .forEach(order => {
+        (order.items || []).forEach(item => {
+          if (!map[item.name]) {
+            map[item.name] = {
+              name: item.name,
+              qty: 0,
+              revenue: 0,
+            };
+          }
+
+          const raw = item.price * item.qty;
+          const final = raw - (raw * (item.discount || 0)) / 100;
+
+          map[item.name].qty += item.qty;
+          map[item.name].revenue += final;
+        });
+      });
+
+    return Object.values(map);
+  }, [reportOrders]);
+
+  const filteredReportProducts = useMemo(() => {
+    return reportProductStats.filter(p =>
+      p.name.toLowerCase().includes(reportProductSearch.toLowerCase())
+    );
+  }, [reportProductStats, reportProductSearch]);
 
   const reportExpenses = useMemo(() => {
     return expenses.filter((e) => {
