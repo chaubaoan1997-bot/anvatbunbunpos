@@ -996,17 +996,16 @@ export default function App() {
     }
   };
 
-  const confirmTempOrder = async (order) => {
+  const confirmTempOrder = async (order, method) => {
     try {
       if (!order) return;
 
       await updateDoc(doc(db, "orders", order.id), {
         status: "Đã thanh toán",
-        method: paymentMethod,
+        method: method || "Tiền mặt", // 🔥 FIX
         isTemp: false,
       });
 
-      // trừ kho
       const batch = writeBatch(db);
 
       for (const item of order.items || []) {
@@ -1025,7 +1024,7 @@ export default function App() {
 
       await batch.commit();
 
-      setPaidMessage("Đã thanh toán đơn tạm");
+      setPaidMessage(`Đã thanh toán đơn tạm • ${method || "Tiền mặt"}`);
     } catch (err) {
       console.error(err);
     }
