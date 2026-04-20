@@ -615,7 +615,7 @@ export default function App() {
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [tempOrder, setTempOrder] = useState(null);
-  const [tempPaymentMethod, setTempPaymentMethod] = useState("Tiền mặt");
+
 
   const [filterType, setFilterType] = useState("all");
 
@@ -1002,10 +1002,11 @@ export default function App() {
 
       await updateDoc(doc(db, "orders", order.id), {
         status: "Đã thanh toán",
-        method: tempPaymentMethod, // 🔥 FIX CHÍNH
+        method: paymentMethod,
         isTemp: false,
       });
 
+      // trừ kho
       const batch = writeBatch(db);
 
       for (const item of order.items || []) {
@@ -1024,9 +1025,7 @@ export default function App() {
 
       await batch.commit();
 
-      setShowPaymentModal(false);
-      setTempOrder(null);
-      setPaidMessage(`Đã thanh toán đơn tạm • ${tempPaymentMethod}`);
+      setPaidMessage("Đã thanh toán đơn tạm");
     } catch (err) {
       console.error(err);
     }
@@ -1949,10 +1948,6 @@ export default function App() {
                     style={primaryBtn}
                     onClick={() => {
                       setTempOrder(selectedOrder);
-
-                      // 🔥 THÊM DÒNG NÀY
-                      setTempPaymentMethod(selectedOrder.method || "Tiền mặt");
-
                       setShowPaymentModal(true);
                     }}
                   >
