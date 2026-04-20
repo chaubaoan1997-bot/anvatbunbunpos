@@ -2076,15 +2076,22 @@ export default function App() {
     .filter(o => o.status === "Đã thanh toán")
     .forEach(o => {
       (o.items || []).forEach(item => {
-        if (!productStats[item.name]) {
-          productStats[item.name] = {
-            qty: 0,
-            total: 0
-          };
-        }
+        const product = products.find(p => p.name === item.name);
 
-        productStats[item.name].qty += item.qty;
-        productStats[item.name].total += item.qty * item.price;
+        if (
+          reportCategory === "Tất cả" ||
+          (product && product.category === reportCategory)
+        ) {
+          if (!productStats[item.name]) {
+            productStats[item.name] = {
+              qty: 0,
+              total: 0
+            };
+          }
+
+          productStats[item.name].qty += item.qty;
+          productStats[item.name].total += item.qty * item.price;
+        }
       });
     });
 
