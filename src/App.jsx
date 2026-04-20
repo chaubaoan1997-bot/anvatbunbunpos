@@ -7,6 +7,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -614,6 +615,7 @@ export default function App() {
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [tempOrder, setTempOrder] = useState(null);
+  const [tempPaymentMethod, setTempPaymentMethod] = useState("Tiền mặt");
 
   const [filterType, setFilterType] = useState("all");
 
@@ -1000,11 +1002,10 @@ export default function App() {
 
       await updateDoc(doc(db, "orders", order.id), {
         status: "Đã thanh toán",
-        method: paymentMethod,
+        method: tempPaymentMethod,
         isTemp: false,
       });
 
-      // trừ kho
       const batch = writeBatch(db);
 
       for (const item of order.items || []) {
@@ -1023,7 +1024,9 @@ export default function App() {
 
       await batch.commit();
 
-      setPaidMessage("Đã thanh toán đơn tạm");
+      setShowPaymentModal(false);
+      setTempOrder(null);
+      setPaidMessage(`Đã thanh toán đơn tạm • ${tempPaymentMethod}`);
     } catch (err) {
       console.error(err);
     }
