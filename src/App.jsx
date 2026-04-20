@@ -623,16 +623,17 @@ export default function App() {
   });
 
   const isSameWeek = (dateStr, selectedDate) => {
-    const d1 = new Date(dateStr);
-    const d2 = new Date(selectedDate);
+    const d1 = new Date(dateStr + "T00:00:00");
+    const d2 = new Date(selectedDate + "T00:00:00");
+
+    // đưa về thứ 2 (chuẩn)
+    const day = d2.getDay() || 7;
 
     const first = new Date(d2);
-    first.setHours(0, 0, 0, 0);
-    first.setDate(d2.getDate() - d2.getDay());
+    first.setDate(d2.getDate() - day + 1);
 
     const last = new Date(first);
     last.setDate(first.getDate() + 6);
-    last.setHours(23, 59, 59, 999);
 
     return d1 >= first && d1 <= last;
   };
@@ -649,16 +650,18 @@ export default function App() {
   useEffect(() => {
     const ensureSeed = async () => {
       try {
-        const localSeeded = localStorage.getItem("kp_seeded_v4");
-        if (localSeeded) return;
+        const snap = await getDocs(collection(db, "products"));
+
+        if (!snap.empty) return; // nếu đã có data thì không seed nữa
+
         for (const item of defaultProducts) {
-          await setDoc(doc(db, "products", item.id), item, { merge: true });
+          await setDoc(doc(db, "products", item.id), item);
         }
-        localStorage.setItem("kp_seeded_v4", "1");
       } catch (err) {
         console.error("Seed products error:", err);
       }
     };
+
     ensureSeed();
   }, []);
 
