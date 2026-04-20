@@ -2198,110 +2198,63 @@ export default function App() {
           )}
         </SectionCard>
 
-        <SectionCard style={{ minHeight: 340, overflow: "hidden" }}>
-          <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}`, fontSize: 18, fontWeight: 800 }}>
-            Sản phẩm bán chạy
-          </div>
-          <div style={{ padding: 18 }}>
-            {!reportOrders.length ? (
-              <div style={{ height: 220 }}>
-                <EmptyState icon={Package} title="Chưa có dữ liệu bán hàng" />
-              </div>
-            ) : (() => {
-              const map = {};
-              reportOrders.forEach((o) =>
-                (o.items || []).forEach((i) => {
-                  map[i.name] = (map[i.name] || 0) + i.qty;
-                })
-              );
-              return Object.entries(map)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5)
-                .map(([name, qty]) => (
-                  <div key={name} style={{ display: "flex", justifyContent: "space-between", padding: "12px 0", borderBottom: `1px solid ${COLORS.border}` }}>
-                    <span>{name}</span>
-                    <strong>{qty} món</strong>
-                  </div>
-                ));
-            })()}
-          </div>
-        </SectionCard>
-      </div>
-      {/* ===== THỐNG KÊ SẢN PHẨM ===== */}
-      <SectionCard style={{ marginTop: 18 }}>
-        <div
-          style={{
+        {/* ===== THỐNG KÊ SẢN PHẨM ===== */}
+        <SectionCard style={{ marginTop: 18 }}>
+          <div style={{
             padding: 18,
             borderBottom: `1px solid ${COLORS.border}`,
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 12
-          }}
-        >
-          <div style={{ fontSize: 20, fontWeight: 700 }}>
-            Thống kê sản phẩm đã bán
+            alignItems: "center"
+          }}>
+            <div style={{ fontSize: 20, fontWeight: 700 }}>
+              Thống kê sản phẩm đã bán
+            </div>
+
+            <input
+              placeholder="Tìm sản phẩm..."
+              value={reportProductSearch}
+              onChange={(e) => setReportProductSearch(e.target.value)}
+              style={{
+                padding: "8px 12px",
+                borderRadius: 10,
+                border: `1px solid ${COLORS.border}`
+              }}
+            />
           </div>
 
-          <input
-            placeholder="Tìm sản phẩm..."
-            value={reportProductSearch}
-            onChange={(e) => setReportProductSearch(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              borderRadius: 10,
-              border: `1px solid ${COLORS.border}`,
-              outline: "none",
-              minWidth: 200
-            }}
-          />
-        </div>
-
-        <div
-          style={{
+          <div style={{
             display: "grid",
-            gridTemplateColumns: isMobile
-              ? "1.6fr 1fr 1fr"
-              : "2fr 1fr 1fr",
+            gridTemplateColumns: "2fr 1fr 1fr",
             padding: "12px 18px",
             background: "#f8fafc",
-            fontWeight: 700,
-            color: COLORS.textSoft
-          }}
-        >
-          <div>Sản phẩm</div>
-          <div>Số lượng</div>
-          <div>Doanh thu</div>
-        </div>
+            fontWeight: 700
+          }}>
+            <div>Sản phẩm</div>
+            <div>Số lượng</div>
+            <div>Doanh thu</div>
+          </div>
 
-        <div style={{ maxHeight: 320, overflow: "auto" }}>
-          {!filteredReportProducts.length ? (
-            <EmptyState icon={Package} title="Chưa có dữ liệu sản phẩm" />
-          ) : (
-            filteredReportProducts.map((p, i) => (
-              <div
-                key={i}
-                style={{
+          <div style={{ maxHeight: 300, overflow: "auto" }}>
+            {!filteredReportProducts.length ? (
+              <EmptyState icon={Package} title="Chưa có dữ liệu" />
+            ) : (
+              filteredReportProducts.map((p, i) => (
+                <div key={i} style={{
                   display: "grid",
-                  gridTemplateColumns: isMobile
-                    ? "1.6fr 1fr 1fr"
-                    : "2fr 1fr 1fr",
+                  gridTemplateColumns: "2fr 1fr 1fr",
                   padding: "12px 18px",
-                  borderTop: `1px solid ${COLORS.border}`,
-                  alignItems: "center"
-                }}
-              >
-                <div style={{ fontWeight: 600 }}>{p.name}</div>
-                <div>{p.qty}</div>
-                <div style={{ color: COLORS.primary, fontWeight: 700 }}>
-                  {money(p.revenue)}
+                  borderTop: `1px solid ${COLORS.border}`
+                }}>
+                  <div>{p.name}</div>
+                  <div>{p.qty}</div>
+                  <div>{money(p.revenue)}</div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-      </SectionCard>
+              ))
+            )}
+          </div>
+        </SectionCard>
+      </div>
     </div>
   );
 
