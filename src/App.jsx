@@ -1002,7 +1002,7 @@ export default function App() {
 
       await updateDoc(doc(db, "orders", order.id), {
         status: "Đã thanh toán",
-        method: tempPaymentMethod,
+        method: tempPaymentMethod, // 🔥 FIX CHÍNH
         isTemp: false,
       });
 
@@ -1949,6 +1949,10 @@ export default function App() {
                     style={primaryBtn}
                     onClick={() => {
                       setTempOrder(selectedOrder);
+
+                      // 🔥 THÊM DÒNG NÀY
+                      setTempPaymentMethod(selectedOrder.method || "Tiền mặt");
+
                       setShowPaymentModal(true);
                     }}
                   >
