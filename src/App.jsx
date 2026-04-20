@@ -610,6 +610,7 @@ export default function App() {
   const [paidMessage, setPaidMessage] = useState("");
 
   const [reportProductSearch, setReportProductSearch] = useState("");
+  const [reportCategory, setReportCategory] = useState("Tất cả");
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [tempOrder, setTempOrder] = useState(null);
@@ -2243,6 +2244,33 @@ export default function App() {
             <div>Sản phẩm</div>
             <div>Số lượng</div>
             <div>Doanh thu</div>
+          </div>
+          <div style={{
+            display: "flex",
+            gap: 8,
+            padding: "10px 18px",
+            borderBottom: `1px solid ${COLORS.border}`,
+            flexWrap: "wrap"
+          }}>
+            {categories.map((c) => (
+              <button
+                key={c}
+                onClick={() => setReportCategory(c)}
+                style={{
+                  padding: "5px 10px",
+                  borderRadius: 8,
+                  border: "none",
+                  cursor: "pointer",
+                  background:
+                    reportCategory === c ? COLORS.primary : "#f1f5f9",
+                  color: reportCategory === c ? "#fff" : "#334155",
+                  fontWeight: 600,
+                  fontSize: 13
+                }}
+              >
+                {c}
+              </button>
+            ))}
           </div>
 
           <div style={{ maxHeight: 300, overflow: "auto" }}>
