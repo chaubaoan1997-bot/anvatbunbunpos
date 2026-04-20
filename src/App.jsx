@@ -2173,29 +2173,39 @@ export default function App() {
             Sản phẩm đã bán
           </div>
 
-          {productList.length === 0 ? (
-            <div>Chưa có dữ liệu</div>
-          ) : (
-            productList.map((p, i) => (
-              <div key={i} style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "10px 0",
-                borderBottom: "1px solid #eee"
-              }}>
-                <div>
-                  {i === 0 ? "🔥 " : ""}{p.name}
-                </div>
+          <div style={{ maxHeight: 280, overflow: "auto" }}>
+            {!productList.length ? (
+              <div style={{ height: 220 }}>
+                <EmptyState icon={Package} title="Chưa có dữ liệu bán hàng" />
+              </div>
+            ) : (
+              productList.map((p, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "10px 0",
+                    borderBottom: `1px solid ${COLORS.border}`,
+                    alignItems: "center"
+                  }}
+                >
+                  <div style={{ fontWeight: 500 }}>
+                    {i === 0 ? "🔥 " : ""}{p.name}
+                  </div>
 
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontWeight: 600 }}>{p.qty} món</div>
-                  <div style={{ fontSize: 12, color: "#64748b" }}>
-                    {money(p.total)}
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontWeight: 600 }}>
+                      {p.qty} món
+                    </div>
+                    <div style={{ fontSize: 12, color: "#64748b" }}>
+                      {money(p.total)}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </SectionCard>
 
         {/* ===== THỐNG KÊ SẢN PHẨM ===== */}
