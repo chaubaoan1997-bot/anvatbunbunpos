@@ -793,10 +793,20 @@ export default function App() {
   }, [reportOrders]);
 
   const filteredReportProducts = useMemo(() => {
-    return reportProductStats.filter(p =>
-      p.name.toLowerCase().includes(reportProductSearch.toLowerCase())
-    );
-  }, [reportProductStats, reportProductSearch]);
+    return reportProductStats.filter(p => {
+      const matchSearch = p.name
+        .toLowerCase()
+        .includes(reportProductSearch.toLowerCase());
+
+      const product = products.find(x => x.name === p.name);
+
+      const matchCategory =
+        reportCategory === "Tất cả" ||
+        (product && product.category === reportCategory);
+
+      return matchSearch && matchCategory;
+    });
+  }, [reportProductStats, reportProductSearch, reportCategory, products]);
 
   const reportExpenses = useMemo(() => {
     return expenses.filter((e) => {
