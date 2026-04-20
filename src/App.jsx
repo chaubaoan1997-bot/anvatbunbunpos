@@ -2227,6 +2227,81 @@ export default function App() {
           </div>
         </SectionCard>
       </div>
+      {/* ===== THỐNG KÊ SẢN PHẨM ===== */}
+      <SectionCard style={{ marginTop: 18 }}>
+        <div
+          style={{
+            padding: 18,
+            borderBottom: `1px solid ${COLORS.border}`,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12
+          }}
+        >
+          <div style={{ fontSize: 20, fontWeight: 700 }}>
+            Thống kê sản phẩm đã bán
+          </div>
+
+          <input
+            placeholder="Tìm sản phẩm..."
+            value={reportProductSearch}
+            onChange={(e) => setReportProductSearch(e.target.value)}
+            style={{
+              padding: "8px 12px",
+              borderRadius: 10,
+              border: `1px solid ${COLORS.border}`,
+              outline: "none",
+              minWidth: 200
+            }}
+          />
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile
+              ? "1.6fr 1fr 1fr"
+              : "2fr 1fr 1fr",
+            padding: "12px 18px",
+            background: "#f8fafc",
+            fontWeight: 700,
+            color: COLORS.textSoft
+          }}
+        >
+          <div>Sản phẩm</div>
+          <div>Số lượng</div>
+          <div>Doanh thu</div>
+        </div>
+
+        <div style={{ maxHeight: 320, overflow: "auto" }}>
+          {!filteredReportProducts.length ? (
+            <EmptyState icon={Package} title="Chưa có dữ liệu sản phẩm" />
+          ) : (
+            filteredReportProducts.map((p, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile
+                    ? "1.6fr 1fr 1fr"
+                    : "2fr 1fr 1fr",
+                  padding: "12px 18px",
+                  borderTop: `1px solid ${COLORS.border}`,
+                  alignItems: "center"
+                }}
+              >
+                <div style={{ fontWeight: 600 }}>{p.name}</div>
+                <div>{p.qty}</div>
+                <div style={{ color: COLORS.primary, fontWeight: 700 }}>
+                  {money(p.revenue)}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </SectionCard>
     </div>
   );
 
