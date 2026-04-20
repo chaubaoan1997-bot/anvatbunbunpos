@@ -2170,7 +2170,7 @@ export default function App() {
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.35fr 1fr", gap: 18 }}>
         <SectionCard style={{ minHeight: 340, padding: 18 }}>
           <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>
-            Sản phẩm đã bán
+            SẢN PHẨM ĐÃ BÁN
           </div>
 
           <div style={{ maxHeight: 280, overflow: "auto" }}>
@@ -2218,7 +2218,7 @@ export default function App() {
             alignItems: "center"
           }}>
             <div style={{ fontSize: 20, fontWeight: 700 }}>
-              Thống kê sản phẩm đã bán
+              SẢN PHẨM ĐÃ BÁN TRONG NGÀY
             </div>
 
             <input
