@@ -1939,24 +1939,66 @@ export default function App() {
                     justifyContent: "space-between",
                     marginTop: 8
                   }}>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button onClick={() =>
-                        setWholesaleCart(wholesaleCart.map(x =>
-                          x.id === i.id
-                            ? { ...x, qty: Math.max(1, i.qty - 1) }
-                            : x
-                        ))
-                      }>-</button>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        border: `1px solid ${COLORS.border}`,
+                        borderRadius: 8,
+                        padding: "2px 4px",
+                        width: "fit-content"
+                      }}
+                    >
+                      {/* Nút trừ */}
+                      <button
+                        style={qtyBtn}
+                        onClick={() =>
+                          setWholesaleCart(wholesaleCart.map(x =>
+                            x.id === i.id
+                              ? { ...x, qty: Math.max(1, i.qty - 1) }
+                              : x
+                          ))
+                        }
+                      >
+                        -
+                      </button>
 
-                      <div>{i.qty}</div>
+                      {/* 🔥 INPUT NHẬP TAY */}
+                      <input
+                        type="number"
+                        value={i.qty}
+                        onChange={(e) => {
+                          const value = Math.max(1, Number(e.target.value) || 1);
+                          setWholesaleCart(wholesaleCart.map(x =>
+                            x.id === i.id
+                              ? { ...x, qty: value }
+                              : x
+                          ));
+                        }}
+                        style={{
+                          width: 45,
+                          textAlign: "center",
+                          border: "none",
+                          outline: "none",
+                          fontWeight: 700,
+                          fontSize: 14
+                        }}
+                      />
 
-                      <button onClick={() =>
-                        setWholesaleCart(wholesaleCart.map(x =>
-                          x.id === i.id
-                            ? { ...x, qty: i.qty + 1 }
-                            : x
-                        ))
-                      }>+</button>
+                      {/* Nút cộng */}
+                      <button
+                        style={qtyBtn}
+                        onClick={() =>
+                          setWholesaleCart(wholesaleCart.map(x =>
+                            x.id === i.id
+                              ? { ...x, qty: i.qty + 1 }
+                              : x
+                          ))
+                        }
+                      >
+                        +
+                      </button>
                     </div>
 
                     <div style={{ fontWeight: 800, color: COLORS.primary }}>
