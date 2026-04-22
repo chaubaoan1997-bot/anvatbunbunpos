@@ -2455,17 +2455,38 @@ export default function App() {
             </div>
 
             <div style={{ padding: 18, flex: 1, overflow: "auto" }}>
-              {(selectedOrder.items || []).map((i, idx) => (
-                <div key={idx} style={{ display: "flex", justifyContent: "space-between", padding: "12px 0", borderBottom: `1px solid ${COLORS.border}` }}>
-                  <div>
-                    {i.name} x{i.qty}
-                    {i.discount ? ` (-${i.discount}%)` : ""}
+              {(selectedOrder.items.map((i) => {
+                const price = Number(i.customPrice || i.price || 0);
+                const qty = Number(i.qty || 0);
+
+                return (
+                  <div
+                    key={i.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: 8
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 600 }}>
+                        {i.name} x{qty}
+                      </div>
+
+                      {/* 🔥 HIỆN GIÁ SỈ */}
+                      {selectedOrder.type === "wholesale" && (
+                        <div style={{ fontSize: 12, color: "#64748b" }}>
+                          Giá sỉ: {money(price)}
+                        </div>
+                      )}
+                    </div>
+
+                    <div style={{ fontWeight: 700 }}>
+                      {money(price * qty)}
+                    </div>
                   </div>
-                  <div style={{ fontWeight: 700 }}>
-                    {money(i.price * i.qty - (i.price * i.qty * (i.discount || 0)) / 100)}
-                  </div>
-                </div>
-              ))}
+                );
+              }))}
             </div>
 
             <div
