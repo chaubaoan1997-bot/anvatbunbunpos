@@ -1832,27 +1832,23 @@ export default function App() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 400px",
+        gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 420px",
         gap: 18,
         height: "100%",
         minHeight: 0,
       }}
     >
 
-      {/* LEFT – COPY 100% SALES */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-          minWidth: 0,
-          minHeight: 0,
-        }}
-      >
+      {/* LEFT - GIỐNG SALES 100% */}
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        minHeight: 0
+      }}>
 
         {/* SEARCH */}
         <div style={{ position: "relative", maxWidth: 520 }}>
-          <Search size={20} color="#64748b" style={{ position: "absolute", left: 18, top: 17 }} />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -1860,7 +1856,7 @@ export default function App() {
             style={{
               width: "100%",
               height: 56,
-              paddingLeft: 52,
+              paddingLeft: 16,
               borderRadius: 16,
               border: `1px solid ${COLORS.border}`,
               background: COLORS.white,
@@ -1872,85 +1868,240 @@ export default function App() {
         {/* CATEGORY */}
         <div style={{ display: "flex", gap: 10, overflowX: "auto" }}>
           {categories.map((c) => (
-            <Chip key={c} active={activeCategory === c} onClick={() => setActiveCategory(c)}>
+            <button
+              key={c}
+              style={activeCategory === c ? primaryBtn : ghostBtn}
+              onClick={() => setActiveCategory(c)}
+            >
               {c}
-            </Chip>
+            </button>
           ))}
         </div>
 
+        {/* NGƯỜI BÁN */}
+        <div style={{ display: "grid", gap: 8 }}>
+          <input
+            placeholder="Tên người bán"
+            value={sellerInfo.name}
+            onChange={(e) =>
+              setSellerInfo({ ...sellerInfo, name: e.target.value })
+            }
+            style={cellInput}
+          />
+          <input
+            placeholder="SĐT người bán"
+            value={sellerInfo.phone}
+            onChange={(e) =>
+              setSellerInfo({ ...sellerInfo, phone: e.target.value })
+            }
+            style={cellInput}
+          />
+        </div>
+
         {/* PRODUCTS */}
-        <div style={{ overflowY: "auto" }}>
+        <div style={{ flex: 1, overflowY: "auto" }}>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: isMobile
-                ? "repeat(2, minmax(0, 1fr))"
-                : "repeat(4, minmax(0, 1fr))",
-              gap: 18,
+                ? "repeat(2,1fr)"
+                : "repeat(4,1fr)",
+              gap: 16,
             }}
           >
-            {filteredProducts.map((p) => (
-              <SectionCard
-                key={p.id}
-                onClick={() => addToWholesaleCart(p)}
-                style={{
-                  padding: 18,
-                  cursor: "pointer",
-                }}
-              >
-                <div>{p.name}</div>
-                <div style={{ color: COLORS.primary }}>
-                  {money(p.price)}
-                </div>
-              </SectionCard>
-            ))}
+            {products
+              .filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
+                const matchCate = activeCategory === "all" || p.category === activeCategory;
+                return matchSearch && matchCate;
+              })
+              .map((p) => (
+                <SectionCard
+                  key={p.id}
+                  onClick={() => addToWholesaleCart(p)}
+                  style={{ padding: 16, cursor: "pointer" }}
+                >
+                  <div>{p.name}</div>
+                  <div style={{ color: COLORS.primary }}>
+                    {money(p.price)}
+                  </div>
+                </SectionCard>
+              ))}
           </div>
         </div>
       </div>
 
-      {/* RIGHT – giữ logic sỉ */}
+      {/* RIGHT - GIỐNG SALES 100% */}
       <SectionCard style={{ display: "flex", flexDirection: "column" }}>
 
-        <div style={{ padding: 18, fontWeight: 800 }}>
-          Đơn sỉ
+        {/* HEADER */}
+        <div style={{
+          padding: 18,
+          borderBottom: `1px solid ${COLORS.border}`,
+          fontWeight: 800
+        }}>
+          Đơn hàng hiện tại
         </div>
 
+        {/* CART */}
         <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-          {wholesaleCart.map(i => (
-            <div key={i.id}>
-              <div>{i.name}</div>
+          {!wholesaleCart.length ? (
+            <div>Chưa có sản phẩm</div>
+          ) : (
+            wholesaleCart.map(i => {
+              const totalItem = i.customPrice * i.qty - i.discountCash * i.qty;
 
-              <input
-                value={i.customPrice}
-                onChange={(e) =>
-                  setWholesaleCart(wholesaleCart.map(x =>
-                    x.id === i.id
-                      ? { ...x, customPrice: Number(e.target.value) }
-                      : x
-                  ))
-                }
-              />
+              return (
+                <div key={i.id} style={{
+                  borderBottom: `1px solid ${COLORS.border}`,
+                  marginBottom: 12,
+                  paddingBottom: 12
+                }}>
 
-              <input
-                value={i.discountCash}
-                onChange={(e) =>
-                  setWholesaleCart(wholesaleCart.map(x =>
-                    x.id === i.id
-                      ? { ...x, discountCash: Number(e.target.value) }
-                      : x
-                  ))
-                }
-              />
-            </div>
-          ))}
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between"
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{i.name}</div>
+                      <div style={{ color: COLORS.textSoft }}>
+                        {money(i.customPrice)}
+                      </div>
+                    </div>
+
+                    <button onClick={() =>
+                      setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
+                    }>
+                      ✕
+                    </button>
+                  </div>
+
+                  {/* QTY */}
+                  <div style={{
+                    marginTop: 8,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}>
+                    <div style={{
+                      display: "flex",
+                      gap: 8
+                    }}>
+                      <button onClick={() =>
+                        setWholesaleCart(wholesaleCart.map(x =>
+                          x.id === i.id
+                            ? { ...x, qty: Math.max(1, i.qty - 1) }
+                            : x
+                        ))
+                      }>-</button>
+
+                      <div>{i.qty}</div>
+
+                      <button onClick={() =>
+                        setWholesaleCart(wholesaleCart.map(x =>
+                          x.id === i.id
+                            ? { ...x, qty: i.qty + 1 }
+                            : x
+                        ))
+                      }>+</button>
+                    </div>
+
+                    <div style={{ fontWeight: 800, color: COLORS.primary }}>
+                      {money(totalItem)}
+                    </div>
+                  </div>
+
+                  {/* GIÁ */}
+                  <input
+                    style={{ ...cellInput, marginTop: 6 }}
+                    value={i.customPrice}
+                    onChange={(e) =>
+                      setWholesaleCart(wholesaleCart.map(x =>
+                        x.id === i.id
+                          ? { ...x, customPrice: Number(e.target.value) }
+                          : x
+                      ))
+                    }
+                  />
+
+                  {/* CHIẾT KHẤU */}
+                  <input
+                    style={{ ...cellInput, marginTop: 6 }}
+                    value={i.discountCash}
+                    onChange={(e) =>
+                      setWholesaleCart(wholesaleCart.map(x =>
+                        x.id === i.id
+                          ? { ...x, discountCash: Number(e.target.value) }
+                          : x
+                      ))
+                    }
+                  />
+
+                </div>
+              );
+            })
+          )}
         </div>
 
-        <div style={{ padding: 18 }}>
-          <div>Tổng: {money(getWholesaleTotal())}</div>
+        {/* FOOTER GIỐNG SALES */}
+        <div style={{
+          borderTop: `1px solid ${COLORS.border}`,
+          padding: 18
+        }}>
 
-          <button onClick={createWholesaleOrder}>
-            Thanh toán
-          </button>
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            color: COLORS.textSoft
+          }}>
+            <span>Tạm tính</span>
+            <span>{money(getWholesaleTotal())}</span>
+          </div>
+
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: 24,
+            fontWeight: 800,
+            marginTop: 6
+          }}>
+            <span>Tổng cộng</span>
+            <span>{money(getWholesaleTotal())}</span>
+          </div>
+
+          <div style={{ marginTop: 6 }}>
+            Chiết khấu: {money(getWholesaleDiscount())}
+          </div>
+
+          {/* NÚT GIỐNG SALES */}
+          <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+            <button style={{ ...primaryBtn, flex: 1 }}>
+              Tiền mặt
+            </button>
+
+            <button style={{ ...ghostBtn, flex: 1 }}>
+              Chuyển khoản
+            </button>
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4,1fr)",
+            gap: 8,
+            marginTop: 10
+          }}>
+            <button>In hóa đơn</button>
+            <button>Giao hàng</button>
+            <button>Đơn tạm</button>
+
+            <button
+              style={primaryBtn}
+              onClick={createWholesaleOrder}
+            >
+              Thanh toán
+            </button>
+          </div>
+
         </div>
 
       </SectionCard>
