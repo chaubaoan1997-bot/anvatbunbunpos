@@ -616,6 +616,7 @@ export default function App() {
     name: "",
     phone: ""
   });
+  const [editingWholesaleOrder, setEditingWholesaleOrder] = useState(null);
 
   const [reportProductSearch, setReportProductSearch] = useState("");
   const [reportCategory, setReportCategory] = useState("Tất cả");
@@ -903,21 +904,24 @@ export default function App() {
   const loadTempOrderToCart = (order) => {
     if (!order) return;
 
-    // 🔥 ĐƠN SỈ
     if (order.type === "wholesale") {
-      setWholesaleCart(order.items);
-
+      setWholesaleCart(order.items || []);
       setSellerInfo({
         name: order.sellerName || "",
         phone: order.sellerPhone || ""
       });
-
-      setPage("wholesale"); // ✅ đúng tab
+      setEditingWholesaleOrder(order); // thêm dòng này
+      setPage("wholesale");
       return;
     }
 
-    // 🔥 ĐƠN LẺ (giữ nguyên)
-    setCart(order.items);
+    setCart(
+      (order.items || []).map(i => ({
+        ...i,
+        discount: i.discount || 0
+      }))
+    );
+    setEditingOrder(order);
     setPage("sales");
   };
 
@@ -1109,6 +1113,25 @@ export default function App() {
     setSellerInfo({ name: "", phone: "" });
 
     setPaidMessage("Đã lưu đơn sỉ tạm");
+  };
+
+  const updateWholesaleTempOrder = async () => {
+    if (!editingWholesaleOrder) return;
+
+    await updateDoc(doc(db, "orders", editingWholesaleOrder.id), {
+      items: wholesaleCart,
+      total: getWholesaleTotal(),
+      sellerName: sellerInfo.name,
+      sellerPhone: sellerInfo.phone,
+      updatedAt: serverTimestamp(),
+    });
+
+    setWholesaleCart([]);
+    setSellerInfo({ name: "", phone: "" });
+    setEditingWholesaleOrder(null);
+    setSelectedOrder(null);
+    setPage("history");
+    setPaidMessage("Đã cập nhật đơn tạm sỉ");
   };
 
   const updateTempOrder = async () => {
@@ -2166,6 +2189,15 @@ export default function App() {
             >
               🧾 Đơn tạm
             </button>
+
+            {editingWholesaleOrder && (
+              <button
+                style={ghostBtn}
+                onClick={updateWholesaleTempOrder}
+              >
+                💾 Cập nhật đơn tạm sỉ
+              </button>
+            )}
 
             <button
               style={{ ...primaryBtn, opacity: getWholesaleTotal() ? 1 : 0.55 }}
