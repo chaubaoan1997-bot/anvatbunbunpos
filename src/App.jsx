@@ -2351,7 +2351,25 @@ export default function App() {
                   }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                    <div style={{ fontWeight: 700, color: COLORS.text }}>{o.code}</div>
+                    <div style={{ fontWeight: 700, color: COLORS.text }}>
+                      {o.code}
+
+                      {o.type === "wholesale" && (
+                        <span
+                          style={{
+                            marginLeft: 8,
+                            padding: "2px 6px",
+                            background: "#e9f0ff",
+                            color: "#2f66e9",
+                            borderRadius: 6,
+                            fontSize: 12,
+                            fontWeight: 700
+                          }}
+                        >
+                          SỈ
+                        </span>
+                      )}
+                    </div>
                     <div style={{ color: COLORS.success, fontSize: 13, fontWeight: 700 }}>
                       {o.status || "Đã thanh toán"}
                     </div>
