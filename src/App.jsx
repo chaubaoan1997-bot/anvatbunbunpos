@@ -1900,58 +1900,122 @@ export default function App() {
             wholesaleCart.map((i) => (
               <div key={i.id} style={{
                 borderBottom: `1px solid ${COLORS.border}`,
-                marginBottom: 12,
-                paddingBottom: 12
+                paddingBottom: 14,
+                marginBottom: 14
               }}>
 
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <div>{i.name}</div>
-                  <button onClick={() =>
-                    setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
-                  }>✕</button>
+                {/* tên + xóa */}
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start"
+                }}>
+                  <div>
+                    <div style={{
+                      fontWeight: 700,
+                      fontSize: 16
+                    }}>
+                      {i.name}
+                    </div>
+                    <div style={{ color: COLORS.textSoft }}>
+                      {money(i.customPrice)}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
+                    }
+                    style={{ border: "none", background: "transparent", cursor: "pointer" }}
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
 
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() =>
-                    setWholesaleCart(wholesaleCart.map(x =>
-                      x.id === i.id ? { ...x, qty: x.qty - 1 } : x
-                    ))
-                  }>-</button>
+                {/* số lượng */}
+                <div style={{
+                  marginTop: 12,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}>
 
-                  <div>{i.qty}</div>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    border: `1px solid ${COLORS.border}`,
+                    borderRadius: 12,
+                    padding: 4
+                  }}>
+                    <button
+                      style={qtyBtn}
+                      onClick={() =>
+                        setWholesaleCart(wholesaleCart.map(x =>
+                          x.id === i.id ? { ...x, qty: i.qty - 1 } : x
+                        ))
+                      }
+                    >
+                      <Minus size={14} />
+                    </button>
 
-                  <button onClick={() =>
-                    setWholesaleCart(wholesaleCart.map(x =>
-                      x.id === i.id ? { ...x, qty: x.qty + 1 } : x
-                    ))
-                  }>+</button>
+                    <div style={{ minWidth: 30, textAlign: "center", fontWeight: 700 }}>
+                      {i.qty}
+                    </div>
+
+                    <button
+                      style={qtyBtn}
+                      onClick={() =>
+                        setWholesaleCart(wholesaleCart.map(x =>
+                          x.id === i.id ? { ...x, qty: i.qty + 1 } : x
+                        ))
+                      }
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+
+                  <div style={{
+                    color: COLORS.primary,
+                    fontWeight: 800
+                  }}>
+                    {money(i.customPrice * i.qty - i.discountCash * i.qty)}
+                  </div>
                 </div>
 
-                <input
-                  type="number"
-                  value={i.customPrice}
-                  onChange={(e) =>
-                    setWholesaleCart(wholesaleCart.map(x =>
-                      x.id === i.id
-                        ? { ...x, customPrice: Number(e.target.value) }
-                        : x
-                    ))
-                  }
-                  style={cellInput}
-                />
+                {/* chỉnh giá */}
+                <div style={{ marginTop: 12 }}>
+                  <input
+                    type="number"
+                    value={i.customPrice}
+                    placeholder="Giá bán"
+                    onChange={(e) =>
+                      setWholesaleCart(wholesaleCart.map(x =>
+                        x.id === i.id
+                          ? { ...x, customPrice: Number(e.target.value) }
+                          : x
+                      ))
+                    }
+                    style={cellInput}
+                  />
+                </div>
 
-                <input
-                  type="number"
-                  value={i.discountCash}
-                  onChange={(e) =>
-                    setWholesaleCart(wholesaleCart.map(x =>
-                      x.id === i.id
-                        ? { ...x, discountCash: Number(e.target.value) }
-                        : x
-                    ))
-                  }
-                  style={cellInput}
-                />
+                {/* chiết khấu */}
+                <div style={{ marginTop: 8 }}>
+                  <input
+                    type="number"
+                    value={i.discountCash}
+                    placeholder="Chiết khấu / sản phẩm"
+                    onChange={(e) =>
+                      setWholesaleCart(wholesaleCart.map(x =>
+                        x.id === i.id
+                          ? { ...x, discountCash: Number(e.target.value) }
+                          : x
+                      ))
+                    }
+                    style={cellInput}
+                  />
+                </div>
 
               </div>
             ))
