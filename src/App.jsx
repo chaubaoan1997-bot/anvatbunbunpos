@@ -1836,7 +1836,6 @@ export default function App() {
         gap: 18,
         height: "100%",
         minHeight: 0,
-        overflow: "hidden",
       }}
     >
 
@@ -1845,7 +1844,8 @@ export default function App() {
         display: "flex",
         flexDirection: "column",
         gap: 16,
-        minHeight: 0
+        minHeight: 0,
+        height: "100%"
       }}>
 
         {/* SEARCH */}
@@ -1928,7 +1928,7 @@ export default function App() {
         </div>
 
         {/* PRODUCTS */}
-        <div style={{ flex: 1, overflowY: "auto" }}>
+        <div style={{ flex: 1, overflowY: "auto", minHeight: 0, height: "100%" }}>
           <div
             style={{
               display: "grid",
