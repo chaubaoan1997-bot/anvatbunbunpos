@@ -1065,23 +1065,36 @@ export default function App() {
     }
   };
 
-  const createWholesaleOrder = () => {
+  const createWholesaleOrder = async () => {
     if (!wholesaleCart.length) return;
 
-    const order = {
-      id: Date.now(),
-      type: "wholesale", // 🔥 phân biệt đơn sỉ
+    const now = new Date();
+    const code = `SỈ${Date.now().toString().slice(-6)}`;
+
+    const orderPayload = {
+      code,
       items: wholesaleCart,
       total: getWholesaleTotal(),
 
-      sellerName: sellerInfo.name,   // ✅ thêm
-      sellerPhone: sellerInfo.phone, // ✅ thêm
+      method: wholesalePayment, // 🔥 lấy từ nút chọn
+      status: "Đã thanh toán",
 
-      createdAt: new Date().toISOString(),
+      type: "wholesale", // 🔥 QUAN TRỌNG
+
+      sellerName: sellerInfo.name,
+      sellerPhone: sellerInfo.phone,
+
+      dateKey: dateInputValue(),
+      createdAt: serverTimestamp(),
+      timeText: now.toLocaleString("vi-VN"),
     };
 
-    setOrders(prev => [order, ...prev]);
+    await addDoc(collection(db, "orders"), orderPayload);
+
     setWholesaleCart([]);
+    setSellerInfo({ name: "", phone: "" });
+
+    setPaidMessage("Đã thanh toán đơn sỉ");
   };
 
   const saveWholesaleTemp = async () => {
