@@ -1072,22 +1072,36 @@ export default function App() {
     setWholesaleCart([]);
   };
 
-  const saveWholesaleTemp = () => {
+  const saveWholesaleTemp = async () => {
     if (!wholesaleCart.length) return;
 
-    const tempOrder = {
-      id: Date.now(),
-      type: "wholesale_temp",
+    const now = new Date();
+    const code = `SỈ_TMP${Date.now().toString().slice(-6)}`;
+
+    const orderPayload = {
+      code,
       items: wholesaleCart,
       total: getWholesaleTotal(),
 
+      method: "Chưa thanh toán",
+      status: "Đơn tạm",
+      isTemp: true,
+      type: "wholesale",   // 🔥 phân biệt đơn sỉ
+
       sellerName: sellerInfo.name,
       sellerPhone: sellerInfo.phone,
+
+      dateKey: dateInputValue(),
+      createdAt: serverTimestamp(),
+      timeText: now.toLocaleString("vi-VN"),
     };
 
-    setTempOrders(prev => [tempOrder, ...prev]);
+    await addDoc(collection(db, "orders"), orderPayload);
 
-    setWholesaleCart([]); // clear giỏ
+    setWholesaleCart([]);
+    setSellerInfo({ name: "", phone: "" });
+
+    setPaidMessage("Đã lưu đơn sỉ tạm");
   };
 
   const updateTempOrder = async () => {
