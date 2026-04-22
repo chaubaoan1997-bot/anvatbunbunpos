@@ -1832,9 +1832,9 @@ export default function App() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 400px",
+        gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 400px",
         gap: 18,
-        height: "100%",
+        height: "100%"
       }}
     >
 
@@ -1842,7 +1842,7 @@ export default function App() {
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
         {/* người bán */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div style={{ display: "grid", gap: 8 }}>
           <input
             placeholder="Tên người bán"
             value={sellerInfo.name}
@@ -1866,12 +1866,12 @@ export default function App() {
           style={{
             display: "grid",
             gridTemplateColumns: isMobile
-              ? "repeat(2, 1fr)"
-              : "repeat(4, 1fr)",
-            gap: 14,
+              ? "repeat(2,1fr)"
+              : "repeat(4,1fr)",
+            gap: 14
           }}
         >
-          {products.map((p) => (
+          {products.map(p => (
             <SectionCard
               key={p.id}
               onClick={() => addToWholesaleCart(p)}
@@ -1884,143 +1884,138 @@ export default function App() {
             </SectionCard>
           ))}
         </div>
+
       </div>
 
-      {/* RIGHT */}
-      <SectionCard style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      {/* RIGHT (GIỐNG SALES) */}
+      <SectionCard style={{ display: "flex", flexDirection: "column" }}>
 
-        {/* header */}
         <div style={{
           padding: 18,
           borderBottom: `1px solid ${COLORS.border}`,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center"
+          fontWeight: 800,
+          fontSize: 20
         }}>
-          <div style={{ fontSize: 22, fontWeight: 800 }}>
-            Đơn sỉ
-          </div>
+          Đơn hàng hiện tại
         </div>
 
-        {/* cart */}
-        <div style={{ flex: 1, overflowY: "auto", padding: 18 }}>
+        {/* CART */}
+        <div style={{ flex: 1, overflow: "auto", padding: 16 }}>
 
           {!wholesaleCart.length ? (
-            <EmptyState icon={Package} title="Chưa có sản phẩm" />
+            <EmptyState icon={Package} title="Chưa có sản phẩm nào trong giỏ hàng" />
           ) : (
-            <div style={{ display: "grid", gap: 16 }}>
-              {wholesaleCart.map((i) => {
+            wholesaleCart.map(i => {
+              const totalItem =
+                i.customPrice * i.qty - i.discountCash * i.qty;
 
-                const totalItem = i.customPrice * i.qty - i.discountCash * i.qty;
+              return (
+                <div key={i.id} style={{
+                  borderBottom: `1px solid ${COLORS.border}`,
+                  marginBottom: 12,
+                  paddingBottom: 12
+                }}>
 
-                return (
-                  <div key={i.id} style={{
-                    borderBottom: `1px solid ${COLORS.border}`,
-                    paddingBottom: 14
+                  {/* tên */}
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between"
                   }}>
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{i.name}</div>
+                      <div style={{ color: COLORS.textSoft }}>
+                        {money(i.customPrice)}
+                      </div>
+                    </div>
 
-                    {/* tên */}
+                    <button onClick={() =>
+                      setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
+                    }>
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+
+                  {/* qty */}
+                  <div style={{
+                    marginTop: 10,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}>
                     <div style={{
                       display: "flex",
-                      justifyContent: "space-between"
+                      alignItems: "center",
+                      gap: 8,
+                      border: `1px solid ${COLORS.border}`,
+                      borderRadius: 12,
+                      padding: 4
                     }}>
-                      <div>
-                        <div style={{ fontWeight: 700 }}>{i.name}</div>
-                        <div style={{ color: COLORS.textSoft }}>
-                          {money(i.customPrice)}
-                        </div>
+                      <button style={qtyBtn} onClick={() =>
+                        setWholesaleCart(wholesaleCart.map(x =>
+                          x.id === i.id
+                            ? { ...x, qty: Math.max(1, i.qty - 1) }
+                            : x
+                        ))
+                      }>
+                        <Minus size={14} />
+                      </button>
+
+                      <div style={{ minWidth: 30, textAlign: "center", fontWeight: 700 }}>
+                        {i.qty}
                       </div>
 
-                      <button onClick={() =>
-                        setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
+                      <button style={qtyBtn} onClick={() =>
+                        setWholesaleCart(wholesaleCart.map(x =>
+                          x.id === i.id
+                            ? { ...x, qty: i.qty + 1 }
+                            : x
+                        ))
                       }>
-                        <Trash2 size={18} />
+                        <Plus size={14} />
                       </button>
                     </div>
 
-                    {/* qty */}
-                    <div style={{
-                      marginTop: 12,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center"
-                    }}>
-
-                      <div style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        border: `1px solid ${COLORS.border}`,
-                        borderRadius: 12,
-                        padding: 4
-                      }}>
-                        <button style={qtyBtn} onClick={() =>
-                          setWholesaleCart(wholesaleCart.map(x =>
-                            x.id === i.id ? { ...x, qty: Math.max(1, i.qty - 1) } : x
-                          ))
-                        }>
-                          <Minus size={14} />
-                        </button>
-
-                        <div style={{ minWidth: 30, textAlign: "center", fontWeight: 700 }}>
-                          {i.qty}
-                        </div>
-
-                        <button style={qtyBtn} onClick={() =>
-                          setWholesaleCart(wholesaleCart.map(x =>
-                            x.id === i.id ? { ...x, qty: i.qty + 1 } : x
-                          ))
-                        }>
-                          <Plus size={14} />
-                        </button>
-                      </div>
-
-                      <div style={{ fontWeight: 800, color: COLORS.primary }}>
-                        {money(totalItem)}
-                      </div>
+                    <div style={{ fontWeight: 800, color: COLORS.primary }}>
+                      {money(totalItem)}
                     </div>
-
-                    {/* giá */}
-                    <input
-                      style={{ ...cellInput, marginTop: 10 }}
-                      value={i.customPrice}
-                      onChange={(e) =>
-                        setWholesaleCart(wholesaleCart.map(x =>
-                          x.id === i.id
-                            ? { ...x, customPrice: Number(e.target.value) }
-                            : x
-                        ))
-                      }
-                      placeholder="Giá bán"
-                    />
-
-                    {/* chiết khấu */}
-                    <input
-                      style={{ ...cellInput, marginTop: 8 }}
-                      value={i.discountCash}
-                      onChange={(e) =>
-                        setWholesaleCart(wholesaleCart.map(x =>
-                          x.id === i.id
-                            ? { ...x, discountCash: Number(e.target.value) }
-                            : x
-                        ))
-                      }
-                      placeholder="Chiết khấu / sp"
-                    />
-
                   </div>
-                );
-              })}
-            </div>
+
+                  {/* giá */}
+                  <input
+                    style={{ ...cellInput, marginTop: 8 }}
+                    value={i.customPrice}
+                    onChange={(e) =>
+                      setWholesaleCart(wholesaleCart.map(x =>
+                        x.id === i.id
+                          ? { ...x, customPrice: Number(e.target.value) }
+                          : x
+                      ))
+                    }
+                  />
+
+                  {/* chiết khấu */}
+                  <input
+                    style={{ ...cellInput, marginTop: 6 }}
+                    value={i.discountCash}
+                    onChange={(e) =>
+                      setWholesaleCart(wholesaleCart.map(x =>
+                        x.id === i.id
+                          ? { ...x, discountCash: Number(e.target.value) }
+                          : x
+                      ))
+                    }
+                  />
+
+                </div>
+              );
+            })
           )}
         </div>
 
-        {/* thanh toán */}
+        {/* FOOTER GIỐNG SALES */}
         <div style={{
           borderTop: `1px solid ${COLORS.border}`,
-          padding: 18,
-          display: "grid",
-          gap: 12
+          padding: 18
         }}>
 
           <div style={{
@@ -2028,8 +2023,8 @@ export default function App() {
             justifyContent: "space-between",
             color: COLORS.textSoft
           }}>
-            <div>Chiết khấu</div>
-            <div>{money(getWholesaleDiscount())}</div>
+            <span>Tạm tính</span>
+            <span>{money(getWholesaleTotal())}</span>
           </div>
 
           <div style={{
@@ -2037,14 +2032,18 @@ export default function App() {
             justifyContent: "space-between",
             fontSize: 22,
             fontWeight: 800,
-            color: COLORS.primary
+            marginTop: 8
           }}>
-            <div>Tổng cộng</div>
-            <div>{money(getWholesaleTotal())}</div>
+            <span>Tổng cộng</span>
+            <span>{money(getWholesaleTotal())}</span>
+          </div>
+
+          <div style={{ marginTop: 10, color: COLORS.textSoft }}>
+            Chiết khấu: {money(getWholesaleDiscount())}
           </div>
 
           <button
-            style={{ ...primaryBtn }}
+            style={{ ...primaryBtn, width: "100%", marginTop: 12 }}
             onClick={createWholesaleOrder}
           >
             Thanh toán {money(getWholesaleTotal())}
@@ -2053,7 +2052,6 @@ export default function App() {
         </div>
 
       </SectionCard>
-
     </div>
   );
 
