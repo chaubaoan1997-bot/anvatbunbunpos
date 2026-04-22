@@ -1731,156 +1731,6 @@ export default function App() {
     </div>
   );
 
-  const productsPage = (
-    <div style={{ display: "grid", gap: 18, minHeight: 0 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <div style={pageTitle}>Sản phẩm</div>
-          <div style={pageSub}>Quản lý danh sách sản phẩm và giá bán</div>
-        </div>
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <button style={ghostBtn} onClick={exportProductsExcel}>
-            <Download size={18} /> Xuất Excel
-          </button>
-          <button
-            style={primaryBtn}
-            onClick={() => {
-              setEditingProduct(null);
-              setShowProductModal(true);
-            }}
-          >
-            <Plus size={18} /> Thêm sản phẩm
-          </button>
-        </div>
-      </div>
-
-      <SectionCard style={{ overflow: "hidden", minHeight: 0 }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            padding: 16,
-            borderBottom: `1px solid ${COLORS.border}`,
-            flexWrap: "wrap",
-          }}
-        >
-          <div style={{ position: "relative", width: 320, maxWidth: "100%" }}>
-            <Search size={18} color="#64748b" style={{ position: "absolute", left: 14, top: 12 }} />
-            <input
-              value={productSearch}
-              onChange={(e) => setProductSearch(e.target.value)}
-              placeholder="Tìm tên, danh mục..."
-              style={{
-                width: "100%",
-                padding: "11px 12px 11px 40px",
-                borderRadius: 12,
-                border: `1px solid ${COLORS.border}`,
-                outline: "none",
-                background: "#f8fafc",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-          <div style={{ color: COLORS.textSoft }}>{filteredProductTable.length} sản phẩm</div>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile
-              ? "1.8fr 1.2fr 1fr 1fr"
-              : "2.2fr 1.3fr 1fr 1fr 1fr 0.8fr",
-            padding: "14px 16px",
-            background: "#f8fafc",
-            color: COLORS.textSoft,
-            fontWeight: 700,
-          }}
-        >
-          <div>Tên sản phẩm</div>
-          <div>Danh mục</div>
-          <div>Giá bán</div>
-          <div>Tồn kho</div>
-          {!isMobile && (
-            <>
-              <div>Giá vốn</div>
-              <div>Thao tác</div>
-            </>
-          )}
-        </div>
-
-        <div style={{ maxHeight: "62vh", overflow: "auto" }}>
-          {filteredProductTable.map((p) => (
-            <div
-              key={p.id}
-              style={{
-                display: "grid",
-                gridTemplateColumns: isMobile
-                  ? "1.8fr 1.2fr 1fr 1fr"
-                  : "2.2fr 1.3fr 1fr 1fr 1fr 0.8fr",
-                padding: "14px 16px",
-                borderTop: `1px solid ${COLORS.border}`,
-                alignItems: "center",
-                background: COLORS.white,
-                gap: 10,
-              }}
-            >
-              <input
-                defaultValue={p.name}
-                onBlur={(e) => quickEditProduct(p.id, "name", e.target.value)}
-                style={cellInput}
-              />
-              <select
-                defaultValue={p.category}
-                onChange={(e) => quickEditProduct(p.id, "category", e.target.value)}
-                style={cellInput}
-              >
-                {categories
-                  .filter((c) => c !== "Tất cả")
-                  .map((c) => (
-                    <option key={c}>{c}</option>
-                  ))}
-              </select>
-              <input
-                type="number"
-                defaultValue={p.price}
-                onBlur={(e) => quickEditProduct(p.id, "price", Number(e.target.value || 0))}
-                style={{ ...cellInput, color: COLORS.primary, fontWeight: 700 }}
-              />
-              <input
-                type="number"
-                defaultValue={p.stock || 0}
-                onBlur={(e) => quickEditProduct(p.id, "stock", Number(e.target.value || 0))}
-                style={cellInput}
-              />
-              {!isMobile && (
-                <>
-                  <input
-                    type="number"
-                    defaultValue={p.cost || 0}
-                    onBlur={(e) => quickEditProduct(p.id, "cost", Number(e.target.value || 0))}
-                    style={cellInput}
-                  />
-                  <div style={{ display: "flex", gap: 10 }}>
-                    <button
-                      style={iconBtn}
-                      onClick={() => {
-                        setEditingProduct(p);
-                        setShowProductModal(true);
-                      }}
-                    >
-                      <Pencil size={16} />
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      </SectionCard>
-    </div>
-  );
-
   const wholesalePage = (
     <div
       style={{
@@ -2542,6 +2392,156 @@ export default function App() {
             </div>
           </div>
         )}
+      </SectionCard>
+    </div>
+  );
+
+  const productsPage = (
+    <div style={{ display: "grid", gap: 18, minHeight: 0 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <div style={pageTitle}>Sản phẩm</div>
+          <div style={pageSub}>Quản lý danh sách sản phẩm và giá bán</div>
+        </div>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <button style={ghostBtn} onClick={exportProductsExcel}>
+            <Download size={18} /> Xuất Excel
+          </button>
+          <button
+            style={primaryBtn}
+            onClick={() => {
+              setEditingProduct(null);
+              setShowProductModal(true);
+            }}
+          >
+            <Plus size={18} /> Thêm sản phẩm
+          </button>
+        </div>
+      </div>
+
+      <SectionCard style={{ overflow: "hidden", minHeight: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            padding: 16,
+            borderBottom: `1px solid ${COLORS.border}`,
+            flexWrap: "wrap",
+          }}
+        >
+          <div style={{ position: "relative", width: 320, maxWidth: "100%" }}>
+            <Search size={18} color="#64748b" style={{ position: "absolute", left: 14, top: 12 }} />
+            <input
+              value={productSearch}
+              onChange={(e) => setProductSearch(e.target.value)}
+              placeholder="Tìm tên, danh mục..."
+              style={{
+                width: "100%",
+                padding: "11px 12px 11px 40px",
+                borderRadius: 12,
+                border: `1px solid ${COLORS.border}`,
+                outline: "none",
+                background: "#f8fafc",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+          <div style={{ color: COLORS.textSoft }}>{filteredProductTable.length} sản phẩm</div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile
+              ? "1.8fr 1.2fr 1fr 1fr"
+              : "2.2fr 1.3fr 1fr 1fr 1fr 0.8fr",
+            padding: "14px 16px",
+            background: "#f8fafc",
+            color: COLORS.textSoft,
+            fontWeight: 700,
+          }}
+        >
+          <div>Tên sản phẩm</div>
+          <div>Danh mục</div>
+          <div>Giá bán</div>
+          <div>Tồn kho</div>
+          {!isMobile && (
+            <>
+              <div>Giá vốn</div>
+              <div>Thao tác</div>
+            </>
+          )}
+        </div>
+
+        <div style={{ maxHeight: "62vh", overflow: "auto" }}>
+          {filteredProductTable.map((p) => (
+            <div
+              key={p.id}
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile
+                  ? "1.8fr 1.2fr 1fr 1fr"
+                  : "2.2fr 1.3fr 1fr 1fr 1fr 0.8fr",
+                padding: "14px 16px",
+                borderTop: `1px solid ${COLORS.border}`,
+                alignItems: "center",
+                background: COLORS.white,
+                gap: 10,
+              }}
+            >
+              <input
+                defaultValue={p.name}
+                onBlur={(e) => quickEditProduct(p.id, "name", e.target.value)}
+                style={cellInput}
+              />
+              <select
+                defaultValue={p.category}
+                onChange={(e) => quickEditProduct(p.id, "category", e.target.value)}
+                style={cellInput}
+              >
+                {categories
+                  .filter((c) => c !== "Tất cả")
+                  .map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+              </select>
+              <input
+                type="number"
+                defaultValue={p.price}
+                onBlur={(e) => quickEditProduct(p.id, "price", Number(e.target.value || 0))}
+                style={{ ...cellInput, color: COLORS.primary, fontWeight: 700 }}
+              />
+              <input
+                type="number"
+                defaultValue={p.stock || 0}
+                onBlur={(e) => quickEditProduct(p.id, "stock", Number(e.target.value || 0))}
+                style={cellInput}
+              />
+              {!isMobile && (
+                <>
+                  <input
+                    type="number"
+                    defaultValue={p.cost || 0}
+                    onBlur={(e) => quickEditProduct(p.id, "cost", Number(e.target.value || 0))}
+                    style={cellInput}
+                  />
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button
+                      style={iconBtn}
+                      onClick={() => {
+                        setEditingProduct(p);
+                        setShowProductModal(true);
+                      }}
+                    >
+                      <Pencil size={16} />
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
       </SectionCard>
     </div>
   );
