@@ -613,7 +613,8 @@ export default function App() {
   const [wholesalePayment, setWholesalePayment] = useState("Tiền mặt");
   const [tempOrders, setTempOrders] = useState([]);
   const [wholesaleCart, setWholesaleCart] = useState([]);
-  const [sellerInfo, setSellerInfo] = useState({
+  const [sellerInfo, setSellerInfo] = useState({ name: "", });
+  const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: ""
   });
@@ -1109,7 +1110,8 @@ export default function App() {
       type: "wholesale", // 🔥 QUAN TRỌNG
 
       sellerName: sellerInfo.name,
-      sellerPhone: sellerInfo.phone,
+      customerName: customerInfo.name,
+      customerPhone: customerInfo.phone,
 
       dateKey: dateInputValue(),
       createdAt: serverTimestamp(),
@@ -1864,11 +1866,32 @@ export default function App() {
             }
             style={cellInput}
           />
+          {/* KHÁCH HÀNG */}
+          <div style={{ display: "grid", gap: 8 }}>
+            <input
+              placeholder="Tên khách hàng"
+              value={customerInfo.name}
+              onChange={(e) =>
+                setCustomerInfo({ ...customerInfo, name: e.target.value })
+              }
+              style={cellInput}
+            />
+            <input
+              placeholder="SĐT khách hàng"
+              value={customerInfo.phone}
+              onChange={(e) =>
+                setCustomerInfo({ ...customerInfo, phone: e.target.value })
+              }
+              style={cellInput}
+            />
+          </div>
+
+          {/* NHÂN VIÊN */}
           <input
-            placeholder="SĐT người bán"
-            value={sellerInfo.phone}
+            placeholder="Tên nhân viên bán"
+            value={sellerInfo.name}
             onChange={(e) =>
-              setSellerInfo({ ...sellerInfo, phone: e.target.value })
+              setSellerInfo({ name: e.target.value })
             }
             style={cellInput}
           />
@@ -2471,9 +2494,11 @@ export default function App() {
                 <div style={{ color: COLORS.success, marginTop: 6, fontWeight: 700 }}>
                   {selectedOrder.status || "Đã thanh toán"} • {selectedOrder.method}
                 </div>
-                {selectedOrder.type === "wholesale_temp" && (
+                {selectedOrder.type === "wholesale" && (
                   <div style={{ marginTop: 6, fontSize: 14, color: "#555" }}>
-                    👤 {selectedOrder.sellerName} - {selectedOrder.sellerPhone}
+                    👤 {selectedOrder.customerName || "Khách lẻ"}
+                    - {selectedOrder.customerPhone || "---"}
+                    - {selectedOrder.sellerName || "---"}
                   </div>
                 )}
               </div>
