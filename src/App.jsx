@@ -1052,6 +1052,35 @@ export default function App() {
     }
   };
 
+  const createWholesaleOrder = async () => {
+    if (!wholesaleCart.length) return;
+
+    const now = new Date();
+
+    await addDoc(collection(db, "orders"), {
+      code: `WS${Date.now().toString().slice(-6)}`,
+      items: wholesaleCart,
+      total: getWholesaleTotal(),
+      discountTotal: getWholesaleDiscount(),
+
+      type: "wholesale",
+
+      seller: sellerInfo,
+
+      status: "Đã thanh toán",
+      method: "Tiền mặt",
+
+      dateKey: dateInputValue(),
+      createdAt: serverTimestamp(),
+      timeText: now.toLocaleString("vi-VN"),
+    });
+
+    setWholesaleCart([]);
+    setSellerInfo({ name: "", phone: "" });
+
+    setPaidMessage("Đã tạo đơn sỉ");
+  };
+
   const updateTempOrder = async () => {
     if (!editingOrder) return;
 
