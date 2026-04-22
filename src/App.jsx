@@ -1964,20 +1964,38 @@ export default function App() {
                   </div>
 
                   {/* GIÁ */}
-                  <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 8,
+                      marginTop: 10
+                    }}
+                  >
 
                     {/* Giá sỉ */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                      <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>
+                    <div
+                      style={{
+                        background: "#f8fafc",
+                        border: `1px solid ${COLORS.border}`,
+                        borderRadius: 14,
+                        padding: "6px 10px",
+                        display: "flex",
+                        flexDirection: "column"
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: "#64748b",
+                          fontWeight: 600,
+                          marginBottom: 2
+                        }}
+                      >
                         Giá sỉ
                       </span>
+
                       <input
-                        style={{
-                          ...cellInput,
-                          borderRadius: 12,
-                          padding: "10px 12px",
-                          fontWeight: 600
-                        }}
                         value={i.customPrice}
                         onChange={(e) =>
                           setWholesaleCart(wholesaleCart.map(x =>
@@ -1986,22 +2004,39 @@ export default function App() {
                               : x
                           ))
                         }
+                        style={{
+                          border: "none",
+                          outline: "none",
+                          background: "transparent",
+                          fontWeight: 700,
+                          fontSize: 14
+                        }}
                       />
                     </div>
 
                     {/* Giá chiết khấu */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                      <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>
+                    <div
+                      style={{
+                        background: "#fff1f2",
+                        border: "1px solid #fecaca",
+                        borderRadius: 14,
+                        padding: "6px 10px",
+                        display: "flex",
+                        flexDirection: "column"
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: "#ef4444",
+                          fontWeight: 600,
+                          marginBottom: 2
+                        }}
+                      >
                         Giá chiết khấu
                       </span>
+
                       <input
-                        style={{
-                          ...cellInput,
-                          borderRadius: 12,
-                          padding: "10px 12px",
-                          color: "#ef4444",
-                          fontWeight: 600
-                        }}
                         value={i.discountCash}
                         onChange={(e) =>
                           setWholesaleCart(wholesaleCart.map(x =>
@@ -2010,8 +2045,17 @@ export default function App() {
                               : x
                           ))
                         }
+                        style={{
+                          border: "none",
+                          outline: "none",
+                          background: "transparent",
+                          fontWeight: 700,
+                          fontSize: 14,
+                          color: "#ef4444"
+                        }}
                       />
                     </div>
+
                   </div>
 
                 </div>
