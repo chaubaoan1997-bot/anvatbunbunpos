@@ -610,6 +610,7 @@ export default function App() {
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
 
+  const [tempOrders, setTempOrders] = useState([]);
   const [wholesaleCart, setWholesaleCart] = useState([]);
   const [sellerInfo, setSellerInfo] = useState({
     name: "",
@@ -1069,6 +1070,24 @@ export default function App() {
 
     setOrders(prev => [order, ...prev]);
     setWholesaleCart([]);
+  };
+
+  const saveWholesaleTemp = () => {
+    if (!wholesaleCart.length) return;
+
+    const tempOrder = {
+      id: Date.now(),
+      type: "wholesale_temp",
+      items: wholesaleCart,
+      total: getWholesaleTotal(),
+
+      sellerName: sellerInfo.name,
+      sellerPhone: sellerInfo.phone,
+    };
+
+    setTempOrders(prev => [tempOrder, ...prev]);
+
+    setWholesaleCart([]); // clear giỏ
   };
 
   const updateTempOrder = async () => {
@@ -2122,19 +2141,8 @@ export default function App() {
 
             <button
               style={ghostBtn}
-              onClick={() => {
-                if (order.type === "wholesale_temp") {
-                  setWholesaleCart(order.items);
-
-                  setSellerInfo({
-                    name: order.sellerName || "",
-                    phone: order.sellerPhone || ""
-                  });
-
-                  setPage("wholesale"); // quay lại tab bán sỉ
-                }
-              }}>
-
+              onClick={saveWholesaleTemp}   // 🔥 thêm dòng này
+            >
               🧾 Đơn tạm
             </button>
 
@@ -2368,6 +2376,11 @@ export default function App() {
                 <div style={{ color: COLORS.success, marginTop: 6, fontWeight: 700 }}>
                   {selectedOrder.status || "Đã thanh toán"} • {selectedOrder.method}
                 </div>
+                {selectedOrder.type === "wholesale_temp" && (
+                  <div style={{ marginTop: 6, fontSize: 14, color: "#555" }}>
+                    👤 {selectedOrder.sellerName} - {selectedOrder.sellerPhone}
+                  </div>
+                )}
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <button style={ghostBtn} onClick={() => printReceipt(selectedOrder)}>
