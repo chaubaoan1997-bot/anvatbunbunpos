@@ -857,20 +857,6 @@ export default function App() {
     }
   };
 
-  const loadTempOrderToCart = (order) => {
-    if (!order || !order.items) return;
-
-    setCart(
-      order.items.map(i => ({
-        ...i,
-        discount: i.discount || 0
-      }))
-    );
-
-    setEditingOrder(order);
-    setPage("sales"); // chuyển về tab bán hàng
-  };
-
   const updateCartQty = (id, next) => {
     const product = products.find((p) => p.id === id);
     if (next <= 0) {
@@ -1008,19 +994,6 @@ export default function App() {
       console.error("Lỗi tạo đơn tạm:", err);
       alert("Không lưu được đơn tạm");
     }
-  };
-
-  const updateTempOrder = async () => {
-    if (!editingOrder) return;
-
-    await updateDoc(doc(db, "orders", editingOrder.id), {
-      items: cart,
-      total,
-    });
-
-    setCart([]);
-    setEditingOrder(null);
-    setPaidMessage("Đã cập nhật đơn tạm");
   };
 
   const confirmTempOrder = async (order, method) => {
@@ -1591,12 +1564,6 @@ export default function App() {
             >
               Thanh toán {money(total)}
             </button>
-
-            {editingOrder && (
-              <button style={ghostBtn} onClick={updateTempOrder}>
-                💾 Cập nhật đơn tạm
-              </button>
-            )}
           </div>
         </div>
       </SectionCard>
@@ -1906,10 +1873,6 @@ export default function App() {
                   key={o.id}
                   onClick={() => {
                     setSelectedOrder(o);
-
-                    if (o.status === "Đơn tạm") {
-                      loadTempOrderToCart(o);
-                    }
 
                     if (o.isDelivery) {
                       setEditingOrder(o);
