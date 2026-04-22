@@ -892,7 +892,7 @@ export default function App() {
     return wholesaleCart.reduce((sum, i) => {
       const price = Number(i.customPrice || 0);
       const discount = Number(i.discountCash || 0);
-      return sum + (price * i.qty - discount * i.qty);
+      return sum;
     }, 0);
   };
 
@@ -1075,6 +1075,7 @@ export default function App() {
       code,
       items: wholesaleCart,
       total: getWholesaleTotal(),
+      discount: getWholesaleDiscount(),
 
       method: wholesalePayment, // 🔥 lấy từ nút chọn
       status: "Đã thanh toán",
@@ -2016,7 +2017,7 @@ export default function App() {
             <span>{money(getWholesaleTotal())}</span>
           </div>
 
-          <div style={{ marginTop: 6 }}>
+          <div style={{ color: "#888" }}>
             Chiết khấu: {money(getWholesaleDiscount())}
           </div>
 
