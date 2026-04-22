@@ -2369,6 +2369,19 @@ export default function App() {
                           SỈ
                         </span>
                       )}
+
+                      {o.isTemp && (   // 🔥 DÁN NGAY DƯỚI
+                        <span
+                          style={{
+                            marginLeft: 6,
+                            color: "#f59e0b",
+                            fontSize: 12,
+                            fontWeight: 700
+                          }}
+                        >
+                          (Tạm)
+                        </span>
+                      )}
                     </div>
                     <div style={{ color: COLORS.success, fontSize: 13, fontWeight: 700 }}>
                       {o.status || "Đã thanh toán"}
