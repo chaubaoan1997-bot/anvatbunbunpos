@@ -1843,9 +1843,8 @@ export default function App() {
       <div style={{
         display: "flex",
         flexDirection: "column",
-        gap: 16,
         minHeight: 0,
-        height: "100%"
+        height: "100%"   // ❗ cái này rất quan trọng
       }}>
 
         {/* SEARCH */}
