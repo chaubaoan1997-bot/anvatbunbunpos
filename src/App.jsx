@@ -1831,15 +1831,25 @@ export default function App() {
   const wholesalePage = (
     <div
       style={{
+        flex: 1,
+        overflowY: "auto",
         display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 420px",
-        gap: 18,
-        height: "100%"
+        gridTemplateColumns: isMobile
+          ? "repeat(2,1fr)"
+          : "repeat(4,1fr)",
+        gap: 14,
+        paddingRight: 4
       }}
     >
 
       {/* LEFT */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        height: "100%",
+        overflow: "hidden"
+      }}>
 
         {/* người bán */}
         <div style={{ display: "grid", gap: 8 }}>
