@@ -2292,6 +2292,13 @@ export default function App() {
             </button>
 
             <button
+              style={filterType === "wholesale" ? primaryBtn : ghostBtn}
+              onClick={() => setFilterType("wholesale")}
+            >
+              Sỉ
+            </button>
+
+            <button
               onClick={() => setFilterType("delivery")}
               style={{
                 flex: 1,
@@ -2321,6 +2328,7 @@ export default function App() {
                 if (filterType === "all") return true;
                 if (filterType === "temp") return o.status === "Đơn tạm";
                 if (filterType === "delivery") return o.isDelivery;
+                if (filterType === "wholesale") return o.type === "wholesale";
                 return true;
               }).map((o) => (
                 <button
