@@ -610,6 +610,7 @@ export default function App() {
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
 
+  const [wholesalePayment, setWholesalePayment] = useState("Tiền mặt");
   const [tempOrders, setTempOrders] = useState([]);
   const [wholesaleCart, setWholesaleCart] = useState([]);
   const [sellerInfo, setSellerInfo] = useState({
@@ -1094,7 +1095,7 @@ export default function App() {
       items: wholesaleCart,
       total: getWholesaleTotal(),
 
-      method: "Chưa thanh toán",
+      method: wholesalePayment,
       status: "Đơn tạm",
       isTemp: true,
       type: "wholesale",   // 🔥 phân biệt đơn sỉ
@@ -2008,10 +2009,19 @@ export default function App() {
 
           {/* PAYMENT */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 12 }}>
-            <PaymentButton active={true} onClick={() => { }} icon={BadgeDollarSign}>
+            <PaymentButton
+              active={wholesalePayment === "Tiền mặt"}
+              onClick={() => setWholesalePayment("Tiền mặt")}
+              icon={BadgeDollarSign}
+            >
               Tiền mặt
             </PaymentButton>
-            <PaymentButton active={false} onClick={() => { }} icon={CreditCard}>
+
+            <PaymentButton
+              active={wholesalePayment === "Chuyển khoản"}
+              onClick={() => setWholesalePayment("Chuyển khoản")}
+              icon={CreditCard}
+            >
               Chuyển khoản
             </PaymentButton>
           </div>
