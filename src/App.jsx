@@ -1382,11 +1382,11 @@ export default function App() {
 
   const pages = [
     { key: "sales", label: "Bán hàng", icon: Home },
+    { key: "wholesale", label: "Bán sỉ", icon: ShoppingBag },
     { key: "products", label: "Sản phẩm", icon: ShoppingBag },
     { key: "history", label: "Lịch sử", icon: History },
     { key: "expense", label: "Chi phí", icon: Wallet },
     { key: "report", label: "Báo cáo", icon: BarChart3 },
-    { key: "wholesale", label: "Bán sỉ", icon: ShoppingBag },
   ];
 
   const salesPage = (
