@@ -610,6 +610,8 @@ export default function App() {
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
 
+  const [wholesaleCart, setWholesaleCart] = useState([]);
+
   const [reportProductSearch, setReportProductSearch] = useState("");
   const [reportCategory, setReportCategory] = useState("Tất cả");
 
@@ -1262,6 +1264,7 @@ export default function App() {
     { key: "history", label: "Lịch sử", icon: History },
     { key: "expense", label: "Chi phí", icon: Wallet },
     { key: "report", label: "Báo cáo", icon: BarChart3 },
+    { key: "wholesale", label: "Bán sỉ", icon: ShoppingBag },
   ];
 
   const salesPage = (
@@ -1753,6 +1756,73 @@ export default function App() {
           ))}
         </div>
       </SectionCard>
+    </div>
+  );
+
+  const wholesalePage = (
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 400px",
+      gap: 18,
+      height: "100%"
+    }}>
+
+      {/* LEFT - sản phẩm */}
+      <div style={{ display: "grid", gap: 16 }}>
+
+        <div style={{ fontSize: 24, fontWeight: 800 }}>
+          Bán sỉ
+        </div>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile
+            ? "repeat(2,1fr)"
+            : "repeat(4,1fr)",
+          gap: 12
+        }}>
+          {products.map(p => (
+            <SectionCard
+              key={p.id}
+              onClick={() => {
+                const found = wholesaleCart.find(i => i.id === p.id);
+                if (found) {
+                  setWholesaleCart(
+                    wholesaleCart.map(i =>
+                      i.id === p.id ? { ...i, qty: i.qty + 1 } : i
+                    )
+                  );
+                } else {
+                  setWholesaleCart([
+                    ...wholesaleCart,
+                    { ...p, qty: 1 }
+                  ]);
+                }
+              }}
+              style={{ padding: 12, cursor: "pointer" }}
+            >
+              {p.name}
+            </SectionCard>
+          ))}
+        </div>
+
+      </div>
+
+      {/* RIGHT - giỏ hàng */}
+      <SectionCard style={{ padding: 16 }}>
+
+        {!wholesaleCart.length ? (
+          <div>Chưa có sản phẩm</div>
+        ) : (
+          wholesaleCart.map(i => (
+            <div key={i.id} style={{ marginBottom: 12 }}>
+              <div>{i.name} x{i.qty}</div>
+            </div>
+          ))
+        )}
+
+      </SectionCard>
+
     </div>
   );
 
@@ -2461,6 +2531,7 @@ export default function App() {
         {page === "history" && historyPage}
         {page === "expense" && expensePage}
         {page === "report" && reportPage}
+        {page === "wholesale" && wholesalePage}
       </main>
 
       <ProductModal
