@@ -777,6 +777,31 @@ export default function App() {
     });
   }, [orders, reportDate, reportType]);
 
+  const wholesaleStats = useMemo(() => {
+    const map = {};
+
+    reportOrders
+      .filter(o => o.type === "wholesale" && o.status === "Đã thanh toán")
+      .forEach(order => {
+        const seller = order.sellerName || "Không tên";
+
+        if (!map[seller]) {
+          map[seller] = {
+            seller,
+            orders: 0,
+            revenue: 0,
+            discount: 0,
+          };
+        }
+
+        map[seller].orders += 1;
+        map[seller].revenue += Number(order.total || 0);
+        map[seller].discount += Number(order.discount || 0);
+      });
+
+    return Object.values(map);
+  }, [reportOrders]);
+
   const reportProductStats = useMemo(() => {
     const map = {};
 
@@ -3004,6 +3029,37 @@ export default function App() {
               ))
             )}
           </div>
+        </SectionCard>
+
+        <SectionCard style={{ padding: 20, marginTop: 20 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 12 }}>
+            Thống kê đơn sỉ
+          </div>
+
+          {!wholesaleStats.length ? (
+            <div>Không có dữ liệu</div>
+          ) : (
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
+                  <th>Người bán</th>
+                  <th>Số đơn</th>
+                  <th>Doanh thu</th>
+                  <th>Chiết khấu</th>
+                </tr>
+              </thead>
+              <tbody>
+                {wholesaleStats.map((s, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid #eee" }}>
+                    <td>{s.seller}</td>
+                    <td>{s.orders}</td>
+                    <td>{money(s.revenue)}</td>
+                    <td>{money(s.discount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </SectionCard>
       </div>
     </div>
