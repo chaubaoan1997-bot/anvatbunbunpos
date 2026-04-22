@@ -1832,7 +1832,7 @@ export default function App() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 420px",
+        gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 400px",
         gap: 18,
         height: "100%",
         minHeight: 0,
@@ -1840,12 +1840,16 @@ export default function App() {
     >
 
       {/* ===== LEFT: COPY Y CHANG SALES ===== */}
-      <div style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: 0,
-        height: "100%"   // ❗ cái này rất quan trọng
-      }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          minWidth: 0,
+          minHeight: 0,
+          position: "relative",
+          zIndex: 1,
+        }}>
 
         {/* SEARCH */}
         <div style={{ position: "relative", maxWidth: 520 }}>
