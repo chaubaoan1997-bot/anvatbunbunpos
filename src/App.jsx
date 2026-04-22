@@ -1911,10 +1911,15 @@ export default function App() {
           >
             {products
               .filter(p => {
-                const s = search.toLowerCase();
-                const matchSearch = p.name.toLowerCase().includes(s);
+                const s = (search || "").toLowerCase();
+
+                const matchSearch = p.name
+                  .toLowerCase()
+                  .includes(s);
+
                 const matchCate =
                   activeCategory === "all" || p.category === activeCategory;
+
                 return matchSearch && matchCate;
               })
               .map((p) => (
