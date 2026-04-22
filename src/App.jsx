@@ -1832,7 +1832,7 @@ export default function App() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 380px",
+        gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 420px",
         gap: 18,
         height: "100%",
         minHeight: 0,
