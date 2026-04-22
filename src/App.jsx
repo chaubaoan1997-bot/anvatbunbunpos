@@ -2488,9 +2488,7 @@ export default function App() {
                 </div>
                 {selectedOrder.type === "wholesale" && (
                   <div style={{ marginTop: 6, fontSize: 14, color: "#555" }}>
-                    👤 {selectedOrder.customerName || "Khách lẻ"}
-                    - {selectedOrder.customerPhone || "---"}
-                    - {selectedOrder.sellerName || "---"}
+                    👤 {selectedOrder.customerName || "Khách lẻ"}- {selectedOrder.customerPhone || "---"}
                   </div>
                 )}
               </div>
