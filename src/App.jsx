@@ -1841,7 +1841,7 @@ export default function App() {
       {/* LEFT */}
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
-        {/* nhập người bán */}
+        {/* người bán */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <input
             placeholder="Tên người bán"
@@ -1898,11 +1898,19 @@ export default function App() {
             <div>Chưa có sản phẩm</div>
           ) : (
             wholesaleCart.map((i) => (
-              <div key={i.id} style={{ marginBottom: 14 }}>
+              <div key={i.id} style={{
+                borderBottom: `1px solid ${COLORS.border}`,
+                marginBottom: 12,
+                paddingBottom: 12
+              }}>
 
-                <div>{i.name}</div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>{i.name}</div>
+                  <button onClick={() =>
+                    setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
+                  }>✕</button>
+                </div>
 
-                {/* số lượng */}
                 <div style={{ display: "flex", gap: 8 }}>
                   <button onClick={() =>
                     setWholesaleCart(wholesaleCart.map(x =>
@@ -1919,10 +1927,9 @@ export default function App() {
                   }>+</button>
                 </div>
 
-                {/* giá custom */}
                 <input
                   type="number"
-                  value={i.customPrice || i.price}
+                  value={i.customPrice}
                   onChange={(e) =>
                     setWholesaleCart(wholesaleCart.map(x =>
                       x.id === i.id
@@ -1930,13 +1937,12 @@ export default function App() {
                         : x
                     ))
                   }
-                  placeholder="Giá bán"
+                  style={cellInput}
                 />
 
-                {/* chiết khấu */}
                 <input
                   type="number"
-                  value={i.discountCash || 0}
+                  value={i.discountCash}
                   onChange={(e) =>
                     setWholesaleCart(wholesaleCart.map(x =>
                       x.id === i.id
@@ -1944,7 +1950,7 @@ export default function App() {
                         : x
                     ))
                   }
-                  placeholder="Chiết khấu / sản phẩm"
+                  style={cellInput}
                 />
 
               </div>
@@ -1952,21 +1958,21 @@ export default function App() {
           )}
         </div>
 
-        <div style={{ padding: 16 }}>
-
-          <div>
-            Chiết khấu: {money(getWholesaleDiscount())}
-          </div>
+        <div style={{ borderTop: `1px solid ${COLORS.border}`, padding: 16 }}>
+          <div>Chiết khấu: {money(getWholesaleDiscount())}</div>
 
           <div style={{ fontWeight: 800 }}>
             Tổng: {money(getWholesaleTotal())}
           </div>
 
-          <button style={primaryBtn} onClick={createWholesaleOrder}>
-            Thanh toán đơn sỉ
+          <button
+            style={{ ...primaryBtn, width: "100%" }}
+            onClick={createWholesaleOrder}
+          >
+            Thanh toán {money(getWholesaleTotal())}
           </button>
-
         </div>
+
       </SectionCard>
     </div>
   );
