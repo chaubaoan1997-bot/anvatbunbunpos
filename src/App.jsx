@@ -1968,28 +1968,28 @@ export default function App() {
                     style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr",
-                      gap: 8,
-                      marginTop: 10
+                      gap: 6,
+                      marginTop: 8
                     }}
                   >
 
                     {/* Giá sỉ */}
                     <div
                       style={{
-                        background: "#f8fafc",
+                        background: "#f1f5f9",
                         border: `1px solid ${COLORS.border}`,
-                        borderRadius: 14,
-                        padding: "6px 10px",
+                        borderRadius: 10,
+                        padding: "4px 8px",
                         display: "flex",
                         flexDirection: "column"
                       }}
                     >
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 10,
                           color: "#64748b",
                           fontWeight: 600,
-                          marginBottom: 2
+                          marginBottom: 1
                         }}
                       >
                         Giá sỉ
@@ -2009,7 +2009,7 @@ export default function App() {
                           outline: "none",
                           background: "transparent",
                           fontWeight: 700,
-                          fontSize: 14
+                          fontSize: 13
                         }}
                       />
                     </div>
@@ -2017,20 +2017,20 @@ export default function App() {
                     {/* Giá chiết khấu */}
                     <div
                       style={{
-                        background: "#fff1f2",
+                        background: "#fef2f2",
                         border: "1px solid #fecaca",
-                        borderRadius: 14,
-                        padding: "6px 10px",
+                        borderRadius: 10,
+                        padding: "4px 8px",
                         display: "flex",
                         flexDirection: "column"
                       }}
                     >
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 10,
                           color: "#ef4444",
                           fontWeight: 600,
-                          marginBottom: 2
+                          marginBottom: 1
                         }}
                       >
                         Giá chiết khấu
@@ -2050,14 +2050,12 @@ export default function App() {
                           outline: "none",
                           background: "transparent",
                           fontWeight: 700,
-                          fontSize: 14,
+                          fontSize: 13,
                           color: "#ef4444"
                         }}
                       />
                     </div>
-
                   </div>
-
                 </div>
               );
             })
