@@ -857,6 +857,20 @@ export default function App() {
     }
   };
 
+  const loadTempOrderToCart = (order) => {
+    if (!order) return;
+
+    setCart(
+      (order.items || []).map(i => ({
+        ...i,
+        discount: i.discount || 0
+      }))
+    );
+
+    setEditingOrder(order);
+    setPage("sales");
+  };
+
   const updateCartQty = (id, next) => {
     const product = products.find((p) => p.id === id);
     if (next <= 0) {
@@ -994,6 +1008,22 @@ export default function App() {
       console.error("Lỗi tạo đơn tạm:", err);
       alert("Không lưu được đơn tạm");
     }
+  };
+
+  const updateTempOrder = async () => {
+    if (!editingOrder) return;
+
+    await updateDoc(doc(db, "orders", editingOrder.id), {
+      items: cart,
+      total,
+    });
+
+    setCart([]);
+    setEditingOrder(null);
+    setSelectedOrder(null);
+    setPage("history");
+
+    setPaidMessage("Đã cập nhật đơn tạm");
   };
 
   const confirmTempOrder = async (order, method) => {
@@ -1564,6 +1594,12 @@ export default function App() {
             >
               Thanh toán {money(total)}
             </button>
+
+            {editingOrder && (
+              <button style={ghostBtn} onClick={updateTempOrder}>
+                💾 Cập nhật đơn tạm
+              </button>
+            )}
           </div>
         </div>
       </SectionCard>
@@ -1943,15 +1979,24 @@ export default function App() {
                 </button>
 
                 {selectedOrder?.status === "Đơn tạm" && (
-                  <button
-                    style={primaryBtn}
-                    onClick={() => {
-                      setTempOrder(selectedOrder);
-                      setShowPaymentModal(true);
-                    }}
-                  >
-                    Xác nhận thanh toán
-                  </button>
+                  <>
+                    <button
+                      style={ghostBtn}
+                      onClick={() => loadTempOrderToCart(selectedOrder)}
+                    >
+                      ✏️ Sửa đơn
+                    </button>
+
+                    <button
+                      style={primaryBtn}
+                      onClick={() => {
+                        setTempOrder(selectedOrder);
+                        setShowPaymentModal(true);
+                      }}
+                    >
+                      Xác nhận thanh toán
+                    </button>
+                  </>
                 )}
 
                 {selectedOrder?.status === "Chờ giao" && (
@@ -2434,6 +2479,7 @@ export default function App() {
         onConfirm={(method) => {
           confirmTempOrder(tempOrder, method);
           setShowPaymentModal(false);
+          setSelectedOrder(null);
         }}
       />
       <DeliveryModal
