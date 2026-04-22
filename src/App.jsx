@@ -2195,7 +2195,7 @@ export default function App() {
                 style={ghostBtn}
                 onClick={updateWholesaleTempOrder}
               >
-                💾 Cập nhật đơn tạm sỉ
+                💾 Cập nhật đơn sỉ
               </button>
             )}
 
@@ -2416,20 +2416,14 @@ export default function App() {
                           SỈ
                         </span>
                       )}
-
-                      {o.isTemp && (   // 🔥 DÁN NGAY DƯỚI
-                        <span
-                          style={{
-                            marginLeft: 6,
-                            color: "#f59e0b",
-                            fontSize: 12,
-                            fontWeight: 700
-                          }}
-                        >
-                          (Tạm)
-                        </span>
-                      )}
                     </div>
+
+                    {/* 🔥 THÊM NGAY DƯỚI */}
+                    {o.type === "wholesale" && (
+                      <div style={{ fontSize: 13, color: "#555", marginTop: 4 }}>
+                        👤 {o.sellerName || "Chưa có tên"} - {o.sellerPhone || ""}
+                      </div>
+                    )}
                     <div style={{ color: COLORS.success, fontSize: 13, fontWeight: 700 }}>
                       {o.status || "Đã thanh toán"}
                     </div>
