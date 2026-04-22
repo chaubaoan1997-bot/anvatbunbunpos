@@ -1832,7 +1832,7 @@ export default function App() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 400px",
+        gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 420px",
         gap: 18,
         height: "100%"
       }}
@@ -1871,7 +1871,7 @@ export default function App() {
             gap: 14
           }}
         >
-          {products.map(p => (
+          {products.map((p) => (
             <SectionCard
               key={p.id}
               onClick={() => addToWholesaleCart(p)}
@@ -1884,18 +1884,20 @@ export default function App() {
             </SectionCard>
           ))}
         </div>
-
       </div>
 
-      {/* RIGHT (GIỐNG SALES) */}
+      {/* RIGHT */}
       <SectionCard style={{ display: "flex", flexDirection: "column" }}>
 
-        <div style={{
-          padding: 18,
-          borderBottom: `1px solid ${COLORS.border}`,
-          fontWeight: 800,
-          fontSize: 20
-        }}>
+        {/* header */}
+        <div
+          style={{
+            padding: 18,
+            borderBottom: `1px solid ${COLORS.border}`,
+            fontWeight: 800,
+            fontSize: 20
+          }}
+        >
           Đơn hàng hiện tại
         </div>
 
@@ -1905,22 +1907,27 @@ export default function App() {
           {!wholesaleCart.length ? (
             <EmptyState icon={Package} title="Chưa có sản phẩm nào trong giỏ hàng" />
           ) : (
-            wholesaleCart.map(i => {
+            wholesaleCart.map((i) => {
               const totalItem =
                 i.customPrice * i.qty - i.discountCash * i.qty;
 
               return (
-                <div key={i.id} style={{
-                  borderBottom: `1px solid ${COLORS.border}`,
-                  marginBottom: 12,
-                  paddingBottom: 12
-                }}>
+                <div
+                  key={i.id}
+                  style={{
+                    borderBottom: `1px solid ${COLORS.border}`,
+                    marginBottom: 12,
+                    paddingBottom: 12
+                  }}
+                >
 
                   {/* tên */}
-                  <div style={{
-                    display: "flex",
-                    justifyContent: "space-between"
-                  }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between"
+                    }}
+                  >
                     <div>
                       <div style={{ fontWeight: 700 }}>{i.name}</div>
                       <div style={{ color: COLORS.textSoft }}>
@@ -1928,50 +1935,74 @@ export default function App() {
                       </div>
                     </div>
 
-                    <button onClick={() =>
-                      setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
-                    }>
-                      <Trash2 size={18} />
+                    <button
+                      onClick={() =>
+                        setWholesaleCart(
+                          wholesaleCart.filter((x) => x.id !== i.id)
+                        )
+                      }
+                    >
+                      ✕
                     </button>
                   </div>
 
                   {/* qty */}
-                  <div style={{
-                    marginTop: 10,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center"
-                  }}>
-                    <div style={{
+                  <div
+                    style={{
+                      marginTop: 10,
                       display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      border: `1px solid ${COLORS.border}`,
-                      borderRadius: 12,
-                      padding: 4
-                    }}>
-                      <button style={qtyBtn} onClick={() =>
-                        setWholesaleCart(wholesaleCart.map(x =>
-                          x.id === i.id
-                            ? { ...x, qty: Math.max(1, i.qty - 1) }
-                            : x
-                        ))
-                      }>
-                        <Minus size={14} />
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        border: `1px solid ${COLORS.border}`,
+                        borderRadius: 12,
+                        padding: 4
+                      }}
+                    >
+                      <button
+                        style={qtyBtn}
+                        onClick={() =>
+                          setWholesaleCart(
+                            wholesaleCart.map((x) =>
+                              x.id === i.id
+                                ? { ...x, qty: Math.max(1, i.qty - 1) }
+                                : x
+                            )
+                          )
+                        }
+                      >
+                        -
                       </button>
 
-                      <div style={{ minWidth: 30, textAlign: "center", fontWeight: 700 }}>
+                      <div
+                        style={{
+                          minWidth: 30,
+                          textAlign: "center",
+                          fontWeight: 700
+                        }}
+                      >
                         {i.qty}
                       </div>
 
-                      <button style={qtyBtn} onClick={() =>
-                        setWholesaleCart(wholesaleCart.map(x =>
-                          x.id === i.id
-                            ? { ...x, qty: i.qty + 1 }
-                            : x
-                        ))
-                      }>
-                        <Plus size={14} />
+                      <button
+                        style={qtyBtn}
+                        onClick={() =>
+                          setWholesaleCart(
+                            wholesaleCart.map((x) =>
+                              x.id === i.id
+                                ? { ...x, qty: i.qty + 1 }
+                                : x
+                            )
+                          )
+                        }
+                      >
+                        +
                       </button>
                     </div>
 
@@ -1985,11 +2016,16 @@ export default function App() {
                     style={{ ...cellInput, marginTop: 8 }}
                     value={i.customPrice}
                     onChange={(e) =>
-                      setWholesaleCart(wholesaleCart.map(x =>
-                        x.id === i.id
-                          ? { ...x, customPrice: Number(e.target.value) }
-                          : x
-                      ))
+                      setWholesaleCart(
+                        wholesaleCart.map((x) =>
+                          x.id === i.id
+                            ? {
+                              ...x,
+                              customPrice: Number(e.target.value)
+                            }
+                            : x
+                        )
+                      )
                     }
                   />
 
@@ -1998,56 +2034,89 @@ export default function App() {
                     style={{ ...cellInput, marginTop: 6 }}
                     value={i.discountCash}
                     onChange={(e) =>
-                      setWholesaleCart(wholesaleCart.map(x =>
-                        x.id === i.id
-                          ? { ...x, discountCash: Number(e.target.value) }
-                          : x
-                      ))
+                      setWholesaleCart(
+                        wholesaleCart.map((x) =>
+                          x.id === i.id
+                            ? {
+                              ...x,
+                              discountCash: Number(e.target.value)
+                            }
+                            : x
+                        )
+                      )
                     }
                   />
-
                 </div>
               );
             })
           )}
         </div>
 
-        {/* FOOTER GIỐNG SALES */}
-        <div style={{
-          borderTop: `1px solid ${COLORS.border}`,
-          padding: 18
-        }}>
+        {/* FOOTER */}
+        <div
+          style={{
+            borderTop: `1px solid ${COLORS.border}`,
+            padding: 18
+          }}
+        >
 
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            color: COLORS.textSoft
-          }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              color: COLORS.textSoft
+            }}
+          >
             <span>Tạm tính</span>
             <span>{money(getWholesaleTotal())}</span>
           </div>
 
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 22,
-            fontWeight: 800,
-            marginTop: 8
-          }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 26,
+              fontWeight: 800,
+              color: COLORS.primary,
+              marginTop: 6
+            }}
+          >
             <span>Tổng cộng</span>
             <span>{money(getWholesaleTotal())}</span>
           </div>
 
-          <div style={{ marginTop: 10, color: COLORS.textSoft }}>
+          <div style={{ marginTop: 8, color: COLORS.textSoft }}>
             Chiết khấu: {money(getWholesaleDiscount())}
           </div>
 
-          <button
-            style={{ ...primaryBtn, width: "100%", marginTop: 12 }}
-            onClick={createWholesaleOrder}
+          <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+            <button style={{ ...primaryBtn, flex: 1 }}>
+              Tiền mặt
+            </button>
+            <button style={{ ...ghostBtn, flex: 1 }}>
+              Chuyển khoản
+            </button>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4,1fr)",
+              gap: 8,
+              marginTop: 10
+            }}
           >
-            Thanh toán {money(getWholesaleTotal())}
-          </button>
+            <button>In hóa đơn</button>
+            <button>Giao hàng</button>
+            <button>Đơn tạm</button>
+
+            <button
+              style={primaryBtn}
+              onClick={createWholesaleOrder}
+            >
+              Thanh toán
+            </button>
+          </div>
 
         </div>
 
