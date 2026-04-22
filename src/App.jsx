@@ -1850,9 +1850,9 @@ export default function App() {
         {/* SEARCH */}
         <div style={{ position: "relative", maxWidth: 520 }}>
           <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm kiếm sản phẩm..."
+            value={search || ""}
+            onChange={(e) => setSearch(e.target.value)}
             style={{
               width: "100%",
               height: 56,
