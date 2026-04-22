@@ -903,14 +903,21 @@ export default function App() {
   const loadTempOrderToCart = (order) => {
     if (!order) return;
 
-    setCart(
-      (order.items || []).map(i => ({
-        ...i,
-        discount: i.discount || 0
-      }))
-    );
+    // 🔥 ĐƠN SỈ
+    if (order.type === "wholesale") {
+      setWholesaleCart(order.items);
 
-    setEditingOrder(order);
+      setSellerInfo({
+        name: order.sellerName || "",
+        phone: order.sellerPhone || ""
+      });
+
+      setPage("wholesale"); // ✅ đúng tab
+      return;
+    }
+
+    // 🔥 ĐƠN LẺ (giữ nguyên)
+    setCart(order.items);
     setPage("sales");
   };
 
