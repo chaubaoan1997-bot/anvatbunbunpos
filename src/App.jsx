@@ -2052,54 +2052,6 @@ export default function App() {
           )}
         </div>
 
-        <div style={{
-          borderTop: `1px solid ${COLORS.border}`,
-          padding: 18
-        }}>
-
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            color: COLORS.textSoft
-          }}>
-            <span>Tạm tính</span>
-            <span>{money(getWholesaleTotal())}</span>
-          </div>
-
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 26,
-            fontWeight: 800,
-            color: COLORS.primary,
-            marginTop: 6
-          }}>
-            <span>Tổng cộng</span>
-            <span>{money(getWholesaleTotal())}</span>
-          </div>
-
-          <div style={{ marginTop: 8 }}>
-            Chiết khấu: {money(getWholesaleDiscount())}
-          </div>
-
-          <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-            <button style={{ ...primaryBtn, flex: 1 }}>
-              Tiền mặt
-            </button>
-            <button style={{ ...ghostBtn, flex: 1 }}>
-              Chuyển khoản
-            </button>
-          </div>
-
-          <button
-            style={{ ...primaryBtn, width: "100%", marginTop: 10 }}
-            onClick={createWholesaleOrder}
-          >
-            Thanh toán
-          </button>
-
-        </div>
-
         {/* FOOTER */}
         <div
           style={{
