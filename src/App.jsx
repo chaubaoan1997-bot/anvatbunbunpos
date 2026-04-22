@@ -1979,7 +1979,7 @@ export default function App() {
                         background: "#f1f5f9",
                         border: `1px solid ${COLORS.border}`,
                         borderRadius: 10,
-                        padding: "4px 8px",
+                        padding: "2px 6px",
                         display: "flex",
                         flexDirection: "column"
                       }}
@@ -2020,7 +2020,7 @@ export default function App() {
                         background: "#fef2f2",
                         border: "1px solid #fecaca",
                         borderRadius: 10,
-                        padding: "4px 8px",
+                        padding: "2px 6px",
                         display: "flex",
                         flexDirection: "column"
                       }}
