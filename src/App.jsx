@@ -1865,18 +1865,24 @@ export default function App() {
           />
         </div>
 
+        {/* NÚT TẤT CẢ */}
+        <button
+          style={activeCategory === "all" ? primaryBtn : ghostBtn}
+          onClick={() => setActiveCategory("all")}
+        >
+          Tất cả
+        </button>
+
         {/* CATEGORY */}
-        <div style={{ display: "flex", gap: 10, overflowX: "auto" }}>
-          {categories.map((c) => (
-            <button
-              key={c}
-              style={activeCategory === c ? primaryBtn : ghostBtn}
-              onClick={() => setActiveCategory(c)}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
+        {categories.map((c) => (
+          <button
+            key={c}
+            style={activeCategory === c ? primaryBtn : ghostBtn}
+            onClick={() => setActiveCategory(c)}
+          >
+            {c}
+          </button>
+        ))}
 
         {/* NGƯỜI BÁN */}
         <div style={{ display: "grid", gap: 8 }}>
