@@ -1964,30 +1964,55 @@ export default function App() {
                   </div>
 
                   {/* GIÁ */}
-                  <input
-                    style={{ ...cellInput, marginTop: 6 }}
-                    value={i.customPrice}
-                    onChange={(e) =>
-                      setWholesaleCart(wholesaleCart.map(x =>
-                        x.id === i.id
-                          ? { ...x, customPrice: Number(e.target.value) }
-                          : x
-                      ))
-                    }
-                  />
+                  <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
 
-                  {/* CHIẾT KHẤU */}
-                  <input
-                    style={{ ...cellInput, marginTop: 6 }}
-                    value={i.discountCash}
-                    onChange={(e) =>
-                      setWholesaleCart(wholesaleCart.map(x =>
-                        x.id === i.id
-                          ? { ...x, discountCash: Number(e.target.value) }
-                          : x
-                      ))
-                    }
-                  />
+                    {/* Giá sỉ */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>
+                        Giá sỉ
+                      </span>
+                      <input
+                        style={{
+                          ...cellInput,
+                          borderRadius: 12,
+                          padding: "10px 12px",
+                          fontWeight: 600
+                        }}
+                        value={i.customPrice}
+                        onChange={(e) =>
+                          setWholesaleCart(wholesaleCart.map(x =>
+                            x.id === i.id
+                              ? { ...x, customPrice: Number(e.target.value) }
+                              : x
+                          ))
+                        }
+                      />
+                    </div>
+
+                    {/* Giá chiết khấu */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>
+                        Giá chiết khấu
+                      </span>
+                      <input
+                        style={{
+                          ...cellInput,
+                          borderRadius: 12,
+                          padding: "10px 12px",
+                          color: "#ef4444",
+                          fontWeight: 600
+                        }}
+                        value={i.discountCash}
+                        onChange={(e) =>
+                          setWholesaleCart(wholesaleCart.map(x =>
+                            x.id === i.id
+                              ? { ...x, discountCash: Number(e.target.value) }
+                              : x
+                          ))
+                        }
+                      />
+                    </div>
+                  </div>
 
                 </div>
               );
