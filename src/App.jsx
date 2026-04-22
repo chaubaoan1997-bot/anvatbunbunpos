@@ -891,8 +891,9 @@ export default function App() {
   const getWholesaleTotal = () => {
     return wholesaleCart.reduce((sum, i) => {
       const price = Number(i.customPrice || 0);
-      const discount = Number(i.discountCash || 0);
-      return sum;
+      const qty = Number(i.qty || 0);
+
+      return sum + price * qty;
     }, 0);
   };
 
@@ -1907,7 +1908,7 @@ export default function App() {
           ) : (
             wholesaleCart.map(i => {
               const totalItem =
-                i.customPrice * i.qty - i.discountCash * i.qty;
+                (Number(i.customPrice) || 0) * (Number(i.qty) || 0);
 
               return (
                 <div key={i.id} style={{
