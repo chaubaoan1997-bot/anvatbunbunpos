@@ -1887,157 +1887,173 @@ export default function App() {
       </div>
 
       {/* RIGHT */}
-      <SectionCard style={{ display: "flex", flexDirection: "column" }}>
+      <SectionCard style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-        <div style={{ padding: 16, fontWeight: 800 }}>
-          Đơn sỉ
+        {/* header */}
+        <div style={{
+          padding: 18,
+          borderBottom: `1px solid ${COLORS.border}`,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center"
+        }}>
+          <div style={{ fontSize: 22, fontWeight: 800 }}>
+            Đơn sỉ
+          </div>
         </div>
 
-        <div style={{ flex: 1, overflow: "auto", padding: 16 }}>
+        {/* cart */}
+        <div style={{ flex: 1, overflowY: "auto", padding: 18 }}>
+
           {!wholesaleCart.length ? (
-            <div>Chưa có sản phẩm</div>
+            <EmptyState icon={Package} title="Chưa có sản phẩm" />
           ) : (
-            wholesaleCart.map((i) => (
-              <div key={i.id} style={{
-                borderBottom: `1px solid ${COLORS.border}`,
-                paddingBottom: 14,
-                marginBottom: 14
-              }}>
+            <div style={{ display: "grid", gap: 16 }}>
+              {wholesaleCart.map((i) => {
 
-                {/* tên + xóa */}
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start"
-                }}>
-                  <div>
+                const totalItem = i.customPrice * i.qty - i.discountCash * i.qty;
+
+                return (
+                  <div key={i.id} style={{
+                    borderBottom: `1px solid ${COLORS.border}`,
+                    paddingBottom: 14
+                  }}>
+
+                    {/* tên */}
                     <div style={{
-                      fontWeight: 700,
-                      fontSize: 16
+                      display: "flex",
+                      justifyContent: "space-between"
                     }}>
-                      {i.name}
+                      <div>
+                        <div style={{ fontWeight: 700 }}>{i.name}</div>
+                        <div style={{ color: COLORS.textSoft }}>
+                          {money(i.customPrice)}
+                        </div>
+                      </div>
+
+                      <button onClick={() =>
+                        setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
+                      }>
+                        <Trash2 size={18} />
+                      </button>
                     </div>
-                    <div style={{ color: COLORS.textSoft }}>
-                      {money(i.customPrice)}
+
+                    {/* qty */}
+                    <div style={{
+                      marginTop: 12,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}>
+
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        border: `1px solid ${COLORS.border}`,
+                        borderRadius: 12,
+                        padding: 4
+                      }}>
+                        <button style={qtyBtn} onClick={() =>
+                          setWholesaleCart(wholesaleCart.map(x =>
+                            x.id === i.id ? { ...x, qty: Math.max(1, i.qty - 1) } : x
+                          ))
+                        }>
+                          <Minus size={14} />
+                        </button>
+
+                        <div style={{ minWidth: 30, textAlign: "center", fontWeight: 700 }}>
+                          {i.qty}
+                        </div>
+
+                        <button style={qtyBtn} onClick={() =>
+                          setWholesaleCart(wholesaleCart.map(x =>
+                            x.id === i.id ? { ...x, qty: i.qty + 1 } : x
+                          ))
+                        }>
+                          <Plus size={14} />
+                        </button>
+                      </div>
+
+                      <div style={{ fontWeight: 800, color: COLORS.primary }}>
+                        {money(totalItem)}
+                      </div>
                     </div>
-                  </div>
 
-                  <button
-                    onClick={() =>
-                      setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
-                    }
-                    style={{ border: "none", background: "transparent", cursor: "pointer" }}
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-
-                {/* số lượng */}
-                <div style={{
-                  marginTop: 12,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center"
-                }}>
-
-                  <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    border: `1px solid ${COLORS.border}`,
-                    borderRadius: 12,
-                    padding: 4
-                  }}>
-                    <button
-                      style={qtyBtn}
-                      onClick={() =>
+                    {/* giá */}
+                    <input
+                      style={{ ...cellInput, marginTop: 10 }}
+                      value={i.customPrice}
+                      onChange={(e) =>
                         setWholesaleCart(wholesaleCart.map(x =>
-                          x.id === i.id ? { ...x, qty: i.qty - 1 } : x
+                          x.id === i.id
+                            ? { ...x, customPrice: Number(e.target.value) }
+                            : x
                         ))
                       }
-                    >
-                      <Minus size={14} />
-                    </button>
+                      placeholder="Giá bán"
+                    />
 
-                    <div style={{ minWidth: 30, textAlign: "center", fontWeight: 700 }}>
-                      {i.qty}
-                    </div>
-
-                    <button
-                      style={qtyBtn}
-                      onClick={() =>
+                    {/* chiết khấu */}
+                    <input
+                      style={{ ...cellInput, marginTop: 8 }}
+                      value={i.discountCash}
+                      onChange={(e) =>
                         setWholesaleCart(wholesaleCart.map(x =>
-                          x.id === i.id ? { ...x, qty: i.qty + 1 } : x
+                          x.id === i.id
+                            ? { ...x, discountCash: Number(e.target.value) }
+                            : x
                         ))
                       }
-                    >
-                      <Plus size={14} />
-                    </button>
+                      placeholder="Chiết khấu / sp"
+                    />
+
                   </div>
-
-                  <div style={{
-                    color: COLORS.primary,
-                    fontWeight: 800
-                  }}>
-                    {money(i.customPrice * i.qty - i.discountCash * i.qty)}
-                  </div>
-                </div>
-
-                {/* chỉnh giá */}
-                <div style={{ marginTop: 12 }}>
-                  <input
-                    type="number"
-                    value={i.customPrice}
-                    placeholder="Giá bán"
-                    onChange={(e) =>
-                      setWholesaleCart(wholesaleCart.map(x =>
-                        x.id === i.id
-                          ? { ...x, customPrice: Number(e.target.value) }
-                          : x
-                      ))
-                    }
-                    style={cellInput}
-                  />
-                </div>
-
-                {/* chiết khấu */}
-                <div style={{ marginTop: 8 }}>
-                  <input
-                    type="number"
-                    value={i.discountCash}
-                    placeholder="Chiết khấu / sản phẩm"
-                    onChange={(e) =>
-                      setWholesaleCart(wholesaleCart.map(x =>
-                        x.id === i.id
-                          ? { ...x, discountCash: Number(e.target.value) }
-                          : x
-                      ))
-                    }
-                    style={cellInput}
-                  />
-                </div>
-
-              </div>
-            ))
+                );
+              })}
+            </div>
           )}
         </div>
 
-        <div style={{ borderTop: `1px solid ${COLORS.border}`, padding: 16 }}>
-          <div>Chiết khấu: {money(getWholesaleDiscount())}</div>
+        {/* thanh toán */}
+        <div style={{
+          borderTop: `1px solid ${COLORS.border}`,
+          padding: 18,
+          display: "grid",
+          gap: 12
+        }}>
 
-          <div style={{ fontWeight: 800 }}>
-            Tổng: {money(getWholesaleTotal())}
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            color: COLORS.textSoft
+          }}>
+            <div>Chiết khấu</div>
+            <div>{money(getWholesaleDiscount())}</div>
+          </div>
+
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: 22,
+            fontWeight: 800,
+            color: COLORS.primary
+          }}>
+            <div>Tổng cộng</div>
+            <div>{money(getWholesaleTotal())}</div>
           </div>
 
           <button
-            style={{ ...primaryBtn, width: "100%" }}
+            style={{ ...primaryBtn }}
             onClick={createWholesaleOrder}
           >
             Thanh toán {money(getWholesaleTotal())}
           </button>
+
         </div>
 
       </SectionCard>
+
     </div>
   );
 
