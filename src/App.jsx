@@ -1832,14 +1832,14 @@ export default function App() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 420px",
+        gridTemplateColumns: isMobile ? "1fr" : "minmax(0,1fr) 420px",
         gap: 18,
         height: "100%",
-        minHeight: 0,
+        minHeight: 0
       }}
     >
 
-      {/* LEFT - GIỐNG SALES 100% */}
+      {/* ===== LEFT: COPY Y CHANG SALES ===== */}
       <div style={{
         display: "flex",
         flexDirection: "column",
@@ -1911,8 +1911,10 @@ export default function App() {
           >
             {products
               .filter(p => {
-                const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
-                const matchCate = activeCategory === "all" || p.category === activeCategory;
+                const s = search.toLowerCase();
+                const matchSearch = p.name.toLowerCase().includes(s);
+                const matchCate =
+                  activeCategory === "all" || p.category === activeCategory;
                 return matchSearch && matchCate;
               })
               .map((p) => (
@@ -1931,7 +1933,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* RIGHT - GIỐNG SALES 100% */}
+      {/* ===== RIGHT: UI SALES 100% - CHỈ ĐỔI LOGIC ===== */}
       <SectionCard style={{ display: "flex", flexDirection: "column" }}>
 
         {/* HEADER */}
@@ -1946,10 +1948,11 @@ export default function App() {
         {/* CART */}
         <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
           {!wholesaleCart.length ? (
-            <div>Chưa có sản phẩm</div>
+            <div>Chưa có sản phẩm nào trong giỏ hàng</div>
           ) : (
             wholesaleCart.map(i => {
-              const totalItem = i.customPrice * i.qty - i.discountCash * i.qty;
+              const totalItem =
+                i.customPrice * i.qty - i.discountCash * i.qty;
 
               return (
                 <div key={i.id} style={{
@@ -1971,22 +1974,16 @@ export default function App() {
 
                     <button onClick={() =>
                       setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
-                    }>
-                      ✕
-                    </button>
+                    }>✕</button>
                   </div>
 
                   {/* QTY */}
                   <div style={{
-                    marginTop: 8,
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center"
+                    marginTop: 8
                   }}>
-                    <div style={{
-                      display: "flex",
-                      gap: 8
-                    }}>
+                    <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={() =>
                         setWholesaleCart(wholesaleCart.map(x =>
                           x.id === i.id
@@ -2043,17 +2040,13 @@ export default function App() {
           )}
         </div>
 
-        {/* FOOTER GIỐNG SALES */}
+        {/* FOOTER (GIỐNG SALES) */}
         <div style={{
           borderTop: `1px solid ${COLORS.border}`,
           padding: 18
         }}>
 
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            color: COLORS.textSoft
-          }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>Tạm tính</span>
             <span>{money(getWholesaleTotal())}</span>
           </div>
@@ -2073,17 +2066,13 @@ export default function App() {
             Chiết khấu: {money(getWholesaleDiscount())}
           </div>
 
-          {/* NÚT GIỐNG SALES */}
+          {/* PAYMENT */}
           <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-            <button style={{ ...primaryBtn, flex: 1 }}>
-              Tiền mặt
-            </button>
-
-            <button style={{ ...ghostBtn, flex: 1 }}>
-              Chuyển khoản
-            </button>
+            <button style={{ ...primaryBtn, flex: 1 }}>Tiền mặt</button>
+            <button style={{ ...ghostBtn, flex: 1 }}>Chuyển khoản</button>
           </div>
 
+          {/* ACTION */}
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(4,1fr)",
