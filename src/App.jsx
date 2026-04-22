@@ -2067,27 +2067,41 @@ export default function App() {
           </div>
 
           {/* PAYMENT */}
-          <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-            <button style={{ ...primaryBtn, flex: 1 }}>Tiền mặt</button>
-            <button style={{ ...ghostBtn, flex: 1 }}>Chuyển khoản</button>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 12 }}>
+            <PaymentButton active={true} onClick={() => { }} icon={BadgeDollarSign}>
+              Tiền mặt
+            </PaymentButton>
+            <PaymentButton active={false} onClick={() => { }} icon={CreditCard}>
+              Chuyển khoản
+            </PaymentButton>
           </div>
 
           {/* ACTION */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4,1fr)",
-            gap: 8,
-            marginTop: 10
-          }}>
-            <button>In hóa đơn</button>
-            <button>Giao hàng</button>
-            <button>Đơn tạm</button>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr 1fr",
+              gap: 14,
+              marginTop: 10
+            }}
+          >
+            <button style={ghostBtn}>
+              <Printer size={18} /> In hóa đơn
+            </button>
+
+            <button style={ghostBtn}>
+              🚚 Giao hàng
+            </button>
+
+            <button style={ghostBtn}>
+              🧾 Đơn tạm
+            </button>
 
             <button
-              style={primaryBtn}
+              style={{ ...primaryBtn, opacity: getWholesaleTotal() ? 1 : 0.55 }}
               onClick={createWholesaleOrder}
             >
-              Thanh toán
+              Thanh toán {money(getWholesaleTotal())}
             </button>
           </div>
 
