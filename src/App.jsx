@@ -1839,50 +1839,47 @@ export default function App() {
       }}
     >
 
-      {/* ===== LEFT ===== */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          minHeight: 0,
-        }}
-      >
+      {/* ===== LEFT: COPY Y CHANG SALES ===== */}
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        minHeight: 0
+      }}>
 
         {/* SEARCH */}
-        <input
-          placeholder="Tìm kiếm sản phẩm..."
-          value={search || ""}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            width: "100%",
-            height: 50,
-            padding: "0 14px",
-            borderRadius: 14,
-            border: `1px solid ${COLORS.border}`,
-            background: COLORS.white,
-            fontSize: 15,
-          }}
-        />
+        <div style={{ position: "relative", maxWidth: 520 }}>
+          <input
+            placeholder="Tìm kiếm sản phẩm..."
+            value={search || ""}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: "100%",
+              height: 56,
+              paddingLeft: 16,
+              borderRadius: 16,
+              border: `1px solid ${COLORS.border}`,
+              background: COLORS.white,
+              fontSize: 16,
+            }}
+          />
+        </div>
 
-        {/* CATEGORY SCROLL */}
         <div
           style={{
             display: "flex",
             gap: 8,
-            overflowX: "auto",
-            paddingBottom: 4,
+            overflowX: "auto"
           }}
         >
+
           {/* TẤT CẢ */}
           <button
             style={{
               ...(activeCategory === "all" ? primaryBtn : ghostBtn),
-              whiteSpace: "nowrap",
-              padding: "8px 14px",
-              fontSize: 14,
-              borderRadius: 12,
+              width: "auto",
               flexShrink: 0,
+              whiteSpace: "nowrap",
             }}
             onClick={() => setActiveCategory("all")}
           >
@@ -1890,22 +1887,23 @@ export default function App() {
           </button>
 
           {/* CATEGORY */}
-          {categories.map((c) => (
-            <button
-              key={c}
-              style={{
-                ...(activeCategory === c ? primaryBtn : ghostBtn),
-                whiteSpace: "nowrap",
-                padding: "8px 14px",
-                fontSize: 14,
-                borderRadius: 12,
-                flexShrink: 0,
-              }}
-              onClick={() => setActiveCategory(c)}
-            >
-              {c}
-            </button>
-          ))}
+          {categories
+            .filter(c => c !== "Tất cả")
+            .map((c) => (
+              <button
+                key={c}
+                style={{
+                  ...(activeCategory === c ? primaryBtn : ghostBtn),
+                  width: "auto",
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                }}
+                onClick={() => setActiveCategory(c)}
+              >
+                {c}
+              </button>
+            ))}
+
         </div>
 
         {/* NGƯỜI BÁN */}
@@ -1928,6 +1926,44 @@ export default function App() {
           />
         </div>
 
+        {/* PRODUCTS */}
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile
+                ? "repeat(2,1fr)"
+                : "repeat(4,1fr)",
+              gap: 16,
+            }}
+          >
+            {products
+              .filter(p => {
+                const s = (search || "").toLowerCase();
+
+                const matchSearch = p.name
+                  .toLowerCase()
+                  .includes(s);
+
+                const matchCate =
+                  activeCategory === "all" || p.category === activeCategory;
+
+                return matchSearch && matchCate;
+              })
+              .map((p) => (
+                <SectionCard
+                  key={p.id}
+                  onClick={() => addToWholesaleCart(p)}
+                  style={{ padding: 16, cursor: "pointer" }}
+                >
+                  <div>{p.name}</div>
+                  <div style={{ color: COLORS.primary }}>
+                    {money(p.price)}
+                  </div>
+                </SectionCard>
+              ))}
+          </div>
+        </div>
       </div>
 
       {/* ===== RIGHT: UI SALES 100% - CHỈ ĐỔI LOGIC ===== */}
