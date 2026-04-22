@@ -1831,303 +1831,126 @@ export default function App() {
   const wholesalePage = (
     <div
       style={{
-        flex: 1,
-        overflowY: "auto",
         display: "grid",
-        gridTemplateColumns: isMobile
-          ? "repeat(2,1fr)"
-          : "repeat(4,1fr)",
-        gap: 14,
-        paddingRight: 4
+        gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 400px",
+        gap: 18,
+        height: "100%",
+        minHeight: 0,
       }}
     >
 
-      {/* LEFT */}
-      <div style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-        height: "100%",
-        overflow: "hidden"
-      }}>
+      {/* LEFT – COPY 100% SALES */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          minWidth: 0,
+          minHeight: 0,
+        }}
+      >
 
-        {/* người bán */}
-        <div style={{ display: "grid", gap: 8 }}>
+        {/* SEARCH */}
+        <div style={{ position: "relative", maxWidth: 520 }}>
+          <Search size={20} color="#64748b" style={{ position: "absolute", left: 18, top: 17 }} />
           <input
-            placeholder="Tên người bán"
-            value={sellerInfo.name}
-            onChange={(e) =>
-              setSellerInfo({ ...sellerInfo, name: e.target.value })
-            }
-            style={cellInput}
-          />
-          <input
-            placeholder="SĐT người bán"
-            value={sellerInfo.phone}
-            onChange={(e) =>
-              setSellerInfo({ ...sellerInfo, phone: e.target.value })
-            }
-            style={cellInput}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Tìm kiếm sản phẩm..."
+            style={{
+              width: "100%",
+              height: 56,
+              paddingLeft: 52,
+              borderRadius: 16,
+              border: `1px solid ${COLORS.border}`,
+              background: COLORS.white,
+              fontSize: 16,
+            }}
           />
         </div>
 
-        {/* sản phẩm */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile
-              ? "repeat(2,1fr)"
-              : "repeat(4,1fr)",
-            gap: 14
-          }}
-        >
-          {products.map((p) => (
-            <SectionCard
-              key={p.id}
-              onClick={() => addToWholesaleCart(p)}
-              style={{ padding: 14, cursor: "pointer" }}
-            >
-              <div style={{ fontWeight: 600 }}>{p.name}</div>
-              <div style={{ color: COLORS.primary }}>
-                {money(p.price)}
-              </div>
-            </SectionCard>
+        {/* CATEGORY */}
+        <div style={{ display: "flex", gap: 10, overflowX: "auto" }}>
+          {categories.map((c) => (
+            <Chip key={c} active={activeCategory === c} onClick={() => setActiveCategory(c)}>
+              {c}
+            </Chip>
           ))}
         </div>
-      </div>
 
-      {/* RIGHT */}
-      <SectionCard style={{ display: "flex", flexDirection: "column" }}>
-
-        {/* header */}
-        <div
-          style={{
-            padding: 18,
-            borderBottom: `1px solid ${COLORS.border}`,
-            fontWeight: 800,
-            fontSize: 20
-          }}
-        >
-          Đơn hàng hiện tại
-        </div>
-
-        {/* CART */}
-        <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-
-          {!wholesaleCart.length ? (
-            <EmptyState icon={Package} title="Chưa có sản phẩm nào trong giỏ hàng" />
-          ) : (
-            wholesaleCart.map((i) => {
-              const totalItem =
-                i.customPrice * i.qty - i.discountCash * i.qty;
-
-              return (
-                <div
-                  key={i.id}
-                  style={{
-                    borderBottom: `1px solid ${COLORS.border}`,
-                    marginBottom: 12,
-                    paddingBottom: 12
-                  }}
-                >
-
-                  {/* tên */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between"
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontWeight: 700 }}>{i.name}</div>
-                      <div style={{ color: COLORS.textSoft }}>
-                        {money(i.customPrice)}
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() =>
-                        setWholesaleCart(
-                          wholesaleCart.filter((x) => x.id !== i.id)
-                        )
-                      }
-                    >
-                      ✕
-                    </button>
-                  </div>
-
-                  {/* qty */}
-                  <div
-                    style={{
-                      marginTop: 10,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center"
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        border: `1px solid ${COLORS.border}`,
-                        borderRadius: 12,
-                        padding: 4
-                      }}
-                    >
-                      <button
-                        style={qtyBtn}
-                        onClick={() =>
-                          setWholesaleCart(
-                            wholesaleCart.map((x) =>
-                              x.id === i.id
-                                ? { ...x, qty: Math.max(1, i.qty - 1) }
-                                : x
-                            )
-                          )
-                        }
-                      >
-                        -
-                      </button>
-
-                      <div
-                        style={{
-                          minWidth: 30,
-                          textAlign: "center",
-                          fontWeight: 700
-                        }}
-                      >
-                        {i.qty}
-                      </div>
-
-                      <button
-                        style={qtyBtn}
-                        onClick={() =>
-                          setWholesaleCart(
-                            wholesaleCart.map((x) =>
-                              x.id === i.id
-                                ? { ...x, qty: i.qty + 1 }
-                                : x
-                            )
-                          )
-                        }
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    <div style={{ fontWeight: 800, color: COLORS.primary }}>
-                      {money(totalItem)}
-                    </div>
-                  </div>
-
-                  {/* giá */}
-                  <input
-                    style={{ ...cellInput, marginTop: 8 }}
-                    value={i.customPrice}
-                    onChange={(e) =>
-                      setWholesaleCart(
-                        wholesaleCart.map((x) =>
-                          x.id === i.id
-                            ? {
-                              ...x,
-                              customPrice: Number(e.target.value)
-                            }
-                            : x
-                        )
-                      )
-                    }
-                  />
-
-                  {/* chiết khấu */}
-                  <input
-                    style={{ ...cellInput, marginTop: 6 }}
-                    value={i.discountCash}
-                    onChange={(e) =>
-                      setWholesaleCart(
-                        wholesaleCart.map((x) =>
-                          x.id === i.id
-                            ? {
-                              ...x,
-                              discountCash: Number(e.target.value)
-                            }
-                            : x
-                        )
-                      )
-                    }
-                  />
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        {/* FOOTER */}
-        <div
-          style={{
-            borderTop: `1px solid ${COLORS.border}`,
-            padding: 18
-          }}
-        >
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: COLORS.textSoft
-            }}
-          >
-            <span>Tạm tính</span>
-            <span>{money(getWholesaleTotal())}</span>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: 26,
-              fontWeight: 800,
-              color: COLORS.primary,
-              marginTop: 6
-            }}
-          >
-            <span>Tổng cộng</span>
-            <span>{money(getWholesaleTotal())}</span>
-          </div>
-
-          <div style={{ marginTop: 8, color: COLORS.textSoft }}>
-            Chiết khấu: {money(getWholesaleDiscount())}
-          </div>
-
-          <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-            <button style={{ ...primaryBtn, flex: 1 }}>
-              Tiền mặt
-            </button>
-            <button style={{ ...ghostBtn, flex: 1 }}>
-              Chuyển khoản
-            </button>
-          </div>
-
+        {/* PRODUCTS */}
+        <div style={{ overflowY: "auto" }}>
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4,1fr)",
-              gap: 8,
-              marginTop: 10
+              gridTemplateColumns: isMobile
+                ? "repeat(2, minmax(0, 1fr))"
+                : "repeat(4, minmax(0, 1fr))",
+              gap: 18,
             }}
           >
-            <button>In hóa đơn</button>
-            <button>Giao hàng</button>
-            <button>Đơn tạm</button>
-
-            <button
-              style={primaryBtn}
-              onClick={createWholesaleOrder}
-            >
-              Thanh toán
-            </button>
+            {filteredProducts.map((p) => (
+              <SectionCard
+                key={p.id}
+                onClick={() => addToWholesaleCart(p)}
+                style={{
+                  padding: 18,
+                  cursor: "pointer",
+                }}
+              >
+                <div>{p.name}</div>
+                <div style={{ color: COLORS.primary }}>
+                  {money(p.price)}
+                </div>
+              </SectionCard>
+            ))}
           </div>
+        </div>
+      </div>
 
+      {/* RIGHT – giữ logic sỉ */}
+      <SectionCard style={{ display: "flex", flexDirection: "column" }}>
+
+        <div style={{ padding: 18, fontWeight: 800 }}>
+          Đơn sỉ
+        </div>
+
+        <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
+          {wholesaleCart.map(i => (
+            <div key={i.id}>
+              <div>{i.name}</div>
+
+              <input
+                value={i.customPrice}
+                onChange={(e) =>
+                  setWholesaleCart(wholesaleCart.map(x =>
+                    x.id === i.id
+                      ? { ...x, customPrice: Number(e.target.value) }
+                      : x
+                  ))
+                }
+              />
+
+              <input
+                value={i.discountCash}
+                onChange={(e) =>
+                  setWholesaleCart(wholesaleCart.map(x =>
+                    x.id === i.id
+                      ? { ...x, discountCash: Number(e.target.value) }
+                      : x
+                  ))
+                }
+              />
+            </div>
+          ))}
+        </div>
+
+        <div style={{ padding: 18 }}>
+          <div>Tổng: {money(getWholesaleTotal())}</div>
+
+          <button onClick={createWholesaleOrder}>
+            Thanh toán
+          </button>
         </div>
 
       </SectionCard>
