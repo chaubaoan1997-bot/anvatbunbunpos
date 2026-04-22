@@ -2445,7 +2445,7 @@ export default function App() {
                     {/* 🔥 THÊM NGAY DƯỚI */}
                     {o.type === "wholesale" && (
                       <div style={{ fontSize: 13, color: "#555", marginTop: 4 }}>
-                        👤 {o.sellerName || "Chưa có tên"} - {o.sellerPhone || ""}
+                        👤 {o.customerName || "Chưa có tên"} - {o.customerPhone || ""}
                       </div>
                     )}
                     <div style={{ color: COLORS.success, fontSize: 13, fontWeight: 700 }}>
@@ -2488,7 +2488,8 @@ export default function App() {
                 </div>
                 {selectedOrder.type === "wholesale" && (
                   <div style={{ marginTop: 6, fontSize: 14, color: "#555" }}>
-                    👤 {selectedOrder.customerName || "Khách lẻ"}- {selectedOrder.customerPhone || "---"}
+                    👤 {selectedOrder.customerName || "Khách lẻ"}
+                    - {selectedOrder.customerPhone || "---"}
                   </div>
                 )}
               </div>
