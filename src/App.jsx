@@ -611,6 +611,10 @@ export default function App() {
   const [paidMessage, setPaidMessage] = useState("");
 
   const [wholesaleCart, setWholesaleCart] = useState([]);
+  const [sellerInfo, setSellerInfo] = useState({
+    name: "",
+    phone: ""
+  });
 
   const [reportProductSearch, setReportProductSearch] = useState("");
   const [reportCategory, setReportCategory] = useState("Tất cả");
@@ -857,6 +861,42 @@ export default function App() {
     } else {
       setCart([...cart, { ...product, qty: 1, discount: 0 }]);
     }
+  };
+
+  const addToWholesaleCart = (product) => {
+    const found = wholesaleCart.find(i => i.id === product.id);
+
+    if (found) {
+      setWholesaleCart(
+        wholesaleCart.map(i =>
+          i.id === product.id ? { ...i, qty: i.qty + 1 } : i
+        )
+      );
+    } else {
+      setWholesaleCart([
+        ...wholesaleCart,
+        {
+          ...product,
+          qty: 1,
+          customPrice: product.price,
+          discountCash: 0
+        }
+      ]);
+    }
+  };
+
+  const getWholesaleTotal = () => {
+    return wholesaleCart.reduce((sum, i) => {
+      const price = Number(i.customPrice || 0);
+      const discount = Number(i.discountCash || 0);
+      return sum + (price * i.qty - discount * i.qty);
+    }, 0);
+  };
+
+  const getWholesaleDiscount = () => {
+    return wholesaleCart.reduce((sum, i) => {
+      return sum + (Number(i.discountCash || 0) * i.qty);
+    }, 0);
   };
 
   const loadTempOrderToCart = (order) => {
