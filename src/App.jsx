@@ -1052,33 +1052,23 @@ export default function App() {
     }
   };
 
-  const createWholesaleOrder = async () => {
+  const createWholesaleOrder = () => {
     if (!wholesaleCart.length) return;
 
-    const now = new Date();
-
-    await addDoc(collection(db, "orders"), {
-      code: `WS${Date.now().toString().slice(-6)}`,
+    const order = {
+      id: Date.now(),
+      type: "wholesale", // 🔥 phân biệt đơn sỉ
       items: wholesaleCart,
       total: getWholesaleTotal(),
-      discountTotal: getWholesaleDiscount(),
 
-      type: "wholesale",
+      sellerName: sellerInfo.name,   // ✅ thêm
+      sellerPhone: sellerInfo.phone, // ✅ thêm
 
-      seller: sellerInfo,
+      createdAt: new Date().toISOString(),
+    };
 
-      status: "Đã thanh toán",
-      method: "Tiền mặt",
-
-      dateKey: dateInputValue(),
-      createdAt: serverTimestamp(),
-      timeText: now.toLocaleString("vi-VN"),
-    });
-
+    setOrders(prev => [order, ...prev]);
     setWholesaleCart([]);
-    setSellerInfo({ name: "", phone: "" });
-
-    setPaidMessage("Đã tạo đơn sỉ");
   };
 
   const updateTempOrder = async () => {
@@ -2130,7 +2120,21 @@ export default function App() {
               🚚 Giao hàng
             </button>
 
-            <button style={ghostBtn}>
+            <button
+              style={ghostBtn}
+              onClick={() => {
+                if (order.type === "wholesale_temp") {
+                  setWholesaleCart(order.items);
+
+                  setSellerInfo({
+                    name: order.sellerName || "",
+                    phone: order.sellerPhone || ""
+                  });
+
+                  setPage("wholesale"); // quay lại tab bán sỉ
+                }
+              }}>
+
               🧾 Đơn tạm
             </button>
 
