@@ -1887,14 +1887,6 @@ export default function App() {
           </div>
 
           {/* NHÂN VIÊN */}
-          <input
-            placeholder="Tên nhân viên bán"
-            value={sellerInfo.name}
-            onChange={(e) =>
-              setSellerInfo({ name: e.target.value })
-            }
-            style={cellInput}
-          />
         </div>
 
         {/* PRODUCTS */}
