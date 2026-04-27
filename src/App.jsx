@@ -860,13 +860,16 @@ export default function App() {
 
       if (!map[a.empId]) {
         map[a.empId] = {
+          empId: a.empId, // 🔥 THÊM DÒNG NÀY
           name: emp.name,
           hours: 0,
           salary: emp.salary || 20000,
+          shifts: 0, // 🔥 nên thêm luôn
         };
       }
 
       map[a.empId].hours += Number(a.hours || 0);
+      map[a.empId].shifts += 1; // 🔥 thêm dòng này
     });
 
     return Object.values(map).map((p) => ({
@@ -912,6 +915,18 @@ export default function App() {
     alert("Đã export (tạm console)");
   };
 
+  const selectedEmpDayRecords = useMemo(() => {
+    if (!selectedEmp) return [];
+
+    return attendance
+      .filter(
+        (a) =>
+          a.empId === selectedEmp.id &&
+          a.dateKey === attendanceDate
+      )
+      .sort((a, b) => (a.start || "").localeCompare(b.start || ""));
+  }, [attendance, selectedEmp, attendanceDate]);
+
   const summary = useMemo(() => {
     const shifts = selectedEmpDayRecords.length;
 
@@ -924,18 +939,6 @@ export default function App() {
 
     return { shifts, hours, salary };
   }, [selectedEmpDayRecords, selectedEmp]);
-
-  const selectedEmpDayRecords = useMemo(() => {
-    if (!selectedEmp) return [];
-
-    return attendance
-      .filter(
-        (a) =>
-          a.empId === selectedEmp.id &&
-          a.dateKey === attendanceDate
-      )
-      .sort((a, b) => (a.start || "").localeCompare(b.start || ""));
-  }, [attendance, selectedEmp, attendanceDate]);
 
   const selectedPayroll = useMemo(() => {
     if (!selectedEmp) return null;
