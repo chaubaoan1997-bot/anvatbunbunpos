@@ -831,6 +831,23 @@ export default function App() {
     );
   }, [employees, employeeSearch]);
 
+  const exportAttendanceExcel = () => {
+    const data = attendance.map(a => {
+      const emp = employees.find(e => e.id === a.empId);
+
+      return {
+        NhanVien: emp?.name || "",
+        Ngay: a.dateKey,
+        GioVao: a.start,
+        GioRa: a.end,
+        SoGio: a.hours,
+      };
+    });
+
+    console.log("Export data:", data);
+    alert("Tạm thời export console (chưa file)");
+  };
+
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
