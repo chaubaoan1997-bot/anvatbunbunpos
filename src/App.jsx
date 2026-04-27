@@ -1004,9 +1004,23 @@ export default function App() {
 
   const reportOrders = useMemo(() => {
     return orders.filter((o) => {
-      if (reportType === "day") return o.dateKey === reportDate;
-      if (reportType === "week") return isSameWeek(o.dateKey, reportDate);
-      if (reportType === "month") return isSameMonth(o.dateKey, reportDate);
+      // 🔥 CHỈ LẤY ĐƠN ĐÃ THANH TOÁN
+      if (!o.isPaid || !o.paidAt) return false;
+
+      const paidDate = new Date(o.paidAt);
+
+      if (reportType === "day") {
+        return paidDate.toDateString() === new Date(reportDate).toDateString();
+      }
+
+      if (reportType === "week") {
+        return isSameWeek(paidDate.toISOString().slice(0, 10), reportDate);
+      }
+
+      if (reportType === "month") {
+        return isSameMonth(paidDate.toISOString().slice(0, 10), reportDate);
+      }
+
       return true;
     });
   }, [orders, reportDate, reportType]);
@@ -1100,9 +1114,10 @@ export default function App() {
 
   const total = cart.reduce((sum, item) => sum + getCartItemTotal(item), 0);
   const orderCount = reportOrders.length;
-  const revenue = reportOrders
-    .filter(o => o.status === "Đã thanh toán")
-    .reduce((sum, o) => sum + Number(o.total || 0), 0);
+  const revenue = reportOrders.reduce(
+    (sum, o) => sum + Number(o.total || 0),
+    0
+  );
   const cost = reportExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
   const cashRevenue = reportOrders
     .filter(o => o.method === "Tiền mặt" && o.status === "Đã thanh toán")
@@ -1307,9 +1322,14 @@ export default function App() {
         code,
         items: cart,
         total,
+
         method: "Chưa thanh toán",
         status: "Đơn tạm",
         isTemp: true,
+
+        isPaid: false,        // 🔥 THÊM
+        paidAt: null,         // 🔥 THÊM
+
         dateKey: dateInputValue(),
         createdAt: serverTimestamp(),
         timeText: now.toLocaleString("vi-VN"),
@@ -1432,8 +1452,11 @@ export default function App() {
 
       await updateDoc(doc(db, "orders", order.id), {
         status: "Đã thanh toán",
-        method: method || "Tiền mặt", // 🔥 FIX
+        method: method || "Tiền mặt",
         isTemp: false,
+
+        isPaid: true,          // 🔥 thêm
+        paidAt: new Date(),    // 🔥 thêm (cực quan trọng)
       });
 
       const batch = writeBatch(db);
