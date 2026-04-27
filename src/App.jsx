@@ -823,6 +823,14 @@ export default function App() {
     }));
   }, [attendance, employees]);
 
+  const filteredEmployees = useMemo(() => {
+    return employees.filter((e) =>
+      (e.name || "")
+        .toLowerCase()
+        .includes((employeeSearch || "").toLowerCase())
+    );
+  }, [employees, employeeSearch]);
+
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
