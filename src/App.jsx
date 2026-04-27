@@ -1233,43 +1233,96 @@ export default function App() {
     };
 
     const html = `
-      <html>
-      <head>
-        <title>In hóa đơn</title>
-        <style>
-          body{font-family:Arial,sans-serif;width:280px;padding:10px;color:#111}
-          .center{text-align:center}
-          .line{border-top:1px dashed #000;margin:8px 0}
-          .row{display:flex;justify-content:space-between;font-size:12px;margin:3px 0}
-          .b{font-weight:700}
-        </style>
-      </head>
-      <body>
-        <div class="center b">AN VAT BUNBUN</div>
-        <div class="center">${data.code || "Hóa đơn"}</div>
-        <div class="line"></div>
-        ${(data.items || [])
-        .map((i) => {
-          const raw = Number(i.price || 0) * Number(i.qty || 0);
-          const after = raw - (raw * Number(i.discount || 0)) / 100;
-          return `<div class="row"><span>${i.name} x${i.qty}${i.discount ? ` (-${i.discount}%)` : ""}</span><span>${Number(after).toLocaleString("vi-VN")} đ</span></div>`;
-        })
-        .join("")}
-        <div class="line"></div>
-        <div class="row b"><span>Tổng cộng</span><span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span></div>
-        <div class="row"><span>Thanh toán</span><span>${data.method || "Tiền mặt"}</span></div>
-        <div class="row"><span>Trạng thái</span><span>${data.status || "Đã thanh toán"}</span></div>
-        <div class="row"><span>Thời gian</span><span>${data.timeText || new Date().toLocaleString("vi-VN")}</span></div>
-        <div class="center b">Cám ơn quý khách ❤️</div>
-        <script>window.onload=()=>window.print()</script>
-      </body>
-      </html>`;
+  <html>
+  <head>
+    <title>In hóa đơn</title>
+    <style>
+      body {
+        font-family: monospace;
+        width: 300px; /* 🔥 chuẩn K80 */
+        margin: 0;
+        padding: 10px;
+        font-size: 12px;
+      }
 
-    const w = window.open("", "_blank", "width=320,height=700");
-    if (w) {
-      w.document.write(html);
-      w.document.close();
-    }
+      .center { text-align: center; }
+      .line { border-top: 1px dashed #000; margin: 8px 0; }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        margin: 2px 0;
+      }
+
+      .b { font-weight: bold; }
+
+      .item {
+        margin-bottom: 4px;
+      }
+
+      .item-name {
+        font-size: 12px;
+      }
+
+      .item-sub {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="center b">ĂN VẶT BUN BUN</div>
+    <div class="center">${data.code}</div>
+    <div class="center">${data.timeText}</div>
+
+    <div class="line"></div>
+
+    ${(data.items || []).map(i => {
+      const raw = i.price * i.qty;
+      const after = raw - (raw * (i.discount || 0)) / 100;
+
+      return `
+        <div class="item">
+          <div class="item-name">${i.name}</div>
+          <div class="item-sub">
+            <span>${i.qty} x ${Number(i.price).toLocaleString()}</span>
+            <span>${Number(after).toLocaleString()}</span>
+          </div>
+        </div>
+      `;
+    }).join("")}
+
+    <div class="line"></div>
+
+    <div class="row b">
+      <span>TỔNG</span>
+      <span>${Number(data.total).toLocaleString()} đ</span>
+    </div>
+
+    <div class="row">
+      <span>Thanh toán</span>
+      <span>${data.method}</span>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="center">Cảm ơn quý khách ❤️</div>
+
+    <script>
+      window.onload = () => {
+        window.print();
+      }
+    </script>
+  </body>
+  </html>
+  `;
+
+    const w = window.open("", "_blank", "width=320,height=600");
+    w.document.write(html);
+    w.document.close();
   };
 
   const checkout = async () => {
