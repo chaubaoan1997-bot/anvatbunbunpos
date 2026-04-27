@@ -2105,9 +2105,7 @@ export default function App() {
                 <Plus size={18} /> Thêm
               </button>
             </div>
-            <button style={primaryBtn} onClick={addEmployee}>
-              <Plus size={18} /> Thêm nhân viên
-            </button>
+
           </div>
         </SectionCard>
 
@@ -2389,29 +2387,26 @@ export default function App() {
           <>
             <div style={{ padding: 18, display: "grid", gap: 14 }}>
               <div>
-                <div style={{ color: COLORS.textSoft, fontWeight: 700, marginBottom: 6 }}>
+                <div style={{ marginBottom: 10, fontWeight: 600 }}>
                   Lương theo giờ
                 </div>
+
                 <input
                   type="number"
-                  value={selectedEmp.salary || 20000}
-                  onChange={(e) => {
-                    const next = Number(e.target.value || 0);
+                  value={selectedEmp?.salary || 0}
+                  onChange={async (e) => {
+                    const newSalary = Number(e.target.value || 0);
 
-                    // update selected employee
-                    setSelectedEmp({ ...selectedEmp, salary: next });
+                    // update local (cho mượt)
+                    setSelectedEmp({
+                      ...selectedEmp,
+                      salary: newSalary,
+                    });
 
-                    // 🔥 QUAN TRỌNG: update luôn mảng employees
-                    setEmployees((prev) =>
-                      prev.map((emp) =>
-                        emp.id === selectedEmp.id
-                          ? { ...emp, salary: next }
-                          : emp
-                      )
-                    );
-
-                    // lưu Firestore
-                    updateEmployeeSalary(selectedEmp.id, next);
+                    // update Firebase
+                    await updateDoc(doc(db, "employees", selectedEmp.id), {
+                      salary: newSalary,
+                    });
                   }}
                   style={cellInput}
                 />
