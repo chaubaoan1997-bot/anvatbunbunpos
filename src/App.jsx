@@ -650,6 +650,37 @@ export default function App() {
       console.error("Xóa ca lỗi:", err);
     }
   };
+  const updateAttendanceTime = async (id, field, value) => {
+    try {
+      const ref = doc(db, "attendance", id);
+      const record = attendance.find(a => a.id === id);
+      if (!record) return;
+
+      const start = field === "start" ? value : record.start;
+      const end = field === "end" ? value : record.end;
+
+      let hours = 0;
+
+      if (start && end) {
+        const [sh, sm] = start.split(":").map(Number);
+        const [eh, em] = end.split(":").map(Number);
+
+        const s = sh * 60 + sm;
+        const e = eh * 60 + em;
+
+        hours = (e - s) / 60;
+        if (hours < 0) hours = 0;
+      }
+
+      await updateDoc(ref, {
+        [field]: value,
+        hours: Number(hours.toFixed(2)),
+      });
+
+    } catch (err) {
+      console.error("Update lỗi:", err);
+    }
+  };
   const handleCheckIn = async () => {
     if (!selectedEmp) return alert("Bạn chưa chọn nhân viên");
 
@@ -2357,12 +2388,9 @@ export default function App() {
                             Giờ vào
                           </div>
                           <input
-                            type="time"
                             value={a.start || ""}
-                            onChange={(e) =>
-                              updateAttendanceTime(a, "start", e.target.value)
-                            }
-                            style={cellInput}
+                            type="time"
+                            onChange={(e) => updateAttendanceTime(a.id, "start", e.target.value)}
                           />
                         </div>
 
