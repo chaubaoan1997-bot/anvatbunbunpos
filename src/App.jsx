@@ -848,6 +848,18 @@ export default function App() {
     alert("Tạm thời export console (chưa file)");
   };
 
+  const exportPayrollExcel = () => {
+    const data = payroll.map(p => ({
+      Ten: p.name,
+      Gio: p.hours,
+      LuongGio: p.salary,
+      TongLuong: p.total,
+    }));
+
+    console.log("Payroll:", data);
+    alert("Đã export (tạm console)");
+  };
+
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
