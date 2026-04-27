@@ -1006,13 +1006,16 @@ export default function App() {
     return orders.filter((o) => {
       if (o.status !== "Đã thanh toán") return false;
 
-      const paidDateObj = o.paidAt?.toDate
-        ? o.paidAt.toDate()
-        : o.paidAt
-          ? new Date(o.paidAt)
-          : o.dateKey
-            ? new Date(o.dateKey + "T00:00:00")
-            : null;
+      // 🔥 FIX: nếu chưa có paidAt thì coi như đơn cũ → vẫn tính
+
+      const paidDateObj =
+        o.paidAt?.toDate
+          ? o.paidAt.toDate()
+          : o.paidAt
+            ? new Date(o.paidAt)
+            : o.dateKey
+              ? new Date(o.dateKey + "T00:00:00")
+              : null;
 
       if (!paidDateObj) return false;
 
