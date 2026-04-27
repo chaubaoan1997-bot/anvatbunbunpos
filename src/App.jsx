@@ -2325,7 +2325,20 @@ export default function App() {
                   value={selectedEmp.salary || 20000}
                   onChange={(e) => {
                     const next = Number(e.target.value || 0);
+
+                    // update selected employee
                     setSelectedEmp({ ...selectedEmp, salary: next });
+
+                    // 🔥 QUAN TRỌNG: update luôn mảng employees
+                    setEmployees((prev) =>
+                      prev.map((emp) =>
+                        emp.id === selectedEmp.id
+                          ? { ...emp, salary: next }
+                          : emp
+                      )
+                    );
+
+                    // lưu Firestore
                     updateEmployeeSalary(selectedEmp.id, next);
                   }}
                   style={cellInput}
