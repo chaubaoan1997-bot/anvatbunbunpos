@@ -1456,7 +1456,7 @@ export default function App() {
         isTemp: false,
 
         isPaid: true,          // 🔥 thêm
-        paidAt: new Date(),    // 🔥 thêm (cực quan trọng)
+        paidAt: serverTimestamp(),    // 🔥 thêm (cực quan trọng)
       });
 
       const batch = writeBatch(db);
