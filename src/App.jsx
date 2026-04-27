@@ -3419,13 +3419,7 @@ export default function App() {
                     <div style={{ fontWeight: 700, color: COLORS.text }}>
                       <div>
                         <div style={{ fontSize: 12, color: "#64748b" }}>
-                          NV: {o.staffName || "Không rõ"} • {
-                            o.timeText || (
-                              o.createdAt?.toDate
-                                ? o.createdAt.toDate().toLocaleString("vi-VN")
-                                : ""
-                            )
-                          }
+                          NV: {o.staffName || "Không rõ"}
                         </div>
                       </div>
 
