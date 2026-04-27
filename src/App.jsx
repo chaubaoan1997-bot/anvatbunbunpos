@@ -610,13 +610,14 @@ export default function App() {
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
   // ===== CHẤM CÔNG =====
+  // ===== CHẤM CÔNG FULL LV1-LV4 =====
   const [employees, setEmployees] = useState([]);
   const [attendance, setAttendance] = useState([]);
-
   const [employeeName, setEmployeeName] = useState("");
   const [selectedEmp, setSelectedEmp] = useState(null);
-
   const [attendanceDate, setAttendanceDate] = useState(dateInputValue());
+  const [attendanceType, setAttendanceType] = useState("day"); // day | week | month
+  const [employeeSearch, setEmployeeSearch] = useState("");
   const addEmployee = async () => {
     if (!employeeName) return;
 
@@ -763,7 +764,9 @@ export default function App() {
     const unsubEmployees = onSnapshot(
       collection(db, "employees"),
       (snap) => {
-        setEmployees(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        setEmployees(data);
+        setSelectedEmp((prev) => prev || data[0] || null);
       },
       (err) => console.error("Employees snapshot error:", err)
     );
@@ -1429,6 +1432,7 @@ export default function App() {
     if (selectedOrder?.id === id) setSelectedOrder(null);
   };
 
+
   const addExpense = async () => {
     const name = prompt("Tên khoản chi:");
     if (!name) return;
@@ -1849,18 +1853,37 @@ export default function App() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "1fr 400px",
+        gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 400px",
         gap: 18,
         height: "100%",
+        minHeight: 0,
       }}
     >
+      {/* LEFT - DANH SÁCH NHÂN VIÊN + PAYROLL */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          minWidth: 0,
+          minHeight: 0,
+        }}
+      >
+        <div>
+          <div style={pageTitle}>Chấm công</div>
+          <div style={pageSub}>
+            Quản lý giờ vào ca, ra ca, tổng giờ làm và bảng lương nhân viên.
+          </div>
+        </div>
 
-      {/* LEFT - NHÂN VIÊN */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-
-        {/* ADD NV */}
-        <SectionCard style={{ padding: 12 }}>
-          <div style={{ display: "flex", gap: 8 }}>
+        <SectionCard style={{ padding: 16, flexShrink: 0 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr auto",
+              gap: 10,
+            }}
+          >
             <input
               placeholder="Tên nhân viên"
               value={employeeName}
@@ -1868,87 +1891,438 @@ export default function App() {
               style={cellInput}
             />
             <button style={primaryBtn} onClick={addEmployee}>
-              +
+              <Plus size={18} /> Thêm nhân viên
             </button>
           </div>
         </SectionCard>
 
-        {/* LIST NV */}
-        <div style={{ display: "grid", gap: 10 }}>
-          {employees.map(emp => (
-            <SectionCard
-              key={emp.id}
-              onClick={() => setSelectedEmp(emp)}
+        <SectionCard style={{ padding: 16, flexShrink: 0 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 160px",
+              gap: 10,
+            }}
+          >
+            <input
+              placeholder="Tìm nhân viên..."
+              value={employeeSearch}
+              onChange={(e) => setEmployeeSearch(e.target.value)}
+              style={cellInput}
+            />
+            <input
+              type="date"
+              value={attendanceDate}
+              onChange={(e) => setAttendanceDate(e.target.value)}
+              style={cellInput}
+            />
+          </div>
+
+          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+            <button
+              style={attendanceType === "day" ? primaryBtn : ghostBtn}
+              onClick={() => setAttendanceType("day")}
+            >
+              Ngày
+            </button>
+            <button
+              style={attendanceType === "week" ? primaryBtn : ghostBtn}
+              onClick={() => setAttendanceType("week")}
+            >
+              Tuần
+            </button>
+            <button
+              style={attendanceType === "month" ? primaryBtn : ghostBtn}
+              onClick={() => setAttendanceType("month")}
+            >
+              Tháng
+            </button>
+          </div>
+        </SectionCard>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile
+              ? "1fr"
+              : "repeat(3, minmax(0, 1fr))",
+            gap: 14,
+            flexShrink: 0,
+          }}
+        >
+          <MetricCard
+            title="Tổng nhân viên"
+            value={employees.length}
+            sub="Đang quản lý"
+            color={COLORS.primary}
+            soft={COLORS.primarySoft}
+          />
+          <MetricCard
+            title="Tổng giờ"
+            value={`${payroll.reduce((s, p) => s + p.hours, 0).toFixed(2)}h`}
+            sub={
+              attendanceType === "day"
+                ? "Theo ngày"
+                : attendanceType === "week"
+                  ? "Theo tuần"
+                  : "Theo tháng"
+            }
+            color={COLORS.success}
+            soft={COLORS.successSoft}
+          />
+          <MetricCard
+            title="Tổng lương"
+            value={money(payroll.reduce((s, p) => s + p.total, 0))}
+            sub="Tạm tính theo giờ"
+            color={COLORS.warn}
+            soft={COLORS.warnSoft}
+          />
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "340px minmax(0, 1fr)",
+            gap: 16,
+            minHeight: 0,
+            flex: 1,
+          }}
+        >
+          <SectionCard
+            style={{
+              padding: 16,
+              overflowY: "auto",
+              minHeight: 0,
+            }}
+          >
+            <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 14 }}>
+              Nhân viên
+            </div>
+
+            {!filteredEmployees.length ? (
+              <EmptyState
+                icon={Calendar}
+                title="Chưa có nhân viên"
+                subtitle="Thêm nhân viên để bắt đầu chấm công"
+              />
+            ) : (
+              <div style={{ display: "grid", gap: 10 }}>
+                {filteredEmployees.map((emp) => {
+                  const empPayroll = payroll.find((p) => p.empId === emp.id);
+                  const isActive = selectedEmp?.id === emp.id;
+
+                  return (
+                    <div
+                      key={emp.id}
+                      onClick={() => setSelectedEmp(emp)}
+                      style={{
+                        padding: 14,
+                        borderRadius: 16,
+                        border: `1px solid ${isActive ? COLORS.primary : COLORS.border
+                          }`,
+                        background: isActive ? COLORS.primarySoft : COLORS.white,
+                        cursor: "pointer",
+                        display: "grid",
+                        gap: 8,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          gap: 10,
+                          alignItems: "center",
+                        }}
+                      >
+                        <div style={{ fontWeight: 800 }}>{emp.name}</div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteEmployee(emp);
+                          }}
+                          style={{
+                            ...iconBtn,
+                            width: 32,
+                            height: 32,
+                          }}
+                        >
+                          <Trash2 size={15} color={COLORS.danger} />
+                        </button>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          color: COLORS.textSoft,
+                          fontSize: 13,
+                        }}
+                      >
+                        <span>{(empPayroll?.hours || 0).toFixed(2)}h</span>
+                        <span>{money(empPayroll?.total || 0)}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </SectionCard>
+
+          <SectionCard
+            style={{
+              padding: 16,
+              overflowY: "auto",
+              minHeight: 0,
+            }}
+          >
+            <div
               style={{
-                padding: 14,
-                cursor: "pointer",
-                background:
-                  selectedEmp?.id === emp.id
-                    ? COLORS.primarySoft
-                    : COLORS.white,
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 10,
+                alignItems: "center",
+                marginBottom: 14,
+                flexWrap: "wrap",
               }}
             >
-              {emp.name}
-            </SectionCard>
-          ))}
+              <div style={{ fontSize: 20, fontWeight: 800 }}>Bảng lương</div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button style={ghostBtn} onClick={exportAttendanceExcel}>
+                  <Download size={16} /> Xuất công
+                </button>
+                <button style={primaryBtn} onClick={exportPayrollExcel}>
+                  <Download size={16} /> Xuất lương
+                </button>
+              </div>
+            </div>
+
+            {!payroll.length ? (
+              <EmptyState
+                icon={Receipt}
+                title="Chưa có dữ liệu chấm công"
+                subtitle="Chấm công nhân viên để xem bảng lương"
+              />
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ color: COLORS.textSoft, textAlign: "left" }}>
+                      <th style={{ padding: "10px 8px" }}>Nhân viên</th>
+                      <th style={{ padding: "10px 8px" }}>Ca</th>
+                      <th style={{ padding: "10px 8px" }}>Giờ</th>
+                      <th style={{ padding: "10px 8px" }}>Lương/giờ</th>
+                      <th style={{ padding: "10px 8px" }}>Tổng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {payroll.map((p) => (
+                      <tr key={p.empId} style={{ borderTop: `1px solid ${COLORS.border}` }}>
+                        <td style={{ padding: "12px 8px", fontWeight: 700 }}>
+                          {p.name}
+                        </td>
+                        <td style={{ padding: "12px 8px" }}>{p.shifts}</td>
+                        <td style={{ padding: "12px 8px" }}>{p.hours.toFixed(2)}h</td>
+                        <td style={{ padding: "12px 8px" }}>{money(p.salary)}</td>
+                        <td style={{ padding: "12px 8px", color: COLORS.primary, fontWeight: 800 }}>
+                          {money(p.total)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </SectionCard>
         </div>
       </div>
 
-      {/* RIGHT - CHẤM CÔNG */}
-      <SectionCard style={{ display: "flex", flexDirection: "column" }}>
-
-        <div style={{
-          padding: 16,
-          borderBottom: `1px solid ${COLORS.border}`
-        }}>
-          <strong>{selectedEmp?.name || "Chọn nhân viên"}</strong>
+      {/* RIGHT - CHẤM CÔNG NHÂN VIÊN ĐANG CHỌN */}
+      <SectionCard
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          minHeight: 0,
+        }}
+      >
+        <div
+          style={{
+            padding: 18,
+            borderBottom: `1px solid ${COLORS.border}`,
+          }}
+        >
+          <div style={{ fontSize: 22, fontWeight: 800 }}>
+            {selectedEmp?.name || "Chọn nhân viên"}
+          </div>
+          <div style={{ color: COLORS.textSoft, marginTop: 6 }}>
+            Chấm công ngày {attendanceDate}
+          </div>
         </div>
 
-        <div style={{ padding: 16 }}>
-
-          {/* DATE */}
-          <input
-            type="date"
-            value={attendanceDate}
-            onChange={(e) => setAttendanceDate(e.target.value)}
-            style={cellInput}
-          />
-
-          {/* BUTTON */}
-          <div style={{ marginTop: 12, display: "flex", gap: 10 }}>
-            <button style={primaryBtn} onClick={handleCheckIn}>
-              Vào ca
-            </button>
+        {!selectedEmp ? (
+          <div style={{ flex: 1, padding: 18 }}>
+            <EmptyState
+              icon={Calendar}
+              title="Chưa chọn nhân viên"
+              subtitle="Chọn một nhân viên bên trái để chấm công"
+            />
           </div>
-
-          {/* DATA */}
-          <div style={{ marginTop: 16 }}>
-            {attendance
-              .filter(a =>
-                a.empId === selectedEmp?.id &&
-                a.dateKey === attendanceDate
-              )
-              .map(a => (
-                <div key={a.id} style={{ marginBottom: 10 }}>
-
-                  {a.start} - {a.end || "..."} = {a.hours?.toFixed(2) || 0}h
-
-                  {!a.end && (
-                    <button
-                      style={ghostBtn}
-                      onClick={() => handleCheckOut(a)}
-                    >
-                      Ra ca
-                    </button>
-                  )}
-
+        ) : (
+          <>
+            <div style={{ padding: 18, display: "grid", gap: 14 }}>
+              <div>
+                <div style={{ color: COLORS.textSoft, fontWeight: 700, marginBottom: 6 }}>
+                  Lương theo giờ
                 </div>
-              ))}
-          </div>
+                <input
+                  type="number"
+                  value={selectedEmp.salary || 20000}
+                  onChange={(e) => {
+                    const next = Number(e.target.value || 0);
+                    setSelectedEmp({ ...selectedEmp, salary: next });
+                    updateEmployeeSalary(selectedEmp.id, next);
+                  }}
+                  style={cellInput}
+                />
+              </div>
 
-        </div>
+              <button style={primaryBtn} onClick={handleCheckIn}>
+                <Plus size={18} /> Vào ca
+              </button>
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto", padding: 18, minHeight: 0 }}>
+              {!selectedEmpDayRecords.length ? (
+                <EmptyState
+                  icon={Calendar}
+                  title="Chưa có ca làm trong ngày"
+                  subtitle="Bấm Vào ca để bắt đầu chấm công"
+                />
+              ) : (
+                <div style={{ display: "grid", gap: 14 }}>
+                  {selectedEmpDayRecords.map((a) => (
+                    <div
+                      key={a.id}
+                      style={{
+                        border: `1px solid ${COLORS.border}`,
+                        borderRadius: 16,
+                        padding: 14,
+                        display: "grid",
+                        gap: 12,
+                        background: "#fff",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          gap: 10,
+                          alignItems: "center",
+                        }}
+                      >
+                        <div style={{ fontWeight: 800 }}>
+                          Ca làm #{a.id.slice(-4)}
+                        </div>
+
+                        <button
+                          style={{
+                            ...iconBtn,
+                            width: 32,
+                            height: 32,
+                          }}
+                          onClick={() => deleteAttendanceRecord(a.id)}
+                        >
+                          <Trash2 size={15} color={COLORS.danger} />
+                        </button>
+                      </div>
+
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                        <div>
+                          <div style={{ color: COLORS.textSoft, fontSize: 13, marginBottom: 5 }}>
+                            Giờ vào
+                          </div>
+                          <input
+                            type="time"
+                            value={a.start || ""}
+                            onChange={(e) =>
+                              updateAttendanceTime(a, "start", e.target.value)
+                            }
+                            style={cellInput}
+                          />
+                        </div>
+
+                        <div>
+                          <div style={{ color: COLORS.textSoft, fontSize: 13, marginBottom: 5 }}>
+                            Giờ ra
+                          </div>
+                          <input
+                            type="time"
+                            value={a.end || ""}
+                            onChange={(e) =>
+                              updateAttendanceTime(a, "end", e.target.value)
+                            }
+                            style={cellInput}
+                          />
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          gap: 10,
+                        }}
+                      >
+                        <div style={{ color: COLORS.primary, fontWeight: 800 }}>
+                          {Number(a.hours || 0).toFixed(2)} giờ
+                        </div>
+
+                        {!a.end && (
+                          <button style={ghostBtn} onClick={() => handleCheckOut(a)}>
+                            Ra ca
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div
+              style={{
+                borderTop: `1px solid ${COLORS.border}`,
+                padding: 18,
+                display: "grid",
+                gap: 10,
+                flexShrink: 0,
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span>Tổng ca</span>
+                <strong>{selectedPayroll?.shifts || 0}</strong>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span>Tổng giờ</span>
+                <strong>{(selectedPayroll?.hours || 0).toFixed(2)}h</strong>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: 22,
+                  fontWeight: 800,
+                  color: COLORS.primary,
+                }}
+              >
+                <span>Tổng lương</span>
+                <span>{money(selectedPayroll?.total || 0)}</span>
+              </div>
+            </div>
+          </>
+        )}
       </SectionCard>
-
     </div>
   );
 
