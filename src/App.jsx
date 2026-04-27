@@ -617,6 +617,17 @@ export default function App() {
   const [selectedEmp, setSelectedEmp] = useState(null);
 
   const [attendanceDate, setAttendanceDate] = useState(dateInputValue());
+  const addEmployee = async () => {
+    if (!employeeName) return;
+
+    await addDoc(collection(db, "employees"), {
+      name: employeeName,
+      salary: 20000,
+      createdAt: serverTimestamp(),
+    });
+
+    setEmployeeName("");
+  };
 
   const [wholesalePayment, setWholesalePayment] = useState("Tiền mặt");
   const [tempOrders, setTempOrders] = useState([]);
