@@ -1006,8 +1006,6 @@ export default function App() {
     return orders.filter((o) => {
       if (o.status !== "Đã thanh toán") return false;
 
-      // 🔥 FIX: nếu chưa có paidAt thì coi như đơn cũ → vẫn tính
-
       const paidDateObj =
         o.paidAt?.toDate
           ? o.paidAt.toDate()
@@ -1019,7 +1017,8 @@ export default function App() {
 
       if (!paidDateObj) return false;
 
-      const paidDateKey = paidDateObj.toISOString().slice(0, 10);
+      // ✅ FIX TIMEZONE
+      const paidDateKey = new Date(paidDateObj).toLocaleDateString("sv-SE");
 
       if (reportType === "day") return paidDateKey === reportDate;
       if (reportType === "week") return isSameWeek(paidDateKey, reportDate);
