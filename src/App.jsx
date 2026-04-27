@@ -609,7 +609,6 @@ export default function App() {
   const [historyType, setHistoryType] = useState("day"); // day | week | month
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
-  // ===== CHẤM CÔNG =====
   // ===== CHẤM CÔNG FULL LV1-LV4 =====
   const [employees, setEmployees] = useState([]);
   const [attendance, setAttendance] = useState([]);
@@ -628,6 +627,28 @@ export default function App() {
     });
 
     setEmployeeName("");
+  };
+  const deleteEmployee = async (emp) => {
+    if (!emp?.id) return;
+
+    if (!window.confirm("Xóa nhân viên này?")) return;
+
+    try {
+      await deleteDoc(doc(db, "employees", emp.id));
+    } catch (err) {
+      console.error("Xóa nhân viên lỗi:", err);
+    }
+  };
+  const deleteAttendanceRecord = async (recordId) => {
+    if (!recordId) return;
+
+    if (!window.confirm("Xóa ca làm này?")) return;
+
+    try {
+      await deleteDoc(doc(db, "attendance", recordId));
+    } catch (err) {
+      console.error("Xóa ca lỗi:", err);
+    }
   };
   const handleCheckIn = async () => {
     if (!selectedEmp) return alert("Bạn chưa chọn nhân viên");
@@ -2135,6 +2156,9 @@ export default function App() {
                             ...iconBtn,
                             width: 32,
                             height: 32,
+                            position: "relative",
+                            zIndex: 10,
+                            cursor: "pointer"
                           }}
                         >
                           <Trash2 size={15} color={COLORS.danger} />
