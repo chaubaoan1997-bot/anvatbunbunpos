@@ -609,6 +609,7 @@ export default function App() {
   const [historyType, setHistoryType] = useState("day"); // day | week | month
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [staffName, setStaffName] = useState("");
+  const [staffId, setStaffId] = useState("");
   const [paidMessage, setPaidMessage] = useState("");
   // ===== CHẤM CÔNG FULL LV1-LV4 =====
   const [employees, setEmployees] = useState([]);
@@ -2211,14 +2212,14 @@ export default function App() {
             </PaymentButton>
           </div>
           <select
-            value={staffName}
-            onChange={(e) => setStaffName(e.target.value)}
+            value={staffId}
+            onChange={(e) => setStaffId(e.target.value)}
             style={cellInput}
           >
             <option value="">Chọn nhân viên</option>
 
             {employees.map((emp) => (
-              <option key={emp.id} value={emp.name}>
+              <option key={emp.id} value={emp.id}>
                 {emp.name}
               </option>
             ))}
