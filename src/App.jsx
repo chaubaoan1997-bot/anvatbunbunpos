@@ -872,6 +872,23 @@ export default function App() {
       .sort((a, b) => (a.start || "").localeCompare(b.start || ""));
   }, [attendance, selectedEmp, attendanceDate]);
 
+  const selectedPayroll = useMemo(() => {
+    if (!selectedEmp) return null;
+
+    const item = payroll.find(p => p.empId === selectedEmp.id);
+
+    return (
+      item || {
+        empId: selectedEmp.id,
+        name: selectedEmp.name,
+        salary: selectedEmp.salary || 20000,
+        hours: 0,
+        shifts: 0,
+        total: 0,
+      }
+    );
+  }, [payroll, selectedEmp]);
+
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
