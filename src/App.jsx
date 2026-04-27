@@ -608,7 +608,7 @@ export default function App() {
   const [historyDate, setHistoryDate] = useState(dateInputValue());
   const [historyType, setHistoryType] = useState("day"); // day | week | month
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
-  const [staffName, setStaffName] = useState("");
+  //const [staffName, setStaffName] = useState("");
   const [staffId, setStaffId] = useState("");
   const [paidMessage, setPaidMessage] = useState("");
   // ===== CHẤM CÔNG FULL LV1-LV4 =====
