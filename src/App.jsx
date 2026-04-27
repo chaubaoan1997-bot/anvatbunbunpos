@@ -628,6 +628,39 @@ export default function App() {
 
     setEmployeeName("");
   };
+  const handleCheckIn = async () => {
+    if (!selectedEmp) return alert("Bạn chưa chọn nhân viên");
+
+    const now = new Date();
+    const time = now.toTimeString().slice(0, 5);
+
+    await addDoc(collection(db, "attendance"), {
+      empId: selectedEmp.id,
+      start: time,
+      end: "",
+      hours: 0,
+      dateKey: attendanceDate,
+      createdAt: serverTimestamp(),
+    });
+  };
+
+  const handleCheckOut = async (record) => {
+    if (!record) return;
+
+    const now = new Date();
+    const end = now.toTimeString().slice(0, 5);
+
+    const startTime = new Date(`1970-01-01T${record.start}`);
+    const endTime = new Date(`1970-01-01T${end}`);
+
+    let hours = (endTime - startTime) / 3600000;
+    if (hours < 0) hours += 24;
+
+    await updateDoc(doc(db, "attendance", record.id), {
+      end,
+      hours,
+    });
+  };
 
   const [wholesalePayment, setWholesalePayment] = useState("Tiền mặt");
   const [tempOrders, setTempOrders] = useState([]);
