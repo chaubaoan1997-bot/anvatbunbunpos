@@ -912,6 +912,19 @@ export default function App() {
     alert("Đã export (tạm console)");
   };
 
+  const summary = useMemo(() => {
+    const shifts = selectedEmpDayRecords.length;
+
+    const hours = selectedEmpDayRecords.reduce(
+      (sum, a) => sum + (a.hours || 0),
+      0
+    );
+
+    const salary = hours * (selectedEmp?.salary || 20000);
+
+    return { shifts, hours, salary };
+  }, [selectedEmpDayRecords, selectedEmp]);
+
   const selectedEmpDayRecords = useMemo(() => {
     if (!selectedEmp) return [];
 
@@ -2454,12 +2467,14 @@ export default function App() {
             >
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Tổng ca</span>
-                <strong>{selectedPayroll?.shifts || 0}</strong>
+                <strong>{summary.shifts}</strong>
               </div>
+
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Tổng giờ</span>
-                <strong>{(selectedPayroll?.hours || 0).toFixed(2)}h</strong>
+                <strong>{summary.hours.toFixed(2)}h</strong>
               </div>
+
               <div
                 style={{
                   display: "flex",
@@ -2470,7 +2485,7 @@ export default function App() {
                 }}
               >
                 <span>Tổng lương</span>
-                <span>{money(selectedPayroll?.total || 0)}</span>
+                <span>{summary.salary.toLocaleString()} đ</span>
               </div>
             </div>
           </>
