@@ -1232,97 +1232,246 @@ export default function App() {
       status: "Đã thanh toán",
     };
 
+    const billTime =
+      data.timeText ||
+      (data.createdAt?.toDate
+        ? data.createdAt.toDate().toLocaleString("vi-VN")
+        : new Date().toLocaleString("vi-VN"));
+
     const html = `
   <html>
   <head>
     <title>In hóa đơn</title>
     <style>
-      body {
-        font-family: monospace;
-        width: 300px; /* 🔥 chuẩn K80 */
+      @page {
+        size: 80mm auto;
         margin: 0;
-        padding: 10px;
-        font-size: 12px;
       }
 
-      .center { text-align: center; }
-      .line { border-top: 1px dashed #000; margin: 8px 0; }
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 80mm;
+        margin: 0;
+        padding: 6mm 4mm;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        color: #000;
+      }
+
+      .center {
+        text-align: center;
+      }
+
+      .logo {
+        font-size: 17px;
+        font-weight: 800;
+        margin-bottom: 2px;
+      }
+
+      .shop-name {
+        font-size: 13px;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      .small {
+        font-size: 10px;
+        line-height: 1.35;
+      }
+
+      .title {
+        font-size: 15px;
+        font-weight: 800;
+        margin-top: 12px;
+      }
+
+      .bill-code {
+        font-size: 12px;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      .info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 8px;
+        margin-top: 10px;
+        font-size: 10.5px;
+      }
+
+      .line {
+        border-top: 1px dashed #000;
+        margin: 7px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10.5px;
+      }
+
+      th {
+        border: 1px solid #000;
+        padding: 3px 2px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      td {
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+        padding: 3px 2px;
+        vertical-align: top;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 1px solid #000;
+      }
+
+      .stt {
+        width: 8%;
+        text-align: center;
+      }
+
+      .name {
+        width: 45%;
+        word-break: break-word;
+      }
+
+      .qty {
+        width: 10%;
+        text-align: center;
+      }
+
+      .price,
+      .money {
+        width: 18%;
+        text-align: right;
+        white-space: nowrap;
+      }
 
       .row {
         display: flex;
         justify-content: space-between;
-        font-size: 12px;
-        margin: 2px 0;
-      }
-
-      .b { font-weight: bold; }
-
-      .item {
-        margin-bottom: 4px;
-      }
-
-      .item-name {
-        font-size: 12px;
-      }
-
-      .item-sub {
-        display: flex;
-        justify-content: space-between;
+        gap: 8px;
+        margin: 4px 0;
         font-size: 11px;
+      }
+
+      .bold {
+        font-weight: 800;
+      }
+
+      .total {
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .footer {
+        margin-top: 18px;
+        text-align: center;
+        font-size: 11px;
+        line-height: 1.4;
       }
     </style>
   </head>
 
   <body>
-    <div class="center b">ĂN VẶT BUN BUN</div>
-    <div class="center">${data.code}</div>
-    <div class="center">${data.timeText}</div>
+    <div class="center logo">ĂN VẶT BUN BUN</div>
+    <div class="center small">Địa chỉ: ................................</div>
+    <div class="center small">SĐT: ................................</div>
+
+    <div class="center title">HÓA ĐƠN THANH TOÁN</div>
+    <div class="center bill-code">Số HĐ: ${data.code || ""}</div>
+
+    <div class="info">
+      <div>Mã HĐ: ${data.code || ""}</div>
+      <div>TN: ${data.staffName || "Nhân viên"}</div>
+      <div>Bàn: Mang về</div>
+      <div>Ngày: ${billTime.split(",")[0] || ""}</div>
+      <div>Giờ vào: ${billTime.split(" ")[1] || ""}</div>
+      <div>Giờ ra: ${billTime.split(" ")[1] || ""}</div>
+    </div>
 
     <div class="line"></div>
 
-    ${(data.items || []).map(i => {
-      const raw = i.price * i.qty;
-      const after = raw - (raw * (i.discount || 0)) / 100;
+    <table>
+      <thead>
+        <tr>
+          <th class="stt">STT</th>
+          <th class="name">Tên món</th>
+          <th class="qty">SL</th>
+          <th class="price">Đơn giá</th>
+          <th class="money">Thành tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${(data.items || []).map((i, index) => {
+      const price = Number(i.price || i.customPrice || 0);
+      const qty = Number(i.qty || 0);
+      const raw = price * qty;
+      const after = raw - (raw * Number(i.discount || 0)) / 100;
 
       return `
-        <div class="item">
-          <div class="item-name">${i.name}</div>
-          <div class="item-sub">
-            <span>${i.qty} x ${Number(i.price).toLocaleString()}</span>
-            <span>${Number(after).toLocaleString()}</span>
-          </div>
-        </div>
-      `;
+            <tr>
+              <td class="stt">${index + 1}</td>
+              <td class="name">${i.name || ""}</td>
+              <td class="qty">${qty}</td>
+              <td class="price">${price.toLocaleString("vi-VN")}</td>
+              <td class="money">${after.toLocaleString("vi-VN")}</td>
+            </tr>
+          `;
     }).join("")}
+      </tbody>
+    </table>
 
-    <div class="line"></div>
+    <div class="row">
+      <span>Thành tiền:</span>
+      <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
+    </div>
 
-    <div class="row b">
-      <span>TỔNG</span>
-      <span>${Number(data.total).toLocaleString()} đ</span>
+    <div class="row total">
+      <span>Tổng tiền:</span>
+      <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
     </div>
 
     <div class="row">
-      <span>Thanh toán</span>
-      <span>${data.method}</span>
+      <span>+ Thanh toán ${data.method || "Tiền mặt"}</span>
+      <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
     </div>
 
-    <div class="line"></div>
+    <div class="row">
+      <span>Tiền nhận</span>
+      <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
+    </div>
 
-    <div class="center">Cảm ơn quý khách ❤️</div>
+    <div class="row">
+      <span>Tiền thừa</span>
+      <span>0 đ</span>
+    </div>
+
+    <div class="footer">
+      <div>Pass wifi: ................</div>
+      <br/>
+      <div>Cảm ơn Quý Khách</div>
+      <div>Powered by Bun Bun POS</div>
+    </div>
 
     <script>
-      window.onload = () => {
-        window.print();
-      }
+      window.onload = () => window.print();
     </script>
   </body>
   </html>
   `;
 
-    const w = window.open("", "_blank", "width=320,height=600");
-    w.document.write(html);
-    w.document.close();
+    const w = window.open("", "_blank", "width=360,height=700");
+    if (w) {
+      w.document.write(html);
+      w.document.close();
+    }
   };
 
   const checkout = async () => {
