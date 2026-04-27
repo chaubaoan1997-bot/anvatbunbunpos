@@ -860,6 +860,18 @@ export default function App() {
     alert("Đã export (tạm console)");
   };
 
+  const selectedEmpDayRecords = useMemo(() => {
+    if (!selectedEmp) return [];
+
+    return attendance
+      .filter(
+        (a) =>
+          a.empId === selectedEmp.id &&
+          a.dateKey === attendanceDate
+      )
+      .sort((a, b) => (a.start || "").localeCompare(b.start || ""));
+  }, [attendance, selectedEmp, attendanceDate]);
+
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
