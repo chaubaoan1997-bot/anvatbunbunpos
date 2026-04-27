@@ -1479,6 +1479,7 @@ export default function App() {
     try {
       const now = new Date();
       const code = `DH${Date.now().toString().slice(-6)}`;
+      const selectedEmp = employees.find(e => e.name === staffName);
 
       const orderPayload = {
         code,
@@ -1486,16 +1487,19 @@ export default function App() {
         total,
         method: paymentMethod,
         status: "Đã thanh toán",
-        staffName: staffName || "Không rõ",
 
-        isPaid: true,                 // 🔥 thêm
-        paidAt: serverTimestamp(),    // 🔥 thêm
+        // 🔥 sửa đoạn này
+        staffName: selectedEmp?.name || "Không rõ",
+        staffId: selectedEmp?.id || null,
+
+        isPaid: true,
+        paidAt: serverTimestamp(),
 
         dateKey: dateInputValue(),
         createdAt: serverTimestamp(),
 
         timeText: now.toLocaleString("vi-VN")
-      }
+      };
 
       await addDoc(collection(db, "orders"), orderPayload);
 
@@ -2206,12 +2210,19 @@ export default function App() {
               Chuyển khoản
             </PaymentButton>
           </div>
-          <input
-            placeholder="Tên nhân viên bán"
+          <select
             value={staffName}
             onChange={(e) => setStaffName(e.target.value)}
             style={cellInput}
-          />
+          >
+            <option value="">Chọn nhân viên</option>
+
+            {employees.map((emp) => (
+              <option key={emp.id} value={emp.name}>
+                {emp.name}
+              </option>
+            ))}
+          </select>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 14 }}>
             <button style={ghostBtn} onClick={() => printReceipt()}>
               <Printer size={18} /> In hóa đơn
