@@ -1292,6 +1292,8 @@ export default function App() {
 
         dateKey: dateInputValue(),
         createdAt: serverTimestamp(),
+
+        timeText: now.toLocaleString("vi-VN")
       }
 
       await addDoc(collection(db, "orders"), orderPayload);
