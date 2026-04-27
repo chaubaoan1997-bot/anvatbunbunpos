@@ -1007,7 +1007,7 @@ export default function App() {
       // 🔥 CHỈ LẤY ĐƠN ĐÃ THANH TOÁN
       if (!o.isPaid || !o.paidAt) return false;
 
-      const paidDate = new Date(o.paidAt);
+      const paidDate = o.paidAt?.toDate();
 
       if (reportType === "day") {
         return paidDate.toDateString() === new Date(reportDate).toDateString();
@@ -1282,10 +1282,13 @@ export default function App() {
         total,
         method: paymentMethod,
         status: "Đã thanh toán",
+
+        isPaid: true,                 // 🔥 thêm
+        paidAt: serverTimestamp(),    // 🔥 thêm
+
         dateKey: dateInputValue(),
         createdAt: serverTimestamp(),
-        timeText: now.toLocaleString("vi-VN"),
-      };
+      }
 
       await addDoc(collection(db, "orders"), orderPayload);
 
@@ -1359,6 +1362,9 @@ export default function App() {
 
       method: wholesalePayment, // 🔥 lấy từ nút chọn
       status: "Đã thanh toán",
+
+      isPaid: true,
+      paidAt: serverTimestamp(),
 
       type: "wholesale", // 🔥 QUAN TRỌNG
 
@@ -1547,6 +1553,9 @@ export default function App() {
       await updateDoc(doc(db, "orders", order.id), {
         status: "Đã thanh toán",
         isDelivery: false,
+
+        isPaid: true,
+        paidAt: serverTimestamp(),
       });
 
       // trừ kho
