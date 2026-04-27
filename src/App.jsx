@@ -3428,7 +3428,11 @@ export default function App() {
                     </div>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, color: COLORS.textSoft }}>
-                    <span>{o.timeText}</span>
+                    <span>{o.timeText || (
+                      o.createdAt?.toDate
+                        ? o.createdAt.toDate().toLocaleString("vi-VN")
+                        : ""
+                    )}</span>
                     <span style={{ color: COLORS.primary, fontWeight: 700 }}>{money(o.total)}</span>
                   </div>
                 </button>
