@@ -2399,12 +2399,9 @@ export default function App() {
                             Giờ ra
                           </div>
                           <input
-                            type="time"
                             value={a.end || ""}
-                            onChange={(e) =>
-                              updateAttendanceTime(a, "end", e.target.value)
-                            }
-                            style={cellInput}
+                            type="time"
+                            onChange={(e) => updateAttendanceTime(a.id, "end", e.target.value)}
                           />
                         </div>
                       </div>
