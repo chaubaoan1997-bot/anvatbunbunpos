@@ -617,12 +617,13 @@ export default function App() {
   const [attendanceDate, setAttendanceDate] = useState(dateInputValue());
   const [attendanceType, setAttendanceType] = useState("day"); // day | week | month
   const [employeeSearch, setEmployeeSearch] = useState("");
+  const [employeeSalary, setEmployeeSalary] = useState(20000);
   const addEmployee = async () => {
     if (!employeeName) return;
 
     await addDoc(collection(db, "employees"), {
       name: employeeName,
-      salary: 20000,
+      salary: employeeSalary,
       createdAt: serverTimestamp(),
     });
 
@@ -2078,12 +2079,32 @@ export default function App() {
               gap: 10,
             }}
           >
-            <input
-              placeholder="Tên nhân viên"
-              value={employeeName}
-              onChange={(e) => setEmployeeName(e.target.value)}
-              style={cellInput}
-            />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 120px auto",
+                gap: 10,
+              }}
+            >
+              <input
+                placeholder="Tên nhân viên"
+                value={employeeName}
+                onChange={(e) => setEmployeeName(e.target.value)}
+                style={cellInput}
+              />
+
+              <input
+                placeholder="Lương"
+                type="number"
+                value={employeeSalary}
+                onChange={(e) => setEmployeeSalary(Number(e.target.value))}
+                style={cellInput}
+              />
+
+              <button style={primaryBtn} onClick={addEmployee}>
+                <Plus size={18} /> Thêm
+              </button>
+            </div>
             <button style={primaryBtn} onClick={addEmployee}>
               <Plus size={18} /> Thêm nhân viên
             </button>
