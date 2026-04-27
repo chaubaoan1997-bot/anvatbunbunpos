@@ -1455,7 +1455,6 @@ export default function App() {
       <div>Pass wifi: ................</div>
       <br/>
       <div>Cảm ơn Quý Khách</div>
-      <div>Powered by Bun Bun POS</div>
     </div>
 
     <script>
