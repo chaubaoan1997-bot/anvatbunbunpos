@@ -609,6 +609,14 @@ export default function App() {
   const [historyType, setHistoryType] = useState("day"); // day | week | month
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [paidMessage, setPaidMessage] = useState("");
+  // ===== CHẤM CÔNG =====
+  const [employees, setEmployees] = useState([]);
+  const [attendance, setAttendance] = useState([]);
+
+  const [employeeName, setEmployeeName] = useState("");
+  const [selectedEmp, setSelectedEmp] = useState(null);
+
+  const [attendanceDate, setAttendanceDate] = useState(dateInputValue());
 
   const [wholesalePayment, setWholesalePayment] = useState("Tiền mặt");
   const [tempOrders, setTempOrders] = useState([]);
@@ -707,10 +715,29 @@ export default function App() {
       (err) => console.error("Expenses snapshot error:", err)
     );
 
+    // ===== CHẤM CÔNG =====
+    const unsubEmployees = onSnapshot(
+      collection(db, "employees"),
+      (snap) => {
+        setEmployees(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      },
+      (err) => console.error("Employees snapshot error:", err)
+    );
+
+    const unsubAttendance = onSnapshot(
+      collection(db, "attendance"),
+      (snap) => {
+        setAttendance(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      },
+      (err) => console.error("Attendance snapshot error:", err)
+    );
+
     return () => {
       unsubProducts();
       unsubOrders();
       unsubExpenses();
+      unsubEmployees();
+      unsubAttendance();
     };
   }, []);
 
@@ -1430,6 +1457,7 @@ export default function App() {
     { key: "history", label: "Lịch sử", icon: History },
     { key: "expense", label: "Chi phí", icon: Wallet },
     { key: "report", label: "Báo cáo", icon: BarChart3 },
+    { key: "attendance", label: "Chấm công", icon: Calendar },
   ];
 
   const salesPage = (
@@ -1771,6 +1799,112 @@ export default function App() {
           </div>
         </div>
       </SectionCard>
+    </div>
+  );
+  const attendancePage = (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr 400px",
+        gap: 18,
+        height: "100%",
+      }}
+    >
+
+      {/* LEFT - NHÂN VIÊN */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+
+        {/* ADD NV */}
+        <SectionCard style={{ padding: 12 }}>
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              placeholder="Tên nhân viên"
+              value={employeeName}
+              onChange={(e) => setEmployeeName(e.target.value)}
+              style={cellInput}
+            />
+            <button style={primaryBtn} onClick={addEmployee}>
+              +
+            </button>
+          </div>
+        </SectionCard>
+
+        {/* LIST NV */}
+        <div style={{ display: "grid", gap: 10 }}>
+          {employees.map(emp => (
+            <SectionCard
+              key={emp.id}
+              onClick={() => setSelectedEmp(emp)}
+              style={{
+                padding: 14,
+                cursor: "pointer",
+                background:
+                  selectedEmp?.id === emp.id
+                    ? COLORS.primarySoft
+                    : COLORS.white,
+              }}
+            >
+              {emp.name}
+            </SectionCard>
+          ))}
+        </div>
+      </div>
+
+      {/* RIGHT - CHẤM CÔNG */}
+      <SectionCard style={{ display: "flex", flexDirection: "column" }}>
+
+        <div style={{
+          padding: 16,
+          borderBottom: `1px solid ${COLORS.border}`
+        }}>
+          <strong>{selectedEmp?.name || "Chọn nhân viên"}</strong>
+        </div>
+
+        <div style={{ padding: 16 }}>
+
+          {/* DATE */}
+          <input
+            type="date"
+            value={attendanceDate}
+            onChange={(e) => setAttendanceDate(e.target.value)}
+            style={cellInput}
+          />
+
+          {/* BUTTON */}
+          <div style={{ marginTop: 12, display: "flex", gap: 10 }}>
+            <button style={primaryBtn} onClick={handleCheckIn}>
+              Vào ca
+            </button>
+          </div>
+
+          {/* DATA */}
+          <div style={{ marginTop: 16 }}>
+            {attendance
+              .filter(a =>
+                a.empId === selectedEmp?.id &&
+                a.dateKey === attendanceDate
+              )
+              .map(a => (
+                <div key={a.id} style={{ marginBottom: 10 }}>
+
+                  {a.start} - {a.end || "..."} = {a.hours?.toFixed(2) || 0}h
+
+                  {!a.end && (
+                    <button
+                      style={ghostBtn}
+                      onClick={() => handleCheckOut(a)}
+                    >
+                      Ra ca
+                    </button>
+                  )}
+
+                </div>
+              ))}
+          </div>
+
+        </div>
+      </SectionCard>
+
     </div>
   );
 
@@ -3185,6 +3319,7 @@ export default function App() {
         {page === "expense" && expensePage}
         {page === "report" && reportPage}
         {page === "wholesale" && wholesalePage}
+        {page === "attendance" && attendancePage}
       </main>
 
       <ProductModal
