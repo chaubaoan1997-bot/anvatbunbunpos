@@ -798,6 +798,31 @@ export default function App() {
     return () => clearTimeout(t);
   }, [paidMessage]);
 
+  const payroll = useMemo(() => {
+    const map = {};
+
+    attendance.forEach((a) => {
+      const emp = employees.find((e) => e.id === a.empId);
+
+      if (!emp) return;
+
+      if (!map[a.empId]) {
+        map[a.empId] = {
+          name: emp.name,
+          hours: 0,
+          salary: emp.salary || 20000,
+        };
+      }
+
+      map[a.empId].hours += Number(a.hours || 0);
+    });
+
+    return Object.values(map).map((p) => ({
+      ...p,
+      total: p.hours * p.salary,
+    }));
+  }, [attendance, employees]);
+
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
