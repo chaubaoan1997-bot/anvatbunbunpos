@@ -608,6 +608,7 @@ export default function App() {
   const [historyDate, setHistoryDate] = useState(dateInputValue());
   const [historyType, setHistoryType] = useState("day"); // day | week | month
   const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
+  const [staffName, setStaffName] = useState("");
   const [paidMessage, setPaidMessage] = useState("");
   // ===== CHẤM CÔNG FULL LV1-LV4 =====
   const [employees, setEmployees] = useState([]);
@@ -1485,6 +1486,7 @@ export default function App() {
         total,
         method: paymentMethod,
         status: "Đã thanh toán",
+        staffName: staffName || "Không rõ",
 
         isPaid: true,                 // 🔥 thêm
         paidAt: serverTimestamp(),    // 🔥 thêm
@@ -1533,6 +1535,7 @@ export default function App() {
 
         method: "Chưa thanh toán",
         status: "Đơn tạm",
+        staffName: staffName || "Không rõ",
         isTemp: true,
 
         isPaid: false,        // 🔥 THÊM
@@ -1567,6 +1570,7 @@ export default function App() {
 
       method: wholesalePayment, // 🔥 lấy từ nút chọn
       status: "Đã thanh toán",
+      staffName: staffName || "Không rõ",
 
       isPaid: true,
       paidAt: serverTimestamp(),
@@ -1706,6 +1710,7 @@ export default function App() {
       total,
       method: deliveryForm.payment,
       status: "Chờ giao",
+      staffName: staffName || "Không rõ",
       isDelivery: true,
 
       customer: {
@@ -2201,6 +2206,12 @@ export default function App() {
               Chuyển khoản
             </PaymentButton>
           </div>
+          <input
+            placeholder="Tên nhân viên bán"
+            value={staffName}
+            onChange={(e) => setStaffName(e.target.value)}
+            style={cellInput}
+          />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 14 }}>
             <button style={ghostBtn} onClick={() => printReceipt()}>
               <Printer size={18} /> In hóa đơn
@@ -3398,7 +3409,17 @@ export default function App() {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                     <div style={{ fontWeight: 700, color: COLORS.text }}>
-                      {o.code}
+                      <div>
+                        <div style={{ fontSize: 12, color: "#64748b" }}>
+                          NV: {o.staffName || "Không rõ"} • {
+                            o.timeText || (
+                              o.createdAt?.toDate
+                                ? o.createdAt.toDate().toLocaleString("vi-VN")
+                                : ""
+                            )
+                          }
+                        </div>
+                      </div>
 
                       {o.type === "wholesale" && (
                         <span
