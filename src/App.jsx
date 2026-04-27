@@ -1004,22 +1004,23 @@ export default function App() {
 
   const reportOrders = useMemo(() => {
     return orders.filter((o) => {
-      // 🔥 CHỈ LẤY ĐƠN ĐÃ THANH TOÁN
-      if (!o.isPaid || !o.paidAt) return false;
+      if (o.status !== "Đã thanh toán") return false;
 
-      const paidDate = o.paidAt?.toDate();
+      const paidDateObj = o.paidAt?.toDate
+        ? o.paidAt.toDate()
+        : o.paidAt
+          ? new Date(o.paidAt)
+          : o.dateKey
+            ? new Date(o.dateKey + "T00:00:00")
+            : null;
 
-      if (reportType === "day") {
-        return paidDate.toDateString() === new Date(reportDate).toDateString();
-      }
+      if (!paidDateObj) return false;
 
-      if (reportType === "week") {
-        return isSameWeek(paidDate.toISOString().slice(0, 10), reportDate);
-      }
+      const paidDateKey = paidDateObj.toISOString().slice(0, 10);
 
-      if (reportType === "month") {
-        return isSameMonth(paidDate.toISOString().slice(0, 10), reportDate);
-      }
+      if (reportType === "day") return paidDateKey === reportDate;
+      if (reportType === "week") return isSameWeek(paidDateKey, reportDate);
+      if (reportType === "month") return isSameMonth(paidDateKey, reportDate);
 
       return true;
     });
