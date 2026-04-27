@@ -1381,8 +1381,8 @@ export default function App() {
 
   <body>
     <div class="center logo">ĂN VẶT BUN BUN</div>
-    <div class="center small">Địa chỉ: ................................</div>
-    <div class="center small">SĐT: ................................</div>
+    <div class="center small">Địa chỉ: 17 Phạm Ngũ Lão</div>
+    <div class="center small">SĐT: 0976 04 55 85</div>
 
     <div class="center title">HÓA ĐƠN THANH TOÁN</div>
     <div class="center bill-code">Số HĐ: ${data.code || ""}</div>
@@ -1392,8 +1392,6 @@ export default function App() {
       <div>TN: ${data.staffName || "Nhân viên"}</div>
       <div>Bàn: Mang về</div>
       <div>Ngày: ${billTime.split(",")[0] || ""}</div>
-      <div>Giờ vào: ${billTime.split(" ")[1] || ""}</div>
-      <div>Giờ ra: ${billTime.split(" ")[1] || ""}</div>
     </div>
 
     <div class="line"></div>
