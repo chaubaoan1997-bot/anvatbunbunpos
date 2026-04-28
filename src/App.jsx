@@ -620,6 +620,40 @@ export default function App() {
   const [attendanceType, setAttendanceType] = useState("day"); // day | week | month
   const [employeeSearch, setEmployeeSearch] = useState("");
   const [employeeSalary, setEmployeeSalary] = useState(20000);
+  const [monthFilter, setMonthFilter] = useState(
+    new Date().toISOString().slice(0, 7) // yyyy-MM
+  );
+  const attendanceMonth = useMemo(() => {
+    return attendance.filter(a => {
+      if (!a.dateKey) return false;
+      return a.dateKey.startsWith(monthFilter);
+    });
+  }, [attendance, monthFilter]);
+  const monthlyPayroll = useMemo(() => {
+    const map = {};
+
+    attendanceMonth.forEach(a => {
+      const emp = employees.find(e => e.id === a.empId);
+      if (!emp) return;
+
+      if (!map[a.empId]) {
+        map[a.empId] = {
+          name: emp.name,
+          hours: 0,
+          salary: emp.salary || 20000,
+          shifts: 0,
+        };
+      }
+
+      map[a.empId].hours += Number(a.hours || 0);
+      map[a.empId].shifts += 1;
+    });
+
+    return Object.values(map).map(p => ({
+      ...p,
+      total: p.hours * p.salary,
+    }));
+  }, [attendanceMonth, employees]);
   const addEmployee = async () => {
     if (!employeeName) return;
 
@@ -2372,6 +2406,20 @@ export default function App() {
             </button>
           </div>
         </SectionCard>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+
+          <div style={{ fontSize: 20, fontWeight: 700 }}>
+            Tổng giờ công theo tháng
+          </div>
+
+          <input
+            type="month"
+            value={monthFilter}
+            onChange={(e) => setMonthFilter(e.target.value)}
+            style={cellInput}
+          />
+
+        </div>
 
         <div
           style={{
