@@ -620,6 +620,45 @@ export default function App() {
   const [attendanceType, setAttendanceType] = useState("day"); // day | week | month
   const [employeeSearch, setEmployeeSearch] = useState("");
   const [employeeSalary, setEmployeeSalary] = useState(20000);
+  const [monthFilter, setMonthFilter] = useState(
+    new Date().toISOString().slice(0, 7)
+  );
+
+  const attendanceMonth = useMemo(() => {
+    return attendance.filter((a) => {
+      if (!a.dateKey) return false;
+      return a.dateKey.startsWith(monthFilter);
+    });
+  }, [attendance, monthFilter]);
+
+  const monthlyPayroll = useMemo(() => {
+    const map = {};
+
+    attendanceMonth.forEach((a) => {
+      const emp = employees.find((e) => e.id === a.empId);
+      if (!emp) return;
+
+      if (!map[a.empId]) {
+        map[a.empId] = {
+          empId: a.empId,
+          name: emp.name,
+          hours: 0,
+          salary: Number(emp.salary || 20000),
+          shifts: 0,
+        };
+      }
+
+      map[a.empId].hours += Number(a.hours || 0);
+      map[a.empId].shifts += 1;
+    });
+
+    return Object.values(map)
+      .map((p) => ({
+        ...p,
+        total: p.hours * p.salary,
+      }))
+      .sort((a, b) => b.hours - a.hours);
+  }, [attendanceMonth, employees]);
   const addEmployee = async () => {
     if (!employeeName) return;
 
@@ -2269,8 +2308,8 @@ export default function App() {
       style={{
         display: "grid",
         gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 400px",
-        gap: 18,
-        height: "100%",
+        gap: isMobile ? 12 : 18,
+        height: isMobile ? "auto" : "100%",
         minHeight: 0,
       }}
     >
@@ -2373,6 +2412,86 @@ export default function App() {
           </div>
         </SectionCard>
 
+        <SectionCard style={{ padding: isMobile ? 14 : 18, flexShrink: 0 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 160px",
+              gap: 10,
+              alignItems: "center",
+              marginBottom: 12,
+            }}
+          >
+            <div style={{ fontSize: 20, fontWeight: 800 }}>
+              Dashboard tháng
+            </div>
+
+            <input
+              type="month"
+              value={monthFilter}
+              onChange={(e) => setMonthFilter(e.target.value)}
+              style={cellInput}
+            />
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+              gap: 10,
+              marginBottom: 12,
+            }}
+          >
+            <div style={{ padding: 12, borderRadius: 14, background: COLORS.primarySoft }}>
+              <div style={{ color: COLORS.textSoft, fontSize: 13 }}>Tổng giờ tháng</div>
+              <div style={{ color: COLORS.primary, fontSize: 24, fontWeight: 800 }}>
+                {monthlyPayroll.reduce((s, p) => s + p.hours, 0).toFixed(2)}h
+              </div>
+            </div>
+
+            <div style={{ padding: 12, borderRadius: 14, background: COLORS.successSoft }}>
+              <div style={{ color: COLORS.textSoft, fontSize: 13 }}>Tổng ca</div>
+              <div style={{ color: COLORS.success, fontSize: 24, fontWeight: 800 }}>
+                {monthlyPayroll.reduce((s, p) => s + p.shifts, 0)}
+              </div>
+            </div>
+
+            <div style={{ padding: 12, borderRadius: 14, background: COLORS.warnSoft }}>
+              <div style={{ color: COLORS.textSoft, fontSize: 13 }}>Tổng lương tháng</div>
+              <div style={{ color: COLORS.warn, fontSize: 24, fontWeight: 800 }}>
+                {money(monthlyPayroll.reduce((s, p) => s + p.total, 0))}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gap: 8 }}>
+            {monthlyPayroll.slice(0, 5).map((p) => (
+              <div
+                key={p.empId}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "1fr auto",
+                  gap: 6,
+                  padding: 10,
+                  borderRadius: 12,
+                  border: `1px solid ${COLORS.border}`,
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 800 }}>{p.name}</div>
+                  <div style={{ fontSize: 12, color: COLORS.textSoft }}>
+                    {p.shifts} ca • {p.hours.toFixed(2)}h
+                  </div>
+                </div>
+
+                <div style={{ fontWeight: 800, color: COLORS.primary }}>
+                  {money(p.total)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
+
         <div
           style={{
             display: "grid",
@@ -2419,6 +2538,8 @@ export default function App() {
             gap: 16,
             minHeight: 0,
             flex: 1,
+            alignItems: "start",
+            height: isMobile ? "auto" : "100%",
           }}
         >
           <SectionCard
