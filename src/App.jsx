@@ -590,6 +590,8 @@ export default function App() {
   const [productPage, setProductPage] = useState(1);
   const pageSize = isMobile ? 6 : 8;
 
+  const [isAuth, setIsAuth] = useState(false);
+  const [password, setPassword] = useState("");
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -4233,6 +4235,65 @@ html, body {
       </div>
     </div>
   );
+  if (!isAuth) {
+    return (
+      <div style={{
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#f3f6fb"
+      }}>
+        <div style={{
+          width: 320,
+          padding: 24,
+          borderRadius: 20,
+          background: "#fff",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
+        }}>
+          <div style={{ fontSize: 22, fontWeight: 700 }}>
+            Đăng nhập hệ thống
+          </div>
+
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Nhập mật khẩu..."
+            style={{
+              width: "100%",
+              marginTop: 12,
+              padding: 12,
+              borderRadius: 10,
+              border: "1px solid #ddd"
+            }}
+          />
+
+          <button
+            onClick={() => {
+              if (password === "@17pnl") {
+                setIsAuth(true);
+              } else {
+                alert("Sai mật khẩu!");
+              }
+            }}
+            style={{
+              marginTop: 14,
+              width: "100%",
+              padding: 12,
+              borderRadius: 10,
+              background: "#2f66e9",
+              color: "#fff",
+              border: "none",
+              fontWeight: 700
+            }}
+          >
+            Đăng nhập
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
