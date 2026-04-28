@@ -620,40 +620,6 @@ export default function App() {
   const [attendanceType, setAttendanceType] = useState("day"); // day | week | month
   const [employeeSearch, setEmployeeSearch] = useState("");
   const [employeeSalary, setEmployeeSalary] = useState(20000);
-  const [monthFilter, setMonthFilter] = useState(
-    new Date().toISOString().slice(0, 7) // yyyy-MM
-  );
-  const attendanceMonth = useMemo(() => {
-    return attendance.filter(a => {
-      if (!a.dateKey) return false;
-      return a.dateKey.startsWith(monthFilter);
-    });
-  }, [attendance, monthFilter]);
-  const monthlyPayroll = useMemo(() => {
-    const map = {};
-
-    attendanceMonth.forEach(a => {
-      const emp = employees.find(e => e.id === a.empId);
-      if (!emp) return;
-
-      if (!map[a.empId]) {
-        map[a.empId] = {
-          name: emp.name,
-          hours: 0,
-          salary: emp.salary || 20000,
-          shifts: 0,
-        };
-      }
-
-      map[a.empId].hours += Number(a.hours || 0);
-      map[a.empId].shifts += 1;
-    });
-
-    return Object.values(map).map(p => ({
-      ...p,
-      total: p.hours * p.salary,
-    }));
-  }, [attendanceMonth, employees]);
   const addEmployee = async () => {
     if (!employeeName) return;
 
@@ -2406,22 +2372,6 @@ export default function App() {
             </button>
           </div>
         </SectionCard>
-        <SectionCard style={{ padding: 18 }}>
-
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-            <strong>Dashboard tháng</strong>
-
-            <input
-              type="month"
-              value={monthFilter}
-              onChange={(e) => setMonthFilter(e.target.value)}
-              style={cellInput}
-            />
-          </div>
-
-          {/* render monthlyPayroll ở đây */}
-
-        </SectionCard>
 
         <div
           style={{
@@ -3282,7 +3232,7 @@ export default function App() {
   );
 
   const historyPage = (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "440px 1fr", gap: 18, height: "100%", minHeight: 0 }}>
       <SectionCard style={{ overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 0 }}>
         <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}` }}>
           <div style={pageTitle}>Lịch sử đơn hàng</div>
@@ -3424,7 +3374,7 @@ export default function App() {
           </div>
         </div>
 
-        <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+        <div style={{ flex: 1, overflow: "auto" }}>
           {!historyFiltered.length ? (
             <div style={{ height: "100%" }}>
               <EmptyState icon={Receipt} title="Không có đơn hàng nào" />
@@ -3469,7 +3419,13 @@ export default function App() {
                     <div style={{ fontWeight: 700, color: COLORS.text }}>
                       <div>
                         <div style={{ fontSize: 12, color: "#64748b" }}>
-                          NV: {o.staffName || "Không rõ"}
+                          NV: {o.staffName || "Không rõ"} • {
+                            o.timeText || (
+                              o.createdAt?.toDate
+                                ? o.createdAt.toDate().toLocaleString("vi-VN")
+                                : ""
+                            )
+                          }
                         </div>
                       </div>
 
@@ -3525,8 +3481,11 @@ export default function App() {
               style={{
                 padding: 18,
                 borderBottom: `1px solid ${COLORS.border}`,
-                overflowY: "auto",
-                maxHeight: "100%"
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 12,
+                flexWrap: "wrap",
               }}
             >
               <div>
