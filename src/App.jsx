@@ -39,6 +39,7 @@ import {
   Boxes,
   ChevronLeft,
   ChevronRight,
+  LogOut
 } from "lucide-react";
 
 const COLORS = {
