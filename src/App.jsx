@@ -3374,7 +3374,7 @@ export default function App() {
           </div>
         </div>
 
-        <div style={{ flex: 1, overflow: "auto" }}>
+        <div style={{ flex: 1, overflowY: "auto" }}>
           {!historyFiltered.length ? (
             <div style={{ height: "100%" }}>
               <EmptyState icon={Receipt} title="Không có đơn hàng nào" />
