@@ -4290,7 +4290,7 @@ html, body {
 
           <button
             onClick={() => {
-              if (password === "123456") {
+              if (password === "@17pnl") {
                 setIsAuth(true);
 
                 if (remember) {
