@@ -4399,8 +4399,10 @@ html, body {
           <div style={{ marginTop: "auto", padding: 16 }}>
             <button
               onClick={() => {
-                setIsAuth(false);
-                localStorage.removeItem("auth");
+                if (window.confirm("Bạn có chắc muốn đăng xuất?")) {
+                  setIsAuth(false);
+                  localStorage.removeItem("auth");
+                }
               }}
               style={{
                 width: "100%",
@@ -4409,27 +4411,27 @@ html, body {
                 gap: 12,
                 padding: "14px 16px",
                 borderRadius: 14,
-                border: "1px solid rgba(255,255,255,0.1)",
-                background: "linear-gradient(135deg, #ef4444, #dc2626)",
-                color: "#fff",
-                fontWeight: 700,
+                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.05)",
+                color: "#e2e8f0",
+                fontWeight: 600,
                 fontSize: 15,
                 cursor: "pointer",
+                backdropFilter: "blur(6px)",
                 transition: "all 0.2s ease",
-                boxShadow: "0 6px 16px rgba(239,68,68,0.25)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow =
-                  "0 10px 24px rgba(239,68,68,0.35)";
+                e.currentTarget.style.background = "rgba(239,68,68,0.15)";
+                e.currentTarget.style.color = "#ef4444";
+                e.currentTarget.style.border = "1px solid rgba(239,68,68,0.3)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 6px 16px rgba(239,68,68,0.25)";
+                e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                e.currentTarget.style.color = "#e2e8f0";
+                e.currentTarget.style.border = "1px solid rgba(255,255,255,0.08)";
               }}
             >
-              <X size={18} />
+              <LogOut size={18} />
               <span>Đăng xuất</span>
             </button>
           </div>
