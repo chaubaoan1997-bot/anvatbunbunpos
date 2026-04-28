@@ -4458,6 +4458,7 @@ html, body {
             flex: 1,
             overflowY: "auto", // 🔥 scroll nằm ở đây
             padding: 20,
+            paddingBottom: 100,
             scrollBehavior: "smooth",
           }}
         >
