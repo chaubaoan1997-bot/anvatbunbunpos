@@ -1279,21 +1279,23 @@ export default function App() {
         ? data.createdAt.toDate().toLocaleString("vi-VN")
         : new Date().toLocaleString("vi-VN"));
 
-    // 🔥 DÁN NGAY DƯỚI ĐÂY
+    // 🔥 Tổng tiền trước giảm
     const rawTotal = (data.items || []).reduce((sum, i) => {
       const price = Number(i.price || i.customPrice || 0);
       const qty = Number(i.qty || 0);
       return sum + price * qty;
     }, 0);
 
+    // 🔥 Tổng giảm từ từng món
     const discountMoney = (data.items || []).reduce((sum, i) => {
       const price = Number(i.price || i.customPrice || 0);
       const qty = Number(i.qty || 0);
-      const discount = Number(i.discount || 0);
+      const discount = Number(i.discount || 0); // %
 
       return sum + (price * qty * discount) / 100;
     }, 0);
 
+    // 🔥 Tổng sau giảm
     const finalTotal = rawTotal - discountMoney;
     const html = `
   <html>
@@ -1497,9 +1499,7 @@ export default function App() {
 
 <div class="row total">
   <span>Tổng tiền:</span>
-  <span>
-    ${finalTotal.toLocaleString("vi-VN")}
-  </span>
+  <span>${finalTotal.toLocaleString("vi-VN")} đ</span>
 </div>
 
     <div class="footer">
