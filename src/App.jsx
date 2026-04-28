@@ -3526,7 +3526,7 @@ export default function App() {
             <EmptyState icon={Receipt} title="Chọn một đơn hàng để xem chi tiết" />
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
             <div
               style={{
                 padding: 18,
