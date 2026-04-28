@@ -1468,29 +1468,27 @@ export default function App() {
     </table>
 
     <div class="row">
-      <span>Thành tiền:</span>
-      <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
-    </div>
+  <span>Thành tiền:</span>
+  <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
+</div>
 
-    <div class="row total">
-      <span>Tổng tiền:</span>
-      <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
-    </div>
+<div class="row">
+  <span>Giảm giá:</span>
+  <span>
+    ${Number(data.discount || 0).toLocaleString("vi-VN")} đ
+  </span>
+</div>
 
-    <div class="row">
-      <span>+ Thanh toán ${data.method || "Tiền mặt"}</span>
-      <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
-    </div>
+<div class="line"></div>
 
-    <div class="row">
-      <span>Tiền nhận</span>
-      <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
-    </div>
-
-    <div class="row">
-      <span>Tiền thừa</span>
-      <span>0 đ</span>
-    </div>
+<div class="row total">
+  <span>Tổng tiền:</span>
+  <span>
+    ${Number(
+      (data.total || 0) - (data.discount || 0)
+    ).toLocaleString("vi-VN")} đ
+  </span>
+</div>
 
     <div class="footer">
       <div>Pass wifi: ................</div>
