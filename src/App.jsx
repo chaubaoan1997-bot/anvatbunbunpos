@@ -4381,7 +4381,7 @@ html, body {
   return (
     <div
       style={{
-        height: "100vh",
+        height: "100dvh",
         overflow: "hidden", // 🔥 quan trọng
         background: COLORS.bg,
         color: COLORS.text,
@@ -4458,7 +4458,7 @@ html, body {
             flex: 1,
             overflowY: "auto", // 🔥 scroll nằm ở đây
             padding: 20,
-            paddingBottom: 100,
+            paddingBottom: isMobile ? 180 : 100,
             scrollBehavior: "smooth",
           }}
         >
