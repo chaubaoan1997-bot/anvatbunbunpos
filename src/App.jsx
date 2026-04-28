@@ -1279,6 +1279,22 @@ export default function App() {
         ? data.createdAt.toDate().toLocaleString("vi-VN")
         : new Date().toLocaleString("vi-VN"));
 
+    // 🔥 DÁN NGAY DƯỚI ĐÂY
+    const rawTotal = (data.items || []).reduce((sum, i) => {
+      const price = Number(i.price || i.customPrice || 0);
+      const qty = Number(i.qty || 0);
+      return sum + price * qty;
+    }, 0);
+
+    const discountMoney = (data.items || []).reduce((sum, i) => {
+      const price = Number(i.price || i.customPrice || 0);
+      const qty = Number(i.qty || 0);
+      const discount = Number(i.discount || 0);
+
+      return sum + (price * qty * discount) / 100;
+    }, 0);
+
+    const finalTotal = rawTotal - discountMoney;
     const html = `
   <html>
   <head>
@@ -1469,14 +1485,12 @@ export default function App() {
 
     <div class="row">
   <span>Thành tiền:</span>
-  <span>${Number(data.total || 0).toLocaleString("vi-VN")} đ</span>
+<span>${rawTotal.toLocaleString("vi-VN")} đ</span>
 </div>
 
 <div class="row">
   <span>Giảm giá:</span>
-  <span>
-    ${Number(data.discount || 0).toLocaleString("vi-VN")} đ
-  </span>
+  <span>${discountMoney.toLocaleString("vi-VN")} đ</span>
 </div>
 
 <div class="line"></div>
@@ -1484,9 +1498,7 @@ export default function App() {
 <div class="row total">
   <span>Tổng tiền:</span>
   <span>
-    ${Number(
-      (data.total || 0) - (data.discount || 0)
-    ).toLocaleString("vi-VN")} đ
+    ${finalTotal.toLocaleString("vi-VN")}
   </span>
 </div>
 
