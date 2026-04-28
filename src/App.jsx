@@ -1496,7 +1496,7 @@ html, body {
               <td class="name">${i.name || ""}</td>
               <td class="qty">${qty}</td>
               <td class="price">${price.toLocaleString("vi-VN")}</td>
-              <td class="money">${after.toLocaleString("vi-VN")}</td>
+              <td class="money">${raw.toLocaleString("vi-VN")}</td>
             </tr>
           `;
     }).join("")}
