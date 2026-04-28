@@ -3282,7 +3282,7 @@ export default function App() {
   );
 
   const historyPage = (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <SectionCard style={{ overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 0 }}>
         <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}` }}>
           <div style={pageTitle}>Lịch sử đơn hàng</div>
