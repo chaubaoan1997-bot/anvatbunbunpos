@@ -591,6 +591,7 @@ export default function App() {
   const pageSize = isMobile ? 6 : 8;
 
   const [isAuth, setIsAuth] = useState(false);
+  const [remember, setRemember] = useState(false);
   const [password, setPassword] = useState("");
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -847,7 +848,6 @@ export default function App() {
       },
       (err) => console.error("Orders snapshot error:", err)
     );
-
     const unsubExpenses = onSnapshot(
       query(collection(db, "expenses"), orderBy("createdAt", "desc")),
       (snap) => {
@@ -882,6 +882,14 @@ export default function App() {
       unsubEmployees();
       unsubAttendance();
     };
+  }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("auth");
+    if (saved === "true") {
+      setIsAuth(true);
+      setRemember(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -4269,10 +4277,28 @@ html, body {
             }}
           />
 
+          <div style={{ marginTop: 10 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+              />
+              Ghi nhớ đăng nhập
+            </label>
+          </div>
+
           <button
             onClick={() => {
-              if (password === "@17pnl") {
+              if (password === "123456") {
                 setIsAuth(true);
+
+                if (remember) {
+                  localStorage.setItem("auth", "true");
+                } else {
+                  localStorage.removeItem("auth");
+                }
+
               } else {
                 alert("Sai mật khẩu!");
               }
