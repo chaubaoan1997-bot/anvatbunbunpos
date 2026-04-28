@@ -3532,7 +3532,7 @@ export default function App() {
                 padding: 18,
                 borderBottom: `1px solid ${COLORS.border}`,
                 overflowY: "auto",
-                maxHeight: "60vh"
+                maxHeight: "70vh"
               }}
             >
               <div>
