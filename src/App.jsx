@@ -1303,22 +1303,38 @@ export default function App() {
     <title>In hóa đơn</title>
     <style>
       @page {
-        size: 80mm auto;
-        margin: 0;
-      }
+  size: 80mm auto;
+  margin: 0;
+}
 
-      * {
-        box-sizing: border-box;
-      }
+html, body {
+  width: 80mm;
+  max-width: 80mm;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+}
 
-      body {
-        width: 80mm;
-        margin: 0;
-        padding: 6mm 4mm;
-        font-family: Arial, sans-serif;
-        font-size: 11px;
-        color: #000;
-      }
+* {
+  box-sizing: border-box;
+}
+
+.bill {
+  width: 100%;
+  padding: 8px;
+}
+
+@media print {
+  html, body {
+    width: 80mm;
+    max-width: 80mm;
+  }
+
+  body {
+    margin: 0;
+  }
+}
 
       .center {
         text-align: center;
