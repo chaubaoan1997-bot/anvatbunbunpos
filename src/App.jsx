@@ -3531,11 +3531,8 @@ export default function App() {
               style={{
                 padding: 18,
                 borderBottom: `1px solid ${COLORS.border}`,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 12,
-                flexWrap: "wrap",
+                overflowY: "auto",
+                flex: 1
               }}
             >
               <div>
