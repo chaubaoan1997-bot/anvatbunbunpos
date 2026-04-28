@@ -1577,7 +1577,7 @@ export default function App() {
 
       const now = new Date();
       const code = `TMP${Date.now().toString().slice(-6)}`;
-
+      const selectedEmp = employees.find(e => e.id === staffId);
       const orderPayload = {
         code,
         items: cart,
@@ -1585,7 +1585,10 @@ export default function App() {
 
         method: "Chưa thanh toán",
         status: "Đơn tạm",
+
+        staffId: staffId,
         staffName: staffName || "Không rõ",
+
         isTemp: true,
 
         isPaid: false,        // 🔥 THÊM
