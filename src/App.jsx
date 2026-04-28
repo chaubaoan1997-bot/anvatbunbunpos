@@ -1587,7 +1587,7 @@ export default function App() {
         status: "Đơn tạm",
 
         staffId: staffId,
-        staffName: staffName || "Không rõ",
+        staffName: selectedEmp?.name || "Không rõ",
 
         isTemp: true,
 
