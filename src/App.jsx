@@ -890,6 +890,8 @@ export default function App() {
     if (saved === "true") {
       setIsAuth(true);
       setRemember(true);
+    } else {
+      setRemember(false); // 🔥 thêm dòng này
     }
   }, []);
 
@@ -4309,6 +4311,7 @@ html, body {
             onClick={() => {
               if (password === "@17pnl") {
                 setIsAuth(true);
+                setRemember(false);
 
                 if (remember) {
                   localStorage.setItem("auth", "true");
