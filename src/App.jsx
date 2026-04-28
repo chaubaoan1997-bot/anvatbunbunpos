@@ -4406,18 +4406,31 @@ html, body {
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
-                gap: 10,
-                padding: "14px",
-                borderRadius: 12,
-                border: "none",
-                background: "#ef4444",
+                gap: 12,
+                padding: "14px 16px",
+                borderRadius: 14,
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "linear-gradient(135deg, #ef4444, #dc2626)",
                 color: "#fff",
                 fontWeight: 700,
+                fontSize: 15,
                 cursor: "pointer",
+                transition: "all 0.2s ease",
+                boxShadow: "0 6px 16px rgba(239,68,68,0.25)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 10px 24px rgba(239,68,68,0.35)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 6px 16px rgba(239,68,68,0.25)";
               }}
             >
               <X size={18} />
-              Đăng xuất
+              <span>Đăng xuất</span>
             </button>
           </div>
           <div style={{ marginTop: "auto", color: "#94a3b8", fontSize: 14, padding: 12 }}>
