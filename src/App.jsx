@@ -2406,20 +2406,22 @@ export default function App() {
             </button>
           </div>
         </SectionCard>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <SectionCard style={{ padding: 18 }}>
 
-          <div style={{ fontSize: 20, fontWeight: 700 }}>
-            Tổng giờ công theo tháng
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+            <strong>Dashboard tháng</strong>
+
+            <input
+              type="month"
+              value={monthFilter}
+              onChange={(e) => setMonthFilter(e.target.value)}
+              style={cellInput}
+            />
           </div>
 
-          <input
-            type="month"
-            value={monthFilter}
-            onChange={(e) => setMonthFilter(e.target.value)}
-            style={cellInput}
-          />
+          {/* render monthlyPayroll ở đây */}
 
-        </div>
+        </SectionCard>
 
         <div
           style={{
