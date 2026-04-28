@@ -3514,7 +3514,13 @@ export default function App() {
         </div>
       </SectionCard>
 
-      <SectionCard style={{ overflow: "hidden", minHeight: 0 }}>
+      <SectionCard
+        style={{
+          overflow: "hidden",
+          minHeight: 0,
+          display: !isMobile || selectedOrder ? "block" : "none",
+        }}
+      >
         {!selectedOrder ? (
           <div style={{ height: "100%" }}>
             <EmptyState icon={Receipt} title="Chọn một đơn hàng để xem chi tiết" />
