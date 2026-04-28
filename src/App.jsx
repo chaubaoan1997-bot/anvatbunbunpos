@@ -2288,19 +2288,56 @@ html, body {
               Chuyển khoản
             </PaymentButton>
           </div>
-          <select
-            value={staffId}
-            onChange={(e) => setStaffId(e.target.value)}
-            style={cellInput}
-          >
-            <option value="">Chọn nhân viên</option>
+          <div style={{ marginTop: 10 }}>
+            {/* Label */}
+            <div
+              style={{
+                fontSize: 13,
+                color: "#64748b",
+                marginBottom: 6,
+                fontWeight: 600,
+              }}
+            >
+              Nhân viên bán
+            </div>
 
-            {employees.map((emp) => (
-              <option key={emp.id} value={emp.id}>
-                {emp.name}
-              </option>
-            ))}
-          </select>
+            {/* Select */}
+            <select
+              value={staffId}
+              onChange={(e) => setStaffId(e.target.value)}
+              style={{
+                width: "100%",
+                height: 52,
+                padding: "0 16px",
+                borderRadius: 14,
+                border: "2px solid #e2e8f0",
+                background: "#fff",
+                fontSize: 16,
+                fontWeight: 600,
+                color: "#0f172a",
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                transition: "all 0.2s ease",
+                cursor: "pointer",
+              }}
+              onFocus={(e) => {
+                e.target.style.border = "2px solid #2f66e9";
+                e.target.style.boxShadow = "0 6px 16px rgba(47,102,233,0.2)";
+              }}
+              onBlur={(e) => {
+                e.target.style.border = "2px solid #e2e8f0";
+                e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.06)";
+              }}
+            >
+              <option value="">-- Chọn nhân viên --</option>
+
+              {employees.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 14 }}>
             <button style={ghostBtn} onClick={() => printReceipt()}>
               <Printer size={18} /> In hóa đơn
