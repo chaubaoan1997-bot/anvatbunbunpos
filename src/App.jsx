@@ -4381,8 +4381,7 @@ html, body {
   return (
     <div
       style={{
-        height: "100dvh",
-        overflow: "hidden", // 🔥 quan trọng
+        height: "100vh",
         background: COLORS.bg,
         color: COLORS.text,
         fontFamily: "Inter, system-ui, sans-serif",
@@ -4390,8 +4389,7 @@ html, body {
         gridTemplateColumns: isMobile ? undefined : "280px 1fr",
       }}
     >
-      {/* SIDEBAR */}
-      {!isMobile && (
+      {!isMobile ? (
         <aside
           style={{
             background: COLORS.sidebar,
@@ -4399,78 +4397,162 @@ html, body {
             padding: 14,
             display: "flex",
             flexDirection: "column",
+            borderRight: `1px solid ${COLORS.sidebarBorder}`,
             height: "100vh",
           }}
         >
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
-            {pages.map((p) => (
+          <div
+            style={{
+              height: 70,
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              padding: "0 12px",
+              borderBottom: `1px solid ${COLORS.sidebarBorder}`,
+              marginBottom: 14,
+            }}
+          >
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 10,
+                border: "2px solid #3b82f6",
+                display: "grid",
+                placeItems: "center",
+              }}
+            >
+              <Home size={22} color="#3b82f6" />
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800 }}>AN VAT BUNBUN</div>
+          </div>
+          <div style={{ display: "grid", gap: 10 }}>
+            {pages.map((item) => (
               <SidebarItem
-                key={p.key}
-                icon={p.icon}
-                label={p.label}
-                active={page === p.key}
-                onClick={() => setPage(p.key)}
+                key={item.key}
+                icon={item.icon}
+                label={item.label}
+                active={page === item.key}
+                onClick={() => setPage(item.key)}
               />
             ))}
           </div>
-
-          {/* LOGOUT */}
-          <button
-            onClick={() => {
-              if (window.confirm("Bạn có chắc muốn đăng xuất?")) {
-                setIsAuth(false);
-                setRemember(false);
-                localStorage.removeItem("auth");
-              }
-            }}
-            style={{
-              marginTop: "auto",
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "12px 14px",
-              borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.1)",
-              background: "rgba(255,255,255,0.05)",
-              color: "#e2e8f0",
-              cursor: "pointer",
-            }}
-          >
-            <LogOut size={18} />
-            Đăng xuất
-          </button>
+          <div style={{ marginTop: "auto", padding: 16 }}>
+            <button
+              onClick={() => {
+                if (window.confirm("Bạn có chắc muốn đăng xuất?")) {
+                  setIsAuth(false);
+                  localStorage.removeItem("auth");
+                }
+              }}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "14px 16px",
+                borderRadius: 14,
+                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.05)",
+                color: "#e2e8f0",
+                fontWeight: 600,
+                fontSize: 15,
+                cursor: "pointer",
+                backdropFilter: "blur(6px)",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(239,68,68,0.15)";
+                e.currentTarget.style.color = "#ef4444";
+                e.currentTarget.style.border = "1px solid rgba(239,68,68,0.3)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                e.currentTarget.style.color = "#e2e8f0";
+                e.currentTarget.style.border = "1px solid rgba(255,255,255,0.08)";
+              }}
+            >
+              <LogOut size={18} />
+              <span>Đăng xuất</span>
+            </button>
+          </div>
+          <div style={{ marginTop: "auto", color: "#94a3b8", fontSize: 14, padding: 12 }}>
+            © 2026 AN VAT BUNBUN
+          </div>
         </aside>
-      )}
-
-      {/* CONTENT */}
-      <div
-        style={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
-      >
-        {/* SCROLL CONTENT */}
+      ) : (
         <div
           style={{
-            flex: 1,
-            overflowY: "auto", // 🔥 scroll nằm ở đây
-            padding: 20,
-            paddingBottom: isMobile ? 180 : 100,
-            scrollBehavior: "smooth",
+            background: COLORS.white,
+            padding: 12,
+            borderBottom: `1px solid ${COLORS.border}`,
+            position: "sticky",
+            top: 0,
+            zIndex: 20,
           }}
         >
-          {page === "sales" && salesPage}
-          {page === "wholesale" && wholesalePage}
-          {page === "products" && productsPage}
-          {page === "history" && historyPage}
-          {page === "expense" && expensePage}
-          {page === "report" && reportPage}
-          {page === "attendance" && attendancePage}
+          <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 10 }}>AN VAT BUNBUN</div>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto" }}>
+            {pages.map((item) => (
+              <SidebarItem
+                key={item.key}
+                icon={item.icon}
+                label={item.label}
+                active={page === item.key}
+                onClick={() => setPage(item.key)}
+                mobile
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      <main
+        style={{
+          padding: 18,
+          overflow: isMobile ? "visible" : "hidden",
+          height: isMobile ? "auto" : "100vh",
+        }}
+      >
+        {page === "sales" && salesPage}
+        {page === "products" && productsPage}
+        {page === "history" && historyPage}
+        {page === "expense" && expensePage}
+        {page === "report" && reportPage}
+        {page === "wholesale" && wholesalePage}
+        {page === "attendance" && attendancePage}
+      </main>
+
+      <ProductModal
+        open={showProductModal}
+        onClose={() => {
+          setShowProductModal(false);
+          setEditingProduct(null);
+        }}
+        onSave={saveProduct}
+        categories={categories}
+        product={editingProduct}
+      />
+      <PaymentModal
+        open={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        onConfirm={(method) => {
+          confirmTempOrder(tempOrder, method);
+          setShowPaymentModal(false);
+          setSelectedOrder(null);
+        }}
+      />
+      <DeliveryModal
+        open={showDeliveryModal}
+        onClose={() => {
+          setShowDeliveryModal(false);
+          setEditingOrder(null);
+        }}
+        onConfirm={createDeliveryOrder}
+        editingOrder={editingOrder}   // 👈 THÊM
+        form={deliveryForm}
+        setForm={setDeliveryForm}
+      />
     </div>
   );
 }
