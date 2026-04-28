@@ -3392,8 +3392,24 @@ html, body {
   );
 
   const historyPage = (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
-      <SectionCard style={{ overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 0 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "420px 1fr",
+        gap: 16,
+        height: "100%",
+        minHeight: 0,
+      }}
+    >
+      <SectionCard
+        style={{
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+          height: "100%",
+        }}
+      >
         <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}` }}>
           <div style={pageTitle}>Lịch sử đơn hàng</div>
           <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
@@ -4379,6 +4395,30 @@ html, body {
                 onClick={() => setPage(item.key)}
               />
             ))}
+          </div>
+          <div style={{ marginTop: "auto", padding: 16 }}>
+            <button
+              onClick={() => {
+                setIsAuth(false);
+                localStorage.removeItem("auth");
+              }}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "14px",
+                borderRadius: 12,
+                border: "none",
+                background: "#ef4444",
+                color: "#fff",
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              <X size={18} />
+              Đăng xuất
+            </button>
           </div>
           <div style={{ marginTop: "auto", color: "#94a3b8", fontSize: 14, padding: 12 }}>
             © 2026 AN VAT BUNBUN
