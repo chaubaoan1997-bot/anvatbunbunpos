@@ -3282,7 +3282,7 @@ export default function App() {
   );
 
   const historyPage = (
-    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "440px 1fr", gap: 18, height: "100%", minHeight: 0 }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <SectionCard style={{ overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 0 }}>
         <div style={{ padding: 18, borderBottom: `1px solid ${COLORS.border}` }}>
           <div style={pageTitle}>Lịch sử đơn hàng</div>
@@ -3424,7 +3424,7 @@ export default function App() {
           </div>
         </div>
 
-        <div style={{ flex: 1, overflow: "hidden" }}>
+        <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
           {!historyFiltered.length ? (
             <div style={{ height: "100%" }}>
               <EmptyState icon={Receipt} title="Không có đơn hàng nào" />
