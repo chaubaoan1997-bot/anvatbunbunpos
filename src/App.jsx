@@ -3520,133 +3520,124 @@ export default function App() {
             <EmptyState icon={Receipt} title="Chọn một đơn hàng để xem chi tiết" />
           </div>
         ) : (
-          <div style={{ flex: 1, overflow: "hidden" }}>
+          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
             <div
               style={{
-                height: "100%",
-                overflowY: "auto",
-                paddingRight: 6,
+                padding: 18,
+                borderBottom: `1px solid ${COLORS.border}`,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 12,
+                flexWrap: "wrap",
               }}
             >
-              {!historyFiltered.length ? (
-                <div style={{ height: "100%" }}>
-                  <EmptyState icon={Receipt} title="Không có đơn hàng nào" />
+              <div>
+                <div style={{ fontSize: 24, fontWeight: 800 }}>{selectedOrder.code}</div>
+                <div style={{ color: COLORS.textSoft, marginTop: 6 }}>{selectedOrder.timeText}</div>
+                <div style={{ color: COLORS.success, marginTop: 6, fontWeight: 700 }}>
+                  {selectedOrder.status || "Đã thanh toán"} • {selectedOrder.method}
                 </div>
-              ) : (
-                <div style={{ display: "grid", gap: 12 }}>
-                  {historyFiltered
-                    .filter(o => {
-                      if (filterType === "all") return true;
-                      if (filterType === "temp") return o.status === "Đơn tạm";
-                      if (filterType === "delivery") return o.isDelivery;
-                      if (filterType === "wholesale") return o.type === "wholesale";
-                      return true;
-                    })
-                    .map(o => (
-                      <button
-                        key={o.id}
-                        onClick={() => {
-                          setSelectedOrder(o);
+                {selectedOrder.type === "wholesale" && (
+                  <div style={{ marginTop: 6, fontSize: 14, color: "#555" }}>
+                    {selectedOrder.customerName || "Khách lẻ"}
+                    - {selectedOrder.customerPhone || "---"}
+                    - {selectedOrder.sellerName || "---"}
+                  </div>
+                )}
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <button style={ghostBtn} onClick={() => printReceipt(selectedOrder)}>
+                  <Printer size={18} /> In lại
+                </button>
 
-                          if (o.isDelivery) {
-                            setEditingOrder(o);
-                            setDeliveryForm({
-                              name: o.customer?.name || "",
-                              phone: o.customer?.phone || "",
-                              address: o.customer?.address || "",
-                              payment: o.method || "Tiền mặt",
-                            });
-                          }
-                        }}
-                        style={{
-                          width: "100%",
-                          textAlign: "left",
-                          border: "none",
-                          background:
-                            selectedOrder?.id === o.id ? "#eef4ff" : COLORS.white,
-                          padding: 16,
-                          borderBottom: `1px solid ${COLORS.border}`,
-                          cursor: "pointer",
-                        }}
-                      >
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                {selectedOrder?.status === "Đơn tạm" && (
+                  <>
+                    <button
+                      style={ghostBtn}
+                      onClick={() => loadTempOrderToCart(selectedOrder)}
+                    >
+                      ✏️ Sửa đơn
+                    </button>
 
-                          {/* LEFT */}
-                          <div>
+                    <button
+                      style={primaryBtn}
+                      onClick={() => {
+                        setTempOrder(selectedOrder);
+                        setShowPaymentModal(true);
+                      }}
+                    >
+                      Xác nhận thanh toán
+                    </button>
+                  </>
+                )}
 
-                            {/* CODE + BADGE */}
-                            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                              <div style={{ fontWeight: 700 }}>{o.code}</div>
+                {selectedOrder?.status === "Chờ giao" && (
+                  <button
+                    style={primaryBtn}
+                    onClick={() => completeDelivery(selectedOrder)}
+                  >
+                    Đã giao xong
+                  </button>
+                )}
 
-                              {o.type === "wholesale" && (
-                                <span
-                                  style={{
-                                    padding: "2px 6px",
-                                    background: "#e9f0ff",
-                                    color: "#2f66e9",
-                                    borderRadius: 6,
-                                    fontSize: 11,
-                                    fontWeight: 700,
-                                  }}
-                                >
-                                  Sỉ
-                                </span>
-                              )}
+                <button
+                  style={{ ...ghostBtn, color: COLORS.danger, borderColor: "#fecaca" }}
+                  onClick={() => deleteOrder(selectedOrder.id)}
+                >
+                  <Trash2 size={18} /> Xóa
+                </button>
+              </div>
+            </div>
 
-                              {o.isDelivery && (
-                                <span
-                                  style={{
-                                    padding: "2px 6px",
-                                    background: "#fff7e6",
-                                    color: "#fa8c16",
-                                    borderRadius: 6,
-                                    fontSize: 11,
-                                    fontWeight: 700,
-                                  }}
-                                >
-                                  Giao
-                                </span>
-                              )}
-                            </div>
+            <div style={{ padding: 18, flex: 1, overflow: "auto" }}>
+              {(selectedOrder.items.map((i) => {
+                const price = Number(i.customPrice || i.price || 0);
+                const qty = Number(i.qty || 0);
 
-                            {/* NHÂN VIÊN */}
-                            <div style={{ fontSize: 12, color: "#64748b" }}>
-                              NV: {o.staffName || "Không rõ"}
-                            </div>
+                return (
+                  <div
+                    key={i.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: 8
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 600 }}>
+                        {i.name} x{qty}
+                      </div>
 
-                            {/* THỜI GIAN */}
-                            <div style={{ fontSize: 12, color: "#64748b" }}>
-                              {o.timeText || ""}
-                            </div>
-
-                          </div>
-
-                          {/* RIGHT */}
-                          <div style={{ textAlign: "right" }}>
-                            <div
-                              style={{
-                                color:
-                                  o.status === "Đã thanh toán"
-                                    ? "green"
-                                    : o.status === "Đơn tạm"
-                                      ? "orange"
-                                      : "#64748b",
-                                fontWeight: 700,
-                              }}
-                            >
-                              {o.status}
-                            </div>
-
-                            <div style={{ color: COLORS.primary, fontWeight: 700 }}>
-                              {money(o.total)}
-                            </div>
-                          </div>
-
+                      {/* 🔥 HIỆN GIÁ SỈ */}
+                      {selectedOrder.type === "wholesale" && (
+                        <div style={{ fontSize: 12, color: "#64748b" }}>
+                          Giá sỉ: {money(price)}
                         </div>
-                      </button>
-                    ))}
-                </div>
-              )}
+                      )}
+                    </div>
+
+                    <div style={{ fontWeight: 700 }}>
+                      {money(price * qty)}
+                    </div>
+                  </div>
+                );
+              }))}
+            </div>
+
+            <div
+              style={{
+                padding: 18,
+                borderTop: `1px solid ${COLORS.border}`,
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: 24,
+                fontWeight: 800,
+                color: COLORS.primary,
+              }}
+            >
+              <span>Tổng cộng</span>
+              <span>{money(selectedOrder.total)}</span>
             </div>
           </div>
         )}
