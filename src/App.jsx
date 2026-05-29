@@ -4833,7 +4833,15 @@ ${discountMoney > 0 ? `
               ))}
             </div>
           ) : (
-            <div style={{ width: "100%", overflowX: "auto" }}>
+            <div
+              style={{
+                width: "100%",
+                maxHeight: isMobile ? "none" : 360,
+                overflowY: isMobile ? "visible" : "auto",
+                overflowX: "auto",
+                paddingRight: isMobile ? 0 : 4,
+              }}
+            >
               <table
                 style={{
                   width: "100%",
