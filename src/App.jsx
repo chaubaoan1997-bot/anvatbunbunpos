@@ -3012,8 +3012,10 @@ html, body {
         display: "grid",
         gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 400px",
         gap: 18,
-        height: "100%",
+        height: isMobile ? "auto" : "calc(100vh - 132px)",
+        maxHeight: isMobile ? "none" : "calc(100vh - 132px)",
         minHeight: 0,
+        overflow: "hidden",
       }}
     >
 
@@ -3025,12 +3027,16 @@ html, body {
           gap: 16,
           minWidth: 0,
           minHeight: 0,
+          height: isMobile ? "auto" : "100%",
+          maxHeight: isMobile ? "none" : "100%",
           position: "relative",
           zIndex: 1,
-        }}>
+          overflow: "hidden",
+        }}
+      >
 
         {/* SEARCH */}
-        <div style={{ position: "relative", maxWidth: 520 }}>
+        <div style={{ position: "relative", maxWidth: 520, flexShrink: 0 }}>
           <input
             placeholder="Tìm kiếm sản phẩm..."
             value={search || ""}
@@ -3051,14 +3057,15 @@ html, body {
           style={{
             display: "flex",
             gap: 8,
-            overflowX: "auto"
+            overflowX: "auto",
+            flexShrink: 0,
           }}
         >
 
           {/* TẤT CẢ */}
           <button
             style={{
-              ...(activeCategory === "all" ? primaryBtn : ghostBtn),
+              ...(activeCategory === "all" || activeCategory === "Tất cả" ? primaryBtn : ghostBtn),
               width: "auto",
               flexShrink: 0,
               whiteSpace: "nowrap",
@@ -3089,7 +3096,7 @@ html, body {
         </div>
 
         {/* NGƯỜI BÁN */}
-        <div style={{ display: "grid", gap: 8 }}>
+        <div style={{ display: "grid", gap: 8, flexShrink: 0 }}>
           <input
             placeholder="Tên người bán"
             value={sellerInfo.name}
@@ -3098,6 +3105,7 @@ html, body {
             }
             style={cellInput}
           />
+
           {/* KHÁCH HÀNG */}
           <div style={{ display: "grid", gap: 8 }}>
             <input
@@ -3122,7 +3130,14 @@ html, body {
         </div>
 
         {/* PRODUCTS */}
-        <div style={{ flex: 1, overflowY: "auto", minHeight: 0, height: "100%" }}>
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            minHeight: 0,
+            paddingRight: 4,
+          }}
+        >
           <div
             style={{
               display: "grid",
@@ -3136,12 +3151,14 @@ html, body {
               .filter(p => {
                 const s = (search || "").toLowerCase();
 
-                const matchSearch = p.name
+                const matchSearch = (p.name || "")
                   .toLowerCase()
                   .includes(s);
 
                 const matchCate =
-                  activeCategory === "all" || p.category === activeCategory;
+                  activeCategory === "all" ||
+                  activeCategory === "Tất cả" ||
+                  p.category === activeCategory;
 
                 return matchSearch && matchCate;
               })
@@ -3162,19 +3179,61 @@ html, body {
       </div>
 
       {/* ===== RIGHT: UI SALES 100% - CHỈ ĐỔI LOGIC ===== */}
-      <SectionCard style={{ display: "flex", flexDirection: "column" }}>
+      <SectionCard
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          minHeight: 0,
+          height: isMobile ? "calc(100vh - 120px)" : "100%",
+          maxHeight: isMobile ? "calc(100vh - 120px)" : "100%",
+        }}
+      >
 
         {/* HEADER */}
-        <div style={{
-          padding: 18,
-          borderBottom: `1px solid ${COLORS.border}`,
-          fontWeight: 800
-        }}>
-          Đơn hàng hiện tại
+        <div
+          style={{
+            padding: 18,
+            borderBottom: `1px solid ${COLORS.border}`,
+            fontWeight: 800,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 12,
+            flexWrap: "wrap",
+            flexShrink: 0,
+          }}
+        >
+          <div>Đơn hàng hiện tại</div>
+
+          {paidMessage ? (
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: COLORS.successSoft,
+                color: COLORS.success,
+                fontWeight: 700,
+                fontSize: 13,
+              }}
+            >
+              <CheckCircle2 size={16} /> {paidMessage}
+            </div>
+          ) : null}
         </div>
 
-        {/* CART */}
-        <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
+        {/* CART - CHỈ PHẦN NÀY CUỘN */}
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
+            padding: 16,
+          }}
+        >
           {!wholesaleCart.length ? (
             <div>Chưa có sản phẩm nào trong giỏ hàng</div>
           ) : (
@@ -3183,16 +3242,21 @@ html, body {
                 (Number(i.customPrice) || 0) * (Number(i.qty) || 0);
 
               return (
-                <div key={i.id} style={{
-                  borderBottom: `1px solid ${COLORS.border}`,
-                  marginBottom: 12,
-                  paddingBottom: 12
-                }}>
+                <div
+                  key={i.id}
+                  style={{
+                    borderBottom: `1px solid ${COLORS.border}`,
+                    marginBottom: 12,
+                    paddingBottom: 12
+                  }}
+                >
 
-                  <div style={{
-                    display: "flex",
-                    justifyContent: "space-between"
-                  }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between"
+                    }}
+                  >
                     <div>
                       <div style={{ fontWeight: 700 }}>{i.name}</div>
                       <div style={{ color: COLORS.textSoft }}>
@@ -3200,17 +3264,23 @@ html, body {
                       </div>
                     </div>
 
-                    <button onClick={() =>
-                      setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
-                    }>✕</button>
+                    <button
+                      onClick={() =>
+                        setWholesaleCart(wholesaleCart.filter(x => x.id !== i.id))
+                      }
+                    >
+                      ✕
+                    </button>
                   </div>
 
                   {/* QTY */}
-                  <div style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: 8
-                  }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginTop: 8
+                    }}
+                  >
                     <div
                       style={{
                         display: "flex",
@@ -3228,7 +3298,7 @@ html, body {
                         onClick={() =>
                           setWholesaleCart(wholesaleCart.map(x =>
                             x.id === i.id
-                              ? { ...x, qty: Math.max(1, i.qty - 1) }
+                              ? { ...x, qty: Math.max(1, Number(i.qty || 1) - 1) }
                               : x
                           ))
                         }
@@ -3236,7 +3306,7 @@ html, body {
                         -
                       </button>
 
-                      {/* 🔥 INPUT NHẬP TAY */}
+                      {/* INPUT NHẬP TAY */}
                       <input
                         type="number"
                         value={i.qty}
@@ -3264,7 +3334,7 @@ html, body {
                         onClick={() =>
                           setWholesaleCart(wholesaleCart.map(x =>
                             x.id === i.id
-                              ? { ...x, qty: i.qty + 1 }
+                              ? { ...x, qty: Number(i.qty || 0) + 1 }
                               : x
                           ))
                         }
@@ -3377,24 +3447,30 @@ html, body {
           )}
         </div>
 
-        {/* FOOTER (GIỐNG SALES) */}
-        <div style={{
-          borderTop: `1px solid ${COLORS.border}`,
-          padding: 18
-        }}>
+        {/* FOOTER GIỮ CỐ ĐỊNH DƯỚI */}
+        <div
+          style={{
+            borderTop: `1px solid ${COLORS.border}`,
+            padding: 18,
+            flexShrink: 0,
+            background: COLORS.white,
+          }}
+        >
 
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>Tạm tính</span>
             <span>{money(getWholesaleTotal())}</span>
           </div>
 
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 24,
-            fontWeight: 800,
-            marginTop: 6
-          }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 24,
+              fontWeight: 800,
+              marginTop: 6
+            }}
+          >
             <span>Tổng cộng</span>
             <span>{money(getWholesaleTotal())}</span>
           </div>
@@ -3404,7 +3480,14 @@ html, body {
           </div>
 
           {/* PAYMENT */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 12 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 14,
+              marginTop: 12
+            }}
+          >
             <PaymentButton
               active={wholesalePayment === "Tiền mặt"}
               onClick={() => setWholesalePayment("Tiền mặt")}
@@ -3441,7 +3524,7 @@ html, body {
 
             <button
               style={ghostBtn}
-              onClick={saveWholesaleTemp}   // 🔥 thêm dòng này
+              onClick={saveWholesaleTemp}
             >
               🧾 Đơn tạm
             </button>
