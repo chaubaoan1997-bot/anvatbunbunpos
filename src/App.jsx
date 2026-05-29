@@ -1305,10 +1305,11 @@ export default function App() {
       const price = getReceiptPrice(i);
       const qty = Number(i.qty || 0);
 
+      // Chỉ giảm giá % của bán lẻ mới tính giảm cho khách
+      // discountCash của bán sỉ là chiết khấu cho người lên đơn, không trừ cho khách
       const discountPercent = Number(i.discount || 0);
-      const discountCash = Number(i.discountCash || 0);
 
-      return (price * qty * discountPercent) / 100 + discountCash * qty;
+      return (price * qty * discountPercent) / 100;
     };
 
     // 🔥 Tổng tiền trước giảm
