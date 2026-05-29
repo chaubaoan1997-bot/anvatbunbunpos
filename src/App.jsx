@@ -774,6 +774,8 @@ export default function App() {
   const [reportProductSearch, setReportProductSearch] = useState("");
   const [reportCategory, setReportCategory] = useState("Tất cả");
 
+  const [reportProductSearch, setReportProductSearch] = useState("");
+
   const [reportOrderSearch, setReportOrderSearch] = useState("");
   const [reportOrderFilter, setReportOrderFilter] = useState("all");
 
@@ -4254,7 +4256,17 @@ ${discountMoney > 0 ? `
     );
   }, [monthlyReportOrders]);
 
-  const topReportProducts = monthlyProductStats;
+  const topReportProducts = useMemo(() => {
+    return monthlyProductStats.filter((p) => {
+      const product = products.find((x) => x.name === p.name);
+
+      const matchCategory =
+        monthlyProductCategory === "Tất cả" ||
+        (product && product.category === monthlyProductCategory);
+
+      return matchCategory;
+    });
+  }, [monthlyProductStats, monthlyProductCategory, products]);
 
   const wholesaleTotalOrders = wholesaleStats.reduce(
     (sum, i) => sum + Number(i.orders || 0),
@@ -4864,6 +4876,36 @@ ${discountMoney > 0 ? `
               }}
             >
               {topReportProducts.length} sản phẩm
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                overflowX: "auto",
+                paddingBottom: 8,
+                marginBottom: 8,
+              }}
+            >
+              {categories.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setMonthlyProductCategory(c)}
+                  style={{
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "8px 12px",
+                    background: monthlyProductCategory === c ? COLORS.primary : "#f1f5f9",
+                    color: monthlyProductCategory === c ? "#fff" : COLORS.text,
+                    fontWeight: 700,
+                    fontSize: 12,
+                    whiteSpace: "nowrap",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  {c}
+                </button>
+              ))}
             </div>
           </div>
 
