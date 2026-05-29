@@ -1535,7 +1535,12 @@ html, body {
 
 <div class="row">
   <span>Giảm giá:</span>
+  <span>$${discountMoney > 0 ? `
+<div class="row">
+  <span>Giảm giá:</span>
   <span>${discountMoney.toLocaleString("vi-VN")} đ</span>
+</div>
+` : ""} đ</span>
 </div>
 
 <div class="line"></div>
