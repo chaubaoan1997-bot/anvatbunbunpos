@@ -1677,35 +1677,62 @@ html, body {
   };
 
   const saveWholesaleTemp = async () => {
-    if (!wholesaleCart.length) return;
+    try {
+      if (!wholesaleCart.length) {
+        alert("Chưa có sản phẩm trong đơn sỉ");
+        return;
+      }
 
-    const now = new Date();
-    const code = `SỈ_TMP${Date.now().toString().slice(-6)}`;
+      const now = new Date();
+      const code = `SỈ_TMP${Date.now().toString().slice(-6)}`;
 
-    const orderPayload = {
-      code,
-      items: wholesaleCart,
-      total: getWholesaleTotal(),
+      const orderPayload = {
+        code,
+        items: wholesaleCart.map((i) => ({
+          ...i,
+          qty: Number(i.qty || 0),
+          customPrice: Number(i.customPrice || i.price || 0),
+          discountCash: Number(i.discountCash || 0),
+        })),
 
-      method: wholesalePayment,
-      status: "Đơn tạm",
-      isTemp: true,
-      type: "wholesale",   // 🔥 phân biệt đơn sỉ
+        total: getWholesaleTotal(),
+        discount: getWholesaleDiscount(),
 
-      sellerName: sellerInfo.name,
-      sellerPhone: sellerInfo.phone,
+        method: "Chưa thanh toán",
+        status: "Đơn tạm",
+        isTemp: true,
+        isPaid: false,
+        paidAt: null,
 
-      dateKey: dateInputValue(),
-      createdAt: serverTimestamp(),
-      timeText: now.toLocaleString("vi-VN"),
-    };
+        type: "wholesale",
 
-    await addDoc(collection(db, "orders"), orderPayload);
+        staffName: staffName || "Không rõ",
 
-    setWholesaleCart([]);
-    setSellerInfo({ name: "", phone: "" });
+        sellerName: sellerInfo.name || "Không rõ",
+        sellerPhone: sellerInfo.phone || "",
 
-    setPaidMessage("Đã lưu đơn sỉ tạm");
+        customerName: customerInfo.name || "",
+        customerPhone: customerInfo.phone || "",
+
+        dateKey: dateInputValue(),
+        createdAt: serverTimestamp(),
+        timeText: now.toLocaleString("vi-VN"),
+      };
+
+      await addDoc(collection(db, "orders"), orderPayload);
+
+      setWholesaleCart([]);
+      setSellerInfo({ name: "", phone: "" });
+      setCustomerInfo({ name: "", phone: "" });
+      setEditingWholesaleOrder(null);
+
+      setFilterType("temp");
+      setPage("history");
+      setPaidMessage("Đã lưu đơn sỉ tạm");
+    } catch (err) {
+      console.error("Lỗi lưu đơn sỉ tạm:", err);
+      alert("Không lưu được đơn sỉ tạm");
+    }
   };
 
   const updateWholesaleTempOrder = async () => {
