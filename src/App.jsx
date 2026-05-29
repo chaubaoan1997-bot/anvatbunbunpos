@@ -4193,31 +4193,194 @@ ${discountMoney > 0 ? `
     }))
     .sort((a, b) => b.qty - a.qty);
 
+  const topReportProducts = [...filteredReportProducts].sort(
+    (a, b) => Number(b.qty || 0) - Number(a.qty || 0)
+  );
 
+  const wholesaleTotalOrders = wholesaleStats.reduce(
+    (sum, i) => sum + Number(i.orders || 0),
+    0
+  );
+
+  const wholesaleTotalRevenue = wholesaleStats.reduce(
+    (sum, i) => sum + Number(i.revenue || 0),
+    0
+  );
+
+  const wholesaleTotalCommission = wholesaleStats.reduce(
+    (sum, i) => sum + Number(i.commission ?? i.discount ?? 0),
+    0
+  );
+
+  const reportMetricBox = (title, value, sub, color, soft, icon) => (
+    <SectionCard
+      style={{
+        padding: isMobile ? 16 : 24,
+        background: soft,
+        minWidth: 0,
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
+        <div
+          style={{
+            color: COLORS.textSoft,
+            fontSize: isMobile ? 13 : 15,
+            lineHeight: 1.35,
+          }}
+        >
+          {title}
+        </div>
+        {icon || null}
+      </div>
+
+      <div
+        style={{
+          marginTop: 14,
+          fontSize: isMobile ? 28 : 38,
+          lineHeight: 1.05,
+          fontWeight: 800,
+          color,
+          wordBreak: "break-word",
+          overflowWrap: "anywhere",
+        }}
+      >
+        {value}
+      </div>
+
+      {sub ? (
+        <div
+          style={{
+            marginTop: 8,
+            color: COLORS.textSoft,
+            fontSize: isMobile ? 13 : 14,
+            lineHeight: 1.35,
+            overflowWrap: "anywhere",
+          }}
+        >
+          {sub}
+        </div>
+      ) : null}
+    </SectionCard>
+  );
 
   const reportPage = (
-    <div style={{ display: "grid", gap: 18 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <div style={pageTitle}>Báo cáo doanh thu</div>
-          <div style={pageSub}>Tổng quan tình hình kinh doanh trong ngày</div>
+    <div
+      style={{
+        display: "grid",
+        gap: isMobile ? 14 : 18,
+        width: "100%",
+        maxWidth: "100%",
+        overflowX: "hidden",
+        boxSizing: "border-box",
+        paddingBottom: isMobile ? 18 : 0,
+      }}
+    >
+      {/* HEADER */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: isMobile ? "stretch" : "flex-start",
+          gap: 12,
+          flexWrap: "wrap",
+          width: "100%",
+          minWidth: 0,
+        }}
+      >
+        <div style={{ minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: isMobile ? 30 : 42,
+              fontWeight: 800,
+              lineHeight: 1.1,
+              wordBreak: "break-word",
+            }}
+          >
+            Báo cáo doanh thu
+          </div>
+          <div
+            style={{
+              fontSize: isMobile ? 14 : 16,
+              color: COLORS.textSoft,
+              marginTop: 8,
+              lineHeight: 1.35,
+            }}
+          >
+            Tổng quan tình hình kinh doanh theo ngày, tuần hoặc tháng
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ color: COLORS.text, fontWeight: 600 }}>Ngày báo cáo:</div>
-          <div style={{ position: "relative" }}>
-            <Calendar size={18} style={{ position: "absolute", right: 14, top: 12 }} />
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: isMobile ? "stretch" : "center",
+            gap: 10,
+            flexWrap: "wrap",
+            width: isMobile ? "100%" : "auto",
+          }}
+        >
+          <div
+            style={{
+              color: COLORS.text,
+              fontWeight: 600,
+              width: isMobile ? "100%" : "auto",
+            }}
+          >
+            Ngày báo cáo:
+          </div>
+
+          <div
+            style={{
+              position: "relative",
+              width: isMobile ? "100%" : "auto",
+            }}
+          >
+            <Calendar
+              size={18}
+              style={{
+                position: "absolute",
+                right: 14,
+                top: 12,
+                pointerEvents: "none",
+              }}
+            />
             <input
               type="date"
               value={reportDate}
               onChange={(e) => setReportDate(e.target.value)}
-              style={{ padding: "11px 40px 11px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}` }}
+              style={{
+                width: isMobile ? "100%" : 170,
+                padding: "11px 40px 11px 14px",
+                borderRadius: 14,
+                border: `1px solid ${COLORS.border}`,
+                boxSizing: "border-box",
+                background: COLORS.white,
+                fontWeight: 600,
+              }}
             />
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr 1fr 1fr" : "auto auto auto",
+              gap: 8,
+              width: isMobile ? "100%" : "auto",
+            }}
+          >
             <button
               onClick={() => setReportType("day")}
               style={{
                 ...ghostBtn,
+                padding: isMobile ? "10px 8px" : ghostBtn.padding,
                 background: reportType === "day" ? COLORS.primary : COLORS.white,
                 color: reportType === "day" ? "#fff" : COLORS.text,
               }}
@@ -4229,6 +4392,7 @@ ${discountMoney > 0 ? `
               onClick={() => setReportType("week")}
               style={{
                 ...ghostBtn,
+                padding: isMobile ? "10px 8px" : ghostBtn.padding,
                 background: reportType === "week" ? COLORS.primary : COLORS.white,
                 color: reportType === "week" ? "#fff" : COLORS.text,
               }}
@@ -4240,6 +4404,7 @@ ${discountMoney > 0 ? `
               onClick={() => setReportType("month")}
               style={{
                 ...ghostBtn,
+                padding: isMobile ? "10px 8px" : ghostBtn.padding,
                 background: reportType === "month" ? COLORS.primary : COLORS.white,
                 color: reportType === "month" ? "#fff" : COLORS.text,
               }}
@@ -4247,177 +4412,555 @@ ${discountMoney > 0 ? `
               Tháng
             </button>
           </div>
-          <button style={ghostBtn} onClick={exportReportExcel}>
+
+          <button
+            style={{
+              ...ghostBtn,
+              width: isMobile ? "100%" : "auto",
+            }}
+            onClick={exportReportExcel}
+          >
             <Download size={18} /> Xuất Excel
           </button>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1.2fr 1.1fr", gap: 18 }}>
-        <MetricCard title="Tổng doanh thu" value={money(revenue)} sub={`Lợi nhuận gộp: ${money(revenue)}`} color="#2f66e9" soft="#eef4ff" />
-        <MetricCard title="Tổng chi phí" value={money(cost)} sub="Chi phí vận hành trong ngày" color="#ef4444" soft="#fff1f2" />
-        <MetricCard title="Lợi nhuận ròng" value={money(profit)} sub="Sau khi trừ chi phí" color="#0f9d58" soft="#effaf4" />
+      {/* 3 CARD TỔNG */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+          gap: isMobile ? 12 : 18,
+          width: "100%",
+          minWidth: 0,
+        }}
+      >
+        {reportMetricBox(
+          "Tổng doanh thu",
+          money(revenue),
+          `Lợi nhuận gộp: ${money(revenue)}`,
+          COLORS.primary,
+          COLORS.primarySoft,
+          <BadgeDollarSign size={18} color={COLORS.primary} />
+        )}
+
+        {reportMetricBox(
+          "Tổng chi phí",
+          money(cost),
+          "Chi phí vận hành trong kỳ",
+          COLORS.danger,
+          COLORS.dangerSoft,
+          <Wallet size={18} color={COLORS.danger} />
+        )}
+
+        {reportMetricBox(
+          "Lợi nhuận ròng",
+          money(profit),
+          "Sau khi trừ chi phí",
+          COLORS.success,
+          COLORS.successSoft,
+          <BarChart3 size={18} color={COLORS.success} />
+        )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 18 }}>
-        <MetricCard title="Tiền mặt" value={money(cashRevenue)} color="#111827" soft="#ffffff" icon={<BadgeDollarSign size={18} color="#22c55e" />} />
-        <MetricCard title="Chuyển khoản" value={money(bankRevenue)} color="#111827" soft="#ffffff" icon={<CreditCard size={18} color="#2f66e9" />} />
-        <MetricCard title="Số đơn hàng" value={`${orderCount} đơn`} color="#111827" soft="#ffffff" icon={<ShoppingBag size={18} color="#f97316" />} />
+      {/* 3 CARD PHỤ */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+          gap: isMobile ? 12 : 18,
+          width: "100%",
+          minWidth: 0,
+        }}
+      >
+        {reportMetricBox(
+          "Tiền mặt",
+          money(cashRevenue),
+          "",
+          "#111827",
+          COLORS.white,
+          <BadgeDollarSign size={18} color="#22c55e" />
+        )}
+
+        {reportMetricBox(
+          "Chuyển khoản",
+          money(bankRevenue),
+          "",
+          "#111827",
+          COLORS.white,
+          <CreditCard size={18} color={COLORS.primary} />
+        )}
+
+        {reportMetricBox(
+          "Số đơn hàng",
+          `${orderCount} đơn`,
+          "",
+          "#111827",
+          COLORS.white,
+          <ShoppingBag size={18} color="#f97316" />
+        )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.35fr 1fr", gap: 18 }}>
-        <SectionCard style={{ minHeight: 340, padding: 18 }}>
-          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>
-            SẢN PHẨM ĐÃ BÁN
-          </div>
-
-          <div style={{ maxHeight: 280, overflow: "auto" }}>
-            {!productList.length ? (
-              <div style={{ height: 220 }}>
-                <EmptyState icon={Package} title="Chưa có dữ liệu bán hàng" />
-              </div>
-            ) : (
-              productList.map((p, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "10px 0",
-                    borderBottom: `1px solid ${COLORS.border}`,
-                    alignItems: "center"
-                  }}
-                >
-                  <div style={{ fontWeight: 500 }}>
-                    {i === 0 ? "🔥 " : ""}{p.name}
-                  </div>
-
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontWeight: 600 }}>
-                      {p.qty} món
-                    </div>
-                    <div style={{ fontSize: 12, color: "#64748b" }}>
-                      {money(p.total)}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </SectionCard>
-
-        {/* ===== THỐNG KÊ SẢN PHẨM ===== */}
-        <SectionCard style={{ marginTop: 18 }}>
-          <div style={{
-            padding: 18,
-            borderBottom: `1px solid ${COLORS.border}`,
+      {/* BÁO CÁO ĐƠN SỈ */}
+      <SectionCard
+        style={{
+          padding: isMobile ? 14 : 18,
+          overflow: "hidden",
+          minWidth: 0,
+        }}
+      >
+        <div
+          style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center"
-          }}>
-            <div style={{ fontSize: 20, fontWeight: 700 }}>
-              SẢN PHẨM ĐÃ BÁN TRONG NGÀY
-            </div>
-
-            <input
-              placeholder="Tìm sản phẩm..."
-              value={reportProductSearch}
-              onChange={(e) => setReportProductSearch(e.target.value)}
+            alignItems: isMobile ? "stretch" : "center",
+            gap: 12,
+            flexWrap: "wrap",
+            marginBottom: 14,
+          }}
+        >
+          <div style={{ minWidth: 0 }}>
+            <div
               style={{
-                padding: "8px 12px",
-                borderRadius: 10,
-                border: `1px solid ${COLORS.border}`
+                fontSize: isMobile ? 18 : 22,
+                fontWeight: 800,
+                lineHeight: 1.25,
               }}
-            />
+            >
+              Báo cáo đơn sỉ
+            </div>
+            <div
+              style={{
+                color: COLORS.textSoft,
+                marginTop: 4,
+                fontSize: isMobile ? 13 : 14,
+                lineHeight: 1.35,
+              }}
+            >
+              Doanh thu đơn sỉ và chiết khấu cho người lên đơn
+            </div>
           </div>
 
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr 1fr",
-            padding: "12px 18px",
-            background: "#f8fafc",
-            fontWeight: 700
-          }}>
-            <div>Sản phẩm</div>
-            <div>Số lượng</div>
-            <div>Doanh thu</div>
+          <div
+            style={{
+              padding: "8px 12px",
+              borderRadius: 999,
+              background: COLORS.primarySoft,
+              color: COLORS.primary,
+              fontWeight: 800,
+              fontSize: 13,
+              width: isMobile ? "fit-content" : "auto",
+            }}
+          >
+            {wholesaleTotalOrders} đơn sỉ
           </div>
-          <div style={{
-            display: "flex",
-            gap: 8,
-            padding: "10px 18px",
-            borderBottom: `1px solid ${COLORS.border}`,
-            flexWrap: "wrap"
-          }}>
-            {categories.map((c) => (
-              <button
-                key={c}
-                onClick={() => setReportCategory(c)}
-                style={{
-                  padding: "5px 10px",
-                  borderRadius: 8,
-                  border: "none",
-                  cursor: "pointer",
-                  background:
-                    reportCategory === c ? COLORS.primary : "#f1f5f9",
-                  color: reportCategory === c ? "#fff" : "#334155",
-                  fontWeight: 600,
-                  fontSize: 13
-                }}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+        </div>
 
-          <div style={{ maxHeight: 300, overflow: "auto" }}>
-            {!filteredReportProducts.length ? (
-              <EmptyState icon={Package} title="Chưa có dữ liệu" />
-            ) : (
-              filteredReportProducts.map((p, i) => (
-                <div key={i} style={{
-                  display: "grid",
-                  gridTemplateColumns: "2fr 1fr 1fr",
-                  padding: "12px 18px",
-                  borderTop: `1px solid ${COLORS.border}`
-                }}>
-                  <div>{p.name}</div>
-                  <div>{p.qty}</div>
-                  <div>{money(p.revenue)}</div>
+        {!wholesaleStats.length ? (
+          <div style={{ minHeight: 120 }}>
+            <EmptyState icon={ShoppingBag} title="Chưa có đơn sỉ đã thanh toán" />
+          </div>
+        ) : isMobile ? (
+          <div style={{ display: "grid", gap: 10 }}>
+            {wholesaleStats.map((item) => {
+              const commission = Number(item.commission ?? item.discount ?? 0);
+
+              return (
+                <div
+                  key={item.seller}
+                  style={{
+                    border: `1px solid ${COLORS.border}`,
+                    borderRadius: 14,
+                    padding: 12,
+                    background: "#f8fafc",
+                    display: "grid",
+                    gap: 8,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      fontSize: 15,
+                      color: COLORS.text,
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {item.seller || "Không rõ"}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 8,
+                      fontSize: 13,
+                    }}
+                  >
+                    <div>
+                      <div style={{ color: COLORS.textSoft }}>Số đơn</div>
+                      <div style={{ fontWeight: 800 }}>{item.orders}</div>
+                    </div>
+
+                    <div>
+                      <div style={{ color: COLORS.textSoft }}>Doanh thu</div>
+                      <div style={{ fontWeight: 800, color: COLORS.primary }}>
+                        {money(item.revenue)}
+                      </div>
+                    </div>
+
+                    <div style={{ gridColumn: "1 / -1" }}>
+                      <div style={{ color: COLORS.textSoft }}>
+                        Chiết khấu người lên đơn
+                      </div>
+                      <div style={{ fontWeight: 800, color: COLORS.danger }}>
+                        {money(commission)}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ))
-            )}
-          </div>
-        </SectionCard>
+              );
+            })}
 
-        <SectionCard style={{ padding: 20, marginTop: 20 }}>
-          <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 12 }}>
-            Thống kê đơn sỉ
+            <div
+              style={{
+                border: `1px solid ${COLORS.border}`,
+                borderRadius: 14,
+                padding: 12,
+                background: COLORS.primarySoft,
+                display: "grid",
+                gap: 6,
+                fontWeight: 800,
+              }}
+            >
+              <div>Tổng đơn sỉ: {wholesaleTotalOrders}</div>
+              <div>Doanh thu sỉ: {money(wholesaleTotalRevenue)}</div>
+              <div>Chiết khấu người lên đơn: {money(wholesaleTotalCommission)}</div>
+            </div>
           </div>
-
-          {!wholesaleStats.length ? (
-            <div>Không có dữ liệu</div>
-          ) : (
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        ) : (
+          <div style={{ width: "100%", overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: 14,
+                minWidth: 720,
+              }}
+            >
               <thead>
-                <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
-                  <th>Người bán</th>
-                  <th>Số đơn</th>
-                  <th>Doanh thu</th>
-                  <th>Chiết khấu</th>
+                <tr style={{ background: "#f8fafc" }}>
+                  <th style={{ textAlign: "left", padding: 10, borderBottom: `1px solid ${COLORS.border}` }}>
+                    Người lên đơn
+                  </th>
+                  <th style={{ textAlign: "center", padding: 10, borderBottom: `1px solid ${COLORS.border}` }}>
+                    Số đơn
+                  </th>
+                  <th style={{ textAlign: "right", padding: 10, borderBottom: `1px solid ${COLORS.border}` }}>
+                    Doanh thu sỉ
+                  </th>
+                  <th style={{ textAlign: "right", padding: 10, borderBottom: `1px solid ${COLORS.border}` }}>
+                    Chiết khấu người lên đơn
+                  </th>
                 </tr>
               </thead>
+
               <tbody>
-                {wholesaleStats.map((s, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid #eee" }}>
-                    <td>{s.seller}</td>
-                    <td>{s.orders}</td>
-                    <td>{money(s.revenue)}</td>
-                    <td>{money(s.discount)}</td>
-                  </tr>
-                ))}
+                {wholesaleStats.map((item) => {
+                  const commission = Number(item.commission ?? item.discount ?? 0);
+
+                  return (
+                    <tr key={item.seller}>
+                      <td style={{ padding: 10, borderBottom: `1px solid ${COLORS.border}`, fontWeight: 700 }}>
+                        {item.seller || "Không rõ"}
+                      </td>
+                      <td style={{ padding: 10, borderBottom: `1px solid ${COLORS.border}`, textAlign: "center" }}>
+                        {item.orders}
+                      </td>
+                      <td style={{ padding: 10, borderBottom: `1px solid ${COLORS.border}`, textAlign: "right", color: COLORS.primary, fontWeight: 800 }}>
+                        {money(item.revenue)}
+                      </td>
+                      <td style={{ padding: 10, borderBottom: `1px solid ${COLORS.border}`, textAlign: "right", color: COLORS.danger, fontWeight: 800 }}>
+                        {money(commission)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
+
+              <tfoot>
+                <tr>
+                  <td style={{ padding: 10, fontWeight: 800 }}>Tổng</td>
+                  <td style={{ padding: 10, textAlign: "center", fontWeight: 800 }}>
+                    {wholesaleTotalOrders}
+                  </td>
+                  <td style={{ padding: 10, textAlign: "right", fontWeight: 800, color: COLORS.primary }}>
+                    {money(wholesaleTotalRevenue)}
+                  </td>
+                  <td style={{ padding: 10, textAlign: "right", fontWeight: 800, color: COLORS.danger }}>
+                    {money(wholesaleTotalCommission)}
+                  </td>
+                </tr>
+              </tfoot>
             </table>
+          </div>
+        )}
+      </SectionCard>
+
+      {/* SẢN PHẨM ĐÃ BÁN */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.15fr) minmax(0, 0.85fr)",
+          gap: isMobile ? 12 : 18,
+          width: "100%",
+          minWidth: 0,
+        }}
+      >
+        <SectionCard
+          style={{
+            padding: isMobile ? 14 : 18,
+            minWidth: 0,
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: isMobile ? 18 : 20,
+              fontWeight: 800,
+              marginBottom: 12,
+            }}
+          >
+            Sản phẩm đã bán
+          </div>
+
+          {!topReportProducts.length ? (
+            <div style={{ minHeight: 180 }}>
+              <EmptyState icon={Package} title="Chưa có sản phẩm đã bán" />
+            </div>
+          ) : (
+            <div
+              style={{
+                maxHeight: isMobile ? "none" : 360,
+                overflowY: isMobile ? "visible" : "auto",
+                paddingRight: isMobile ? 0 : 4,
+              }}
+            >
+              {topReportProducts.map((p, index) => (
+                <div
+                  key={p.name}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "minmax(0, 1fr) auto",
+                    gap: 10,
+                    alignItems: "center",
+                    padding: "12px 0",
+                    borderBottom: `1px solid ${COLORS.border}`,
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        fontSize: isMobile ? 14 : 15,
+                        lineHeight: 1.35,
+                        overflowWrap: "anywhere",
+                      }}
+                    >
+                      {index === 0 ? "🔥 " : ""}
+                      {p.name}
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: "right", minWidth: 90 }}>
+                    <div style={{ fontWeight: 800 }}>
+                      {Number(p.qty || 0).toLocaleString("vi-VN")} món
+                    </div>
+                    <div style={{ fontSize: 12, color: COLORS.textSoft }}>
+                      {money(p.revenue || p.total || 0)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </SectionCard>
+
+        <SectionCard
+          style={{
+            overflow: "hidden",
+            minWidth: 0,
+          }}
+        >
+          <div
+            style={{
+              padding: isMobile ? 14 : 18,
+              borderBottom: `1px solid ${COLORS.border}`,
+              display: "grid",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 160px",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: isMobile ? 18 : 20,
+                  fontWeight: 800,
+                  lineHeight: 1.25,
+                }}
+              >
+                Sản phẩm đã bán trong kỳ
+              </div>
+
+              <input
+                value={reportProductSearch}
+                onChange={(e) => setReportProductSearch(e.target.value)}
+                placeholder="Tìm sản phẩm..."
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  borderRadius: 12,
+                  border: `1px solid ${COLORS.border}`,
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                overflowX: "auto",
+                paddingBottom: 2,
+              }}
+            >
+              {categories.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setReportCategory(c)}
+                  style={{
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "8px 12px",
+                    background: reportCategory === c ? COLORS.primary : "#f1f5f9",
+                    color: reportCategory === c ? "#fff" : COLORS.text,
+                    fontWeight: 700,
+                    fontSize: 12,
+                    whiteSpace: "nowrap",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {!filteredReportProducts.length ? (
+            <div style={{ minHeight: 180 }}>
+              <EmptyState icon={Package} title="Không có sản phẩm phù hợp" />
+            </div>
+          ) : isMobile ? (
+            <div style={{ display: "grid", gap: 10, padding: 14 }}>
+              {filteredReportProducts.map((p) => (
+                <div
+                  key={p.name}
+                  style={{
+                    border: `1px solid ${COLORS.border}`,
+                    borderRadius: 14,
+                    padding: 12,
+                    display: "grid",
+                    gap: 8,
+                    background: "#f8fafc",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      lineHeight: 1.35,
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {p.name}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 12,
+                      fontSize: 14,
+                    }}
+                  >
+                    <span>Số lượng</span>
+                    <strong>{Number(p.qty || 0).toLocaleString("vi-VN")}</strong>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 12,
+                      fontSize: 14,
+                    }}
+                  >
+                    <span>Doanh thu</span>
+                    <strong style={{ color: COLORS.primary }}>
+                      {money(p.revenue || p.total || 0)}
+                    </strong>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ width: "100%", overflowX: "auto" }}>
+              <table
+                style={{
+                  width: "100%",
+                  minWidth: 520,
+                  borderCollapse: "collapse",
+                  fontSize: 14,
+                }}
+              >
+                <thead>
+                  <tr style={{ background: "#f8fafc" }}>
+                    <th style={{ textAlign: "left", padding: 12, borderBottom: `1px solid ${COLORS.border}` }}>
+                      Sản phẩm
+                    </th>
+                    <th style={{ textAlign: "center", padding: 12, borderBottom: `1px solid ${COLORS.border}` }}>
+                      Số lượng
+                    </th>
+                    <th style={{ textAlign: "right", padding: 12, borderBottom: `1px solid ${COLORS.border}` }}>
+                      Doanh thu
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredReportProducts.map((p) => (
+                    <tr key={p.name}>
+                      <td style={{ padding: 12, borderBottom: `1px solid ${COLORS.border}`, fontWeight: 700 }}>
+                        {p.name}
+                      </td>
+                      <td style={{ padding: 12, borderBottom: `1px solid ${COLORS.border}`, textAlign: "center" }}>
+                        {Number(p.qty || 0).toLocaleString("vi-VN")}
+                      </td>
+                      <td style={{ padding: 12, borderBottom: `1px solid ${COLORS.border}`, textAlign: "right", fontWeight: 800, color: COLORS.primary }}>
+                        {money(p.revenue || p.total || 0)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </SectionCard>
       </div>
