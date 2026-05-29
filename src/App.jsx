@@ -774,6 +774,9 @@ export default function App() {
   const [reportProductSearch, setReportProductSearch] = useState("");
   const [reportCategory, setReportCategory] = useState("Tất cả");
 
+  const [reportOrderSearch, setReportOrderSearch] = useState("");
+  const [reportOrderFilter, setReportOrderFilter] = useState("all");
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [tempOrder, setTempOrder] = useState(null);
 
@@ -4326,6 +4329,39 @@ ${discountMoney > 0 ? `
       ) : null}
     </SectionCard>
   );
+
+  const filteredReportOrders = useMemo(() => {
+    return reportOrders.filter((o) => {
+      const text = `${o.code || ""} ${o.staffName || ""} ${o.sellerName || ""} ${o.customerName || ""} ${o.customerPhone || ""}`
+        .toLowerCase();
+
+      const matchSearch = text.includes((reportOrderSearch || "").toLowerCase());
+
+      let matchFilter = true;
+
+      if (reportOrderFilter === "retail") {
+        matchFilter = !o.type && !o.isDelivery;
+      }
+
+      if (reportOrderFilter === "wholesale") {
+        matchFilter = o.type === "wholesale";
+      }
+
+      if (reportOrderFilter === "cash") {
+        matchFilter = o.method === "Tiền mặt";
+      }
+
+      if (reportOrderFilter === "bank") {
+        matchFilter = o.method === "Chuyển khoản";
+      }
+
+      if (reportOrderFilter === "delivery") {
+        matchFilter = !!o.isDelivery;
+      }
+
+      return matchSearch && matchFilter;
+    });
+  }, [reportOrders, reportOrderSearch, reportOrderFilter]);
 
   const reportPage = (
     <div
