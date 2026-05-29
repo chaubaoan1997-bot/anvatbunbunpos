@@ -4278,13 +4278,12 @@ ${discountMoney > 0 ? `
         gap: isMobile ? 14 : 18,
         width: "100%",
         maxWidth: "100%",
-        height: isMobile ? "auto" : "calc(100vh - 120px)",
-        maxHeight: isMobile ? "none" : "calc(100vh - 120px)",
+        minWidth: 0,
         overflowX: "hidden",
-        overflowY: "auto",
+        overflowY: "visible",
         boxSizing: "border-box",
-        paddingRight: isMobile ? 0 : 6,
-        paddingBottom: isMobile ? 18 : 24,
+        paddingRight: 0,
+        paddingBottom: 40,
       }}
     >
       {/* HEADER */}
