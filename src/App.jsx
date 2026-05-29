@@ -4193,9 +4193,65 @@ ${discountMoney > 0 ? `
     }))
     .sort((a, b) => b.qty - a.qty);
 
-  const topReportProducts = [...filteredReportProducts].sort(
-    (a, b) => Number(b.qty || 0) - Number(a.qty || 0)
-  );
+  const monthlyReportOrders = useMemo(() => {
+    return orders.filter((o) => {
+      if (o.status !== "Đã thanh toán") return false;
+
+      const paidDateObj =
+        o.paidAt?.toDate
+          ? o.paidAt.toDate()
+          : o.paidAt
+            ? new Date(o.paidAt)
+            : o.dateKey
+              ? new Date(o.dateKey + "T00:00:00")
+              : null;
+
+      if (!paidDateObj) return false;
+
+      const paidDateKey = new Date(paidDateObj).toLocaleDateString("sv-SE");
+
+      return isSameMonth(paidDateKey, reportDate);
+    });
+  }, [orders, reportDate]);
+
+  const monthlyProductStats = useMemo(() => {
+    const map = {};
+
+    monthlyReportOrders.forEach((order) => {
+      (order.items || []).forEach((item) => {
+        if (!map[item.name]) {
+          map[item.name] = {
+            name: item.name,
+            qty: 0,
+            revenue: 0,
+          };
+        }
+
+        const price = Number(
+          item.customPrice !== undefined && item.customPrice !== null && item.customPrice !== ""
+            ? item.customPrice
+            : item.price || 0
+        );
+
+        const qty = Number(item.qty || 0);
+
+        // Chỉ giảm % bán lẻ mới trừ doanh thu khách.
+        // discountCash đơn sỉ là chiết khấu người lên đơn, không trừ doanh thu sản phẩm.
+        const discountPercent = Number(item.discount || 0);
+        const raw = price * qty;
+        const final = raw - (raw * discountPercent) / 100;
+
+        map[item.name].qty += qty;
+        map[item.name].revenue += final;
+      });
+    });
+
+    return Object.values(map).sort(
+      (a, b) => Number(b.qty || 0) - Number(a.qty || 0)
+    );
+  }, [monthlyReportOrders]);
+
+  const topReportProducts = monthlyProductStats;
 
   const wholesaleTotalOrders = wholesaleStats.reduce(
     (sum, i) => sum + Number(i.orders || 0),
