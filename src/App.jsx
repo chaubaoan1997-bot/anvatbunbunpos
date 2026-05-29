@@ -4803,7 +4803,7 @@ ${discountMoney > 0 ? `
                   lineHeight: 1.25,
                 }}
               >
-                Sản phẩm đã bán
+                Sản phẩm đã bán trong tháng
               </div>
               <div
                 style={{
@@ -4812,7 +4812,7 @@ ${discountMoney > 0 ? `
                   fontSize: isMobile ? 13 : 14,
                 }}
               >
-                Danh sách sản phẩm bán chạy trong kỳ báo cáo
+                Tổng hợp sản phẩm đã bán trong tháng được chọn
               </div>
             </div>
 
