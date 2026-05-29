@@ -4716,6 +4716,7 @@ ${discountMoney > 0 ? `
           minWidth: 0,
         }}
       >
+        {/* SẢN PHẨM ĐÃ BÁN - FULL NGANG */}
         <SectionCard
           style={{
             padding: isMobile ? 14 : 18,
@@ -4725,67 +4726,197 @@ ${discountMoney > 0 ? `
         >
           <div
             style={{
-              textAlign: "center",
-              fontSize: isMobile ? 18 : 20,
-              fontWeight: 800,
-              marginBottom: 12,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: isMobile ? "stretch" : "center",
+              gap: 12,
+              flexWrap: "wrap",
+              marginBottom: 14,
             }}
           >
-            Sản phẩm đã bán
+            <div style={{ minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: isMobile ? 18 : 22,
+                  fontWeight: 800,
+                  lineHeight: 1.25,
+                }}
+              >
+                Sản phẩm đã bán
+              </div>
+              <div
+                style={{
+                  color: COLORS.textSoft,
+                  marginTop: 4,
+                  fontSize: isMobile ? 13 : 14,
+                }}
+              >
+                Danh sách sản phẩm bán chạy trong kỳ báo cáo
+              </div>
+            </div>
+
+            <div
+              style={{
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: COLORS.primarySoft,
+                color: COLORS.primary,
+                fontWeight: 800,
+                fontSize: 13,
+                width: isMobile ? "fit-content" : "auto",
+              }}
+            >
+              {topReportProducts.length} sản phẩm
+            </div>
           </div>
 
           {!topReportProducts.length ? (
-            <div style={{ minHeight: 180 }}>
+            <div style={{ minHeight: 140 }}>
               <EmptyState icon={Package} title="Chưa có sản phẩm đã bán" />
             </div>
-          ) : (
-            <div
-              style={{
-                maxHeight: isMobile ? "none" : 360,
-                overflowY: isMobile ? "visible" : "auto",
-                paddingRight: isMobile ? 0 : 4,
-              }}
-            >
+          ) : isMobile ? (
+            <div style={{ display: "grid", gap: 10 }}>
               {topReportProducts.map((p, index) => (
                 <div
                   key={p.name}
                   style={{
+                    border: `1px solid ${COLORS.border}`,
+                    borderRadius: 14,
+                    padding: 12,
+                    background: "#f8fafc",
                     display: "grid",
-                    gridTemplateColumns: "minmax(0, 1fr) auto",
-                    gap: 10,
-                    alignItems: "center",
-                    padding: "12px 0",
-                    borderBottom: `1px solid ${COLORS.border}`,
+                    gap: 8,
                   }}
                 >
-                  <div style={{ minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontWeight: 700,
-                        fontSize: isMobile ? 14 : 15,
-                        lineHeight: 1.35,
-                        overflowWrap: "anywhere",
-                      }}
-                    >
-                      {index === 0 ? "🔥 " : ""}
-                      {p.name}
-                    </div>
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      lineHeight: 1.35,
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {index === 0 ? "🔥 " : ""}
+                    {p.name}
                   </div>
 
-                  <div style={{ textAlign: "right", minWidth: 90 }}>
-                    <div style={{ fontWeight: 800 }}>
-                      {Number(p.qty || 0).toLocaleString("vi-VN")} món
-                    </div>
-                    <div style={{ fontSize: 12, color: COLORS.textSoft }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 12,
+                      fontSize: 14,
+                    }}
+                  >
+                    <span>Số lượng</span>
+                    <strong>{Number(p.qty || 0).toLocaleString("vi-VN")} món</strong>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 12,
+                      fontSize: 14,
+                    }}
+                  >
+                    <span>Doanh thu</span>
+                    <strong style={{ color: COLORS.primary }}>
                       {money(p.revenue || p.total || 0)}
-                    </div>
+                    </strong>
                   </div>
                 </div>
               ))}
             </div>
+          ) : (
+            <div style={{ width: "100%", overflowX: "auto" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: 14,
+                  tableLayout: "fixed",
+                }}
+              >
+                <thead>
+                  <tr style={{ background: "#f8fafc" }}>
+                    <th
+                      style={{
+                        textAlign: "left",
+                        padding: 12,
+                        borderBottom: `1px solid ${COLORS.border}`,
+                        width: "55%",
+                      }}
+                    >
+                      Sản phẩm
+                    </th>
+                    <th
+                      style={{
+                        textAlign: "center",
+                        padding: 12,
+                        borderBottom: `1px solid ${COLORS.border}`,
+                        width: "20%",
+                      }}
+                    >
+                      Số lượng
+                    </th>
+                    <th
+                      style={{
+                        textAlign: "right",
+                        padding: 12,
+                        borderBottom: `1px solid ${COLORS.border}`,
+                        width: "25%",
+                      }}
+                    >
+                      Doanh thu
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {topReportProducts.map((p, index) => (
+                    <tr key={p.name}>
+                      <td
+                        style={{
+                          padding: 12,
+                          borderBottom: `1px solid ${COLORS.border}`,
+                          fontWeight: 700,
+                          overflowWrap: "anywhere",
+                        }}
+                      >
+                        {index === 0 ? "🔥 " : ""}
+                        {p.name}
+                      </td>
+                      <td
+                        style={{
+                          padding: 12,
+                          borderBottom: `1px solid ${COLORS.border}`,
+                          textAlign: "center",
+                          fontWeight: 800,
+                        }}
+                      >
+                        {Number(p.qty || 0).toLocaleString("vi-VN")} món
+                      </td>
+                      <td
+                        style={{
+                          padding: 12,
+                          borderBottom: `1px solid ${COLORS.border}`,
+                          textAlign: "right",
+                          fontWeight: 800,
+                          color: COLORS.primary,
+                          overflowWrap: "anywhere",
+                        }}
+                      >
+                        {money(p.revenue || p.total || 0)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </SectionCard>
 
+        {/* SẢN PHẨM ĐÃ BÁN TRONG KỲ - FULL NGANG */}
         <SectionCard
           style={{
             overflow: "hidden",
@@ -4803,19 +4934,30 @@ ${discountMoney > 0 ? `
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 160px",
-                gap: 10,
+                gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 240px",
+                gap: 12,
                 alignItems: "center",
               }}
             >
-              <div
-                style={{
-                  fontSize: isMobile ? 18 : 20,
-                  fontWeight: 800,
-                  lineHeight: 1.25,
-                }}
-              >
-                Sản phẩm đã bán trong kỳ
+              <div style={{ minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: isMobile ? 18 : 22,
+                    fontWeight: 800,
+                    lineHeight: 1.25,
+                  }}
+                >
+                  Sản phẩm đã bán {reportType === "day" ? "trong ngày" : reportType === "week" ? "trong tuần" : "trong tháng"}
+                </div>
+                <div
+                  style={{
+                    color: COLORS.textSoft,
+                    marginTop: 4,
+                    fontSize: isMobile ? 13 : 14,
+                  }}
+                >
+                  Có thể lọc theo tên sản phẩm và danh mục
+                </div>
               </div>
 
               <input
@@ -4865,7 +5007,7 @@ ${discountMoney > 0 ? `
           </div>
 
           {!filteredReportProducts.length ? (
-            <div style={{ minHeight: 180 }}>
+            <div style={{ minHeight: 160 }}>
               <EmptyState icon={Package} title="Không có sản phẩm phù hợp" />
             </div>
           ) : isMobile ? (
@@ -4901,7 +5043,7 @@ ${discountMoney > 0 ? `
                     }}
                   >
                     <span>Số lượng</span>
-                    <strong>{Number(p.qty || 0).toLocaleString("vi-VN")}</strong>
+                    <strong>{Number(p.qty || 0).toLocaleString("vi-VN")} món</strong>
                   </div>
 
                   <div
@@ -4925,20 +5067,41 @@ ${discountMoney > 0 ? `
               <table
                 style={{
                   width: "100%",
-                  minWidth: 520,
                   borderCollapse: "collapse",
                   fontSize: 14,
+                  tableLayout: "fixed",
                 }}
               >
                 <thead>
                   <tr style={{ background: "#f8fafc" }}>
-                    <th style={{ textAlign: "left", padding: 12, borderBottom: `1px solid ${COLORS.border}` }}>
+                    <th
+                      style={{
+                        textAlign: "left",
+                        padding: 12,
+                        borderBottom: `1px solid ${COLORS.border}`,
+                        width: "55%",
+                      }}
+                    >
                       Sản phẩm
                     </th>
-                    <th style={{ textAlign: "center", padding: 12, borderBottom: `1px solid ${COLORS.border}` }}>
+                    <th
+                      style={{
+                        textAlign: "center",
+                        padding: 12,
+                        borderBottom: `1px solid ${COLORS.border}`,
+                        width: "20%",
+                      }}
+                    >
                       Số lượng
                     </th>
-                    <th style={{ textAlign: "right", padding: 12, borderBottom: `1px solid ${COLORS.border}` }}>
+                    <th
+                      style={{
+                        textAlign: "right",
+                        padding: 12,
+                        borderBottom: `1px solid ${COLORS.border}`,
+                        width: "25%",
+                      }}
+                    >
                       Doanh thu
                     </th>
                   </tr>
@@ -4947,13 +5110,36 @@ ${discountMoney > 0 ? `
                 <tbody>
                   {filteredReportProducts.map((p) => (
                     <tr key={p.name}>
-                      <td style={{ padding: 12, borderBottom: `1px solid ${COLORS.border}`, fontWeight: 700 }}>
+                      <td
+                        style={{
+                          padding: 12,
+                          borderBottom: `1px solid ${COLORS.border}`,
+                          fontWeight: 700,
+                          overflowWrap: "anywhere",
+                        }}
+                      >
                         {p.name}
                       </td>
-                      <td style={{ padding: 12, borderBottom: `1px solid ${COLORS.border}`, textAlign: "center" }}>
-                        {Number(p.qty || 0).toLocaleString("vi-VN")}
+                      <td
+                        style={{
+                          padding: 12,
+                          borderBottom: `1px solid ${COLORS.border}`,
+                          textAlign: "center",
+                          fontWeight: 800,
+                        }}
+                      >
+                        {Number(p.qty || 0).toLocaleString("vi-VN")} món
                       </td>
-                      <td style={{ padding: 12, borderBottom: `1px solid ${COLORS.border}`, textAlign: "right", fontWeight: 800, color: COLORS.primary }}>
+                      <td
+                        style={{
+                          padding: 12,
+                          borderBottom: `1px solid ${COLORS.border}`,
+                          textAlign: "right",
+                          fontWeight: 800,
+                          color: COLORS.primary,
+                          overflowWrap: "anywhere",
+                        }}
+                      >
                         {money(p.revenue || p.total || 0)}
                       </td>
                     </tr>
