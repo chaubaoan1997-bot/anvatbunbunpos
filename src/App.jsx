@@ -1721,14 +1721,12 @@ html, body {
 
       await addDoc(collection(db, "orders"), orderPayload);
 
+      setPaidMessage("Đã lưu đơn tạm sỉ");
+
       setWholesaleCart([]);
       setSellerInfo({ name: "", phone: "" });
       setCustomerInfo({ name: "", phone: "" });
       setEditingWholesaleOrder(null);
-
-      setFilterType("temp");
-      setPage("history");
-      setPaidMessage("Đã lưu đơn sỉ tạm");
     } catch (err) {
       console.error("Lỗi lưu đơn sỉ tạm:", err);
       alert("Không lưu được đơn sỉ tạm");
