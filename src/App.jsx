@@ -1292,20 +1292,35 @@ export default function App() {
         ? data.createdAt.toDate().toLocaleString("vi-VN")
         : new Date().toLocaleString("vi-VN"));
 
+    const getReceiptPrice = (i) => {
+      const hasWholesalePrice =
+        i.customPrice !== undefined &&
+        i.customPrice !== null &&
+        i.customPrice !== "";
+
+      return Number(hasWholesalePrice ? i.customPrice : i.price || 0);
+    };
+
+    const getReceiptDiscount = (i) => {
+      const price = getReceiptPrice(i);
+      const qty = Number(i.qty || 0);
+
+      const discountPercent = Number(i.discount || 0);
+      const discountCash = Number(i.discountCash || 0);
+
+      return (price * qty * discountPercent) / 100 + discountCash * qty;
+    };
+
     // 🔥 Tổng tiền trước giảm
     const rawTotal = (data.items || []).reduce((sum, i) => {
-      const price = Number(i.price || i.customPrice || 0);
+      const price = getReceiptPrice(i);
       const qty = Number(i.qty || 0);
       return sum + price * qty;
     }, 0);
 
     // 🔥 Tổng giảm từ từng món
     const discountMoney = (data.items || []).reduce((sum, i) => {
-      const price = Number(i.price || i.customPrice || 0);
-      const qty = Number(i.qty || 0);
-      const discount = Number(i.discount || 0); // %
-
-      return sum + (price * qty * discount) / 100;
+      return sum + getReceiptDiscount(i);
     }, 0);
 
     // 🔥 Tổng sau giảm
@@ -1496,11 +1511,9 @@ html, body {
       </thead>
       <tbody>
         ${(data.items || []).map((i, index) => {
-      const price = Number(i.price || i.customPrice || 0);
+      const price = getReceiptPrice(i);
       const qty = Number(i.qty || 0);
       const raw = price * qty;
-      const after = raw - (raw * Number(i.discount || 0)) / 100;
-
       return `
             <tr>
               <td class="stt">${index + 1}</td>
