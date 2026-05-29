@@ -1792,13 +1792,25 @@ ${discountMoney > 0 ? `
     try {
       if (!order) return;
 
+      const now = new Date();
+      const paidTimeText = now.toLocaleString("vi-VN");
+      const todayKey = dateInputValue();
+
       await updateDoc(doc(db, "orders", order.id), {
         status: "Đã thanh toán",
         method: method || "Tiền mặt",
         isTemp: false,
 
-        isPaid: true,          // 🔥 thêm
-        paidAt: serverTimestamp(),    // 🔥 thêm (cực quan trọng)
+        isPaid: true,
+        paidAt: serverTimestamp(),
+
+        // Giữ lại ngày tạo đơn tạm ban đầu để sau này cần đối chiếu vẫn còn
+        tempDateKey: order.dateKey || "",
+        tempTimeText: order.timeText || "",
+
+        // Quan trọng: chuyển đơn sang ngày thanh toán
+        dateKey: todayKey,
+        timeText: paidTimeText,
       });
 
       const batch = writeBatch(db);
@@ -1820,8 +1832,19 @@ ${discountMoney > 0 ? `
       await batch.commit();
 
       setPaidMessage(`Đã thanh toán đơn tạm • ${method || "Tiền mặt"}`);
+
+      // Đóng modal thanh toán nếu đang mở
+      setShowPaymentModal(false);
+      setTempOrder(null);
+
+      // Cho lịch sử tự nhảy sang ngày hôm nay để thấy đơn vừa thanh toán
+      setHistoryDate(todayKey);
+      setHistoryType("day");
+      setFilterType("all");
+      setSelectedOrder(null);
     } catch (err) {
-      console.error(err);
+      console.error("Lỗi xác nhận thanh toán đơn tạm:", err);
+      alert("Không xác nhận được đơn tạm");
     }
   };
 
