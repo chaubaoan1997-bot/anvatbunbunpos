@@ -5368,8 +5368,10 @@ ${discountMoney > 0 ? `
       <main
         style={{
           padding: 18,
-          overflow: isMobile ? "visible" : "hidden",
+          overflowY: "auto",
+          overflowX: "hidden",
           height: isMobile ? "auto" : "100vh",
+          minHeight: 0,
         }}
       >
         {page === "sales" && salesPage}
