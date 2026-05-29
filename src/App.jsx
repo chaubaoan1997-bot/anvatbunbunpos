@@ -4710,10 +4710,12 @@ ${discountMoney > 0 ? `
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1.15fr) minmax(0, 0.85fr)",
+          gridTemplateColumns: "1fr",
           gap: isMobile ? 12 : 18,
           width: "100%",
+          maxWidth: "100%",
           minWidth: 0,
+          overflow: "hidden",
         }}
       >
         {/* SẢN PHẨM ĐÃ BÁN - FULL NGANG */}
@@ -4934,7 +4936,7 @@ ${discountMoney > 0 ? `
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 240px",
+                gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) 260px",
                 gap: 12,
                 alignItems: "center",
               }}
