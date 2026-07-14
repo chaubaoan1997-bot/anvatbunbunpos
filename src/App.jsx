@@ -5414,7 +5414,7 @@ ${discountMoney > 0 ? `
             >
               <Home size={22} color="#3b82f6" />
             </div>
-            <div style={{ fontSize: 22, fontWeight: 800 }}>AN VAT BUNBUN</div>
+            <div style={{ fontSize: 22, fontWeight: 800 }}>AN VAT BUN BUN</div>
           </div>
           <div style={{ display: "grid", gap: 10 }}>
             {pages.map((item) => (
@@ -5467,7 +5467,7 @@ ${discountMoney > 0 ? `
             </button>
           </div>
           <div style={{ marginTop: "auto", color: "#94a3b8", fontSize: 14, padding: 12 }}>
-            © 2026 AN VAT BUNBUN
+            © 2026 AN VAT BUN BUN
           </div>
         </aside>
       ) : (
@@ -5481,7 +5481,7 @@ ${discountMoney > 0 ? `
             zIndex: 20,
           }}
         >
-          <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 10 }}>AN VAT BUNBUN</div>
+          <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 10 }}>AN VAT BUN BUN</div>
           <div style={{ display: "flex", gap: 8, overflowX: "auto" }}>
             {pages.map((item) => (
               <SidebarItem
